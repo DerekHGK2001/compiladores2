@@ -11,8 +11,7 @@ public class visitors extends InterpreterBaseVisitor {
     public static Map<String, Object> getSymbolTable() {
         return symbolTable;
     }
-    private List<String> usedVariables = new ArrayList<>();
-    private int ambito = 0;
+    public int ambito = 0;
 
     @Override
     public Object visitVariable_declaration(InterpreterParser.Variable_declarationContext ctx) {
@@ -22,7 +21,9 @@ public class visitors extends InterpreterBaseVisitor {
 
             // Verificar si la variable ya existe en la tabla de símbolos
             if (symbolTable.containsKey(name)) {
+
                 System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
+
             } else {
                 // Si no existe, crear una nueva entrada en la tabla de símbolos
                 EntryVariable entry = new EntryVariable(name, type, ambito);
@@ -39,13 +40,14 @@ public class visitors extends InterpreterBaseVisitor {
         String firstId = idNodes.get(0).getText();
         String firstTypeId = "";
         String secondTypeId = "";
-        Boolean error = false;
 
         if (!symbolTable.containsKey(firstId)) {
             System.err.println("Error: La variable '" + firstId + "' no existe.");
-            error = true;
+            return null;
         } else {
+
             EntryVariable entry = (EntryVariable) symbolTable.get(firstId);
+
             firstTypeId = entry.getType();
         }
 
@@ -53,43 +55,31 @@ public class visitors extends InterpreterBaseVisitor {
             String secondId = idNodes.get(1).getText();
             if (!symbolTable.containsKey(secondId)) {
                 System.err.println("Error: La variable '" + secondId + "' no existe.");
-                error = true;
             } else {
-                if(!error){
-                    EntryVariable entry = (EntryVariable) symbolTable.get(secondId);
-                    secondTypeId = entry.getType();
+                EntryVariable entry = (EntryVariable) symbolTable.get(secondId);
+                secondTypeId = entry.getType();
 
-                    if (!firstTypeId.equalsIgnoreCase(secondTypeId) && !firstTypeId.equalsIgnoreCase("string")) {
-                        System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
-                    }
+                if (!firstTypeId.equalsIgnoreCase(secondTypeId) && !firstTypeId.equalsIgnoreCase("string")) {
+                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
                 }
             }
         }
 
         if (ctx.NUMBER() != null) {
-            if(!error){
-
-                if (!firstTypeId.equalsIgnoreCase("integer") && !firstTypeId.equalsIgnoreCase("string")) {
-                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un Integer.");
-                }
+            if (!firstTypeId.equalsIgnoreCase("integer") && !firstTypeId.equalsIgnoreCase("string")) {
+                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un Integer.");
             }
         } else if (ctx.TEXT() != null) {
-            if(!error){
-                if (!firstTypeId.equalsIgnoreCase("string")) {
-                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un String.");
-                }
+            if (!firstTypeId.equalsIgnoreCase("string")) {
+                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un String.");
             }
         } else if (ctx.simple_expression() != null) {
-            if(!error){
-                if (!firstTypeId.equalsIgnoreCase("integer")) {
-                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un integer.");
-                }
+            if (!firstTypeId.equalsIgnoreCase("integer")) {
+                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un integer.");
             }
         } else if (ctx.BOOLEANVALUE() != null) {
-            if(!error){
-                if (!firstTypeId.equalsIgnoreCase("boolean")) {
-                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un boolean.");
-                }
+            if (!firstTypeId.equalsIgnoreCase("boolean")) {
+                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un boolean.");
             }
         } else if (ctx.array_access() != null) {
             // Aquí haces algo si el contexto es un array_access
