@@ -34,23 +34,64 @@ public class visitors extends InterpreterBaseVisitor {
 
     @Override
     public Object visitVariable_init(InterpreterParser.Variable_initContext ctx) {
-        for (TerminalNode idNode : ctx.getTokens(InterpreterLexer.ID)) {
-            String name = idNode.getText();
+        List<TerminalNode> idNodes = ctx.getTokens(InterpreterLexer.ID);
 
-            if (!symbolTable.containsKey(name)) {
-                System.err.println("Error: La variable '" + name + "' no existe.");
+        String firstId = idNodes.get(0).getText();
+        String firstTypeId = "";
+        String secondTypeId = "";
+        Boolean error = false;
+
+        if (!symbolTable.containsKey(firstId)) {
+            System.err.println("Error: La variable '" + firstId + "' no existe.");
+            error = true;
+        } else {
+            EntryVariable entry = (EntryVariable) symbolTable.get(firstId);
+            firstTypeId = entry.getType();
+        }
+
+        if (idNodes.size() == 2) {
+            String secondId = idNodes.get(1).getText();
+            if (!symbolTable.containsKey(secondId)) {
+                System.err.println("Error: La variable '" + secondId + "' no existe.");
+                error = true;
+            } else {
+                if(!error){
+                    EntryVariable entry = (EntryVariable) symbolTable.get(secondId);
+                    secondTypeId = entry.getType();
+
+                    if (!firstTypeId.equalsIgnoreCase(secondTypeId) && !firstTypeId.equalsIgnoreCase("string")) {
+                        System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
+                    }
+                }
             }
+        }
+
+        if (ctx.NUMBER() != null) {
+            if(!error){
+
+                if (!firstTypeId.equalsIgnoreCase("integer") && !firstTypeId.equalsIgnoreCase("string")) {
+                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un Integer.");
+                }
+            }
+        } else if (ctx.TEXT() != null) {
+            if(!error){
+                if (!firstTypeId.equalsIgnoreCase("string")) {
+                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un String.");
+                }
+            }
+        } else if (ctx.simple_expression() != null) {
+            if(!error){
+                if (!firstTypeId.equalsIgnoreCase("integer")) {
+                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un integer.");
+                }
+            }
+        } else if (ctx.array_access() != null) {
+            // Aquí haces algo si el contexto es un array_access
+        } else if (ctx.arrayBi_access() != null) {
+            // Aquí haces algo si el contexto es un arrayBi_access
         }
 
         return null;
     }
-    
-    @Override
-    public Object visitAssign_variables(InterpreterParser.Assign_variablesContext ctx) {
-
-
-        return null;
-    }
-
 
 }

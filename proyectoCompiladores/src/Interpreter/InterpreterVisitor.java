@@ -41,24 +41,6 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArraybi_declaration(InterpreterParser.Arraybi_declarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#function_declaration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFunction_declaration(InterpreterParser.Function_declarationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#parameters}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParameters(InterpreterParser.ParametersContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#parameter}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParameter(InterpreterParser.ParameterContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#statements}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -70,12 +52,6 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVariable_init(InterpreterParser.Variable_initContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#assign_variables}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAssign_variables(InterpreterParser.Assign_variablesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#array_init}.
 	 * @param ctx the parse tree
@@ -161,15 +137,57 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFactor(InterpreterParser.FactorContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#anidar}.
+	 * Visit a parse tree produced by {@link InterpreterParser#operaciones_simples}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAnidar(InterpreterParser.AnidarContext ctx);
+	T visitOperaciones_simples(InterpreterParser.Operaciones_simplesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#operaciones}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOperaciones(InterpreterParser.OperacionesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#procedure_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#procedure_body}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProcedure_body(InterpreterParser.Procedure_bodyContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#procedure_call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProcedure_call(InterpreterParser.Procedure_callContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#function_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction_declaration(InterpreterParser.Function_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#function_Call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFunction_Call(InterpreterParser.Function_CallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#parameters}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameters(InterpreterParser.ParametersContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#parameter_dec}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParameter_dec(InterpreterParser.Parameter_decContext ctx);
 }

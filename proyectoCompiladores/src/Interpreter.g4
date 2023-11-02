@@ -12,44 +12,34 @@ program: PROGRAM ID SEMICOLON
     ENDPROGRAM;
 
 // Declarations
-declarations: VAR (variable_declaration | array_declaration | arraybi_declaration | function_declaration | procedure_declaration)+;
+declarations: ((CONTS | VAR) variable_declaration | (CONTS | VAR) array_declaration | (CONTS | VAR) arraybi_declaration | function_declaration | procedure_declaration)+;
 
 // Variable Declaration
 variable_declaration: ID (COMMA ID)* COLON TYPE SEMICOLON;
 
 // Array Declaration
-array_declaration: ID COLON ARRAY (OPEN_BRACKET NUMBER DOTDOT NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
+array_declaration: ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
 
 // 2D Array Declaration
-arraybi_declaration: ID COLON ARRAY OPEN_BRACKET NUMBER DOTDOT NUMBER COMMA NUMBER DOTDOT NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
-
-// Function Declaration
-function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS COLON TYPE SEMICOLON BEGIN statements END;
-
-// Parameters
-parameters: (parameter (COMMA parameter)*)?;
-parameter: ID COLON TYPE;
+arraybi_declaration: ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
 
 // Statements
 statements: statement*;
 
 // Variable Initialization
-variable_init: ID ASSIGN assign_variables SEMICOLON;
-
-//variables de asignacion
-assign_variables: ID | NUMBER | TEXT | expression | anidar | array_access | arrayBi_access;
+variable_init: ID ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
 
 // Array Initialization
-array_init: array_access ASSIGN assign_variables SEMICOLON;
+array_init: array_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
 
 // 2D Array Initialization
-arrayBi_init: arrayBi_access ASSIGN assign_variables SEMICOLON;
+arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
 
 // Array Access
-array_access: ID OPEN_BRACKET expression CLOSE_BRACKET;
+array_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) CLOSE_BRACKET;
 
 // 2D Array Access
-arrayBi_access: ID OPEN_BRACKET expression COMMA expression CLOSE_BRACKET;
+arrayBi_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) COMMA (simple_expression|NUMBER|ID) CLOSE_BRACKET;
 
 // For Loop
 for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (BEGIN statements END | statement);
@@ -67,35 +57,54 @@ while_loop: WHILE expression DO BEGIN statements END;
 if_statement: IF expression THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
 
 // General Statement
-statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | BEGIN statements END;
+statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | function_Call | BEGIN statements END;
 
 // Expressions
-expression: simple_expression ((EQUALS | NOT_EQUALS | LESS_THAN | LESS_THAN_OR_EQUALS | GREATER_THAN | GREATER_THAN_OR_EQUALS) simple_expression)?;
+expression: simple_expression (operaciones simple_expression)?;
 
 // Simple Expressions
-simple_expression: term ((PLUS | MINUS) term)*;
+simple_expression: term (operaciones_simples term)*;
 
 // Terms
-term: factor ((MULT | DIV) factor)*;
+term: factor (operaciones_simples factor)*;
 
 // Factors
-factor: ID | NUMBER | STRING | TRUE | FALSE | OPEN_PARENTHESIS expression CLOSE_PARENTHESIS | NOT factor;
+factor: ID | NUMBER | (OPEN_PARENTHESIS expression CLOSE_PARENTHESIS);
 
-// Nested Text
-anidar: TEXT (PLUS TEXT)*;
+// Operaciones Matemáticas Simples
+operaciones_simples: PLUS | MINUS | MULT | DIV;
+
+// Operaciones de Comparación
+operaciones: EQUALS | NOT_EQUALS | LESS_THAN | LESS_THAN_OR_EQUALS | GREATER_THAN | GREATER_THAN_OR_EQUALS;
 
 // Procedure Declaration
-procedure_declaration: PROCEDURE ID OPEN_PARENTHESIS parameters CLOSE_PARENTHESIS SEMICOLON declarations* BEGIN statements END SEMICOLON;
+procedure_declaration: PROCEDURE ID  OPEN_PARENTHESIS parameters  COLON TYPE CLOSE_PARENTHESIS SEMICOLON procedure_body;
+
+procedure_body:BEGIN declarations* statements END;
+
+procedure_call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS SEMICOLON ;
+
+// Function Declaration
+function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters  COLON TYPE CLOSE_PARENTHESIS COLON TYPE SEMICOLON BEGIN statements END;
+
+function_Call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS SEMICOLON;
+
+// Parameters
+parameters: ((ID) (COMMA ID)*)?;
+
+parameter_dec: (((ID|TEXT|NUMBER) | simple_expression) (COMMA ((ID|TEXT|NUMBER) | simple_expression))*)?;
 
 // Keywords and Operators
 TO: 'to';
 OF: 'of';
 DOWNTO: 'downto';
 PROGRAM: 'program';
+PROCEDURE: 'procedure';
 BEGIN: 'begin';
 END: 'end;';
 ENDPROGRAM: 'end.';
 VAR: 'var';
+ CONST:'const';
 PRINTLN: 'println';
 COMMA: ',';
 FOR: 'for';
@@ -139,7 +148,7 @@ SEMICOLON: ';';
 ID: [a-zA-Z_][a-zA-Z0-9_]*;
 
 // Numbers
-NUMBER: MINUS?[0-9]+;
+NUMBER: [0-9]+;
 
 // Boolean Values
 TRUE: 'true';

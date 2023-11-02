@@ -58,36 +58,6 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitArraybi_declaration(InterpreterParser.Arraybi_declarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#function_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunction_declaration(InterpreterParser.Function_declarationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#function_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunction_declaration(InterpreterParser.Function_declarationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#parameters}.
-	 * @param ctx the parse tree
-	 */
-	void enterParameters(InterpreterParser.ParametersContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#parameters}.
-	 * @param ctx the parse tree
-	 */
-	void exitParameters(InterpreterParser.ParametersContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void enterParameter(InterpreterParser.ParameterContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#parameter}.
-	 * @param ctx the parse tree
-	 */
-	void exitParameter(InterpreterParser.ParameterContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#statements}.
 	 * @param ctx the parse tree
 	 */
@@ -107,16 +77,6 @@ public interface InterpreterListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariable_init(InterpreterParser.Variable_initContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#assign_variables}.
-	 * @param ctx the parse tree
-	 */
-	void enterAssign_variables(InterpreterParser.Assign_variablesContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#assign_variables}.
-	 * @param ctx the parse tree
-	 */
-	void exitAssign_variables(InterpreterParser.Assign_variablesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#array_init}.
 	 * @param ctx the parse tree
@@ -258,15 +218,25 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitFactor(InterpreterParser.FactorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#anidar}.
+	 * Enter a parse tree produced by {@link InterpreterParser#operaciones_simples}.
 	 * @param ctx the parse tree
 	 */
-	void enterAnidar(InterpreterParser.AnidarContext ctx);
+	void enterOperaciones_simples(InterpreterParser.Operaciones_simplesContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#anidar}.
+	 * Exit a parse tree produced by {@link InterpreterParser#operaciones_simples}.
 	 * @param ctx the parse tree
 	 */
-	void exitAnidar(InterpreterParser.AnidarContext ctx);
+	void exitOperaciones_simples(InterpreterParser.Operaciones_simplesContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#operaciones}.
+	 * @param ctx the parse tree
+	 */
+	void enterOperaciones(InterpreterParser.OperacionesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#operaciones}.
+	 * @param ctx the parse tree
+	 */
+	void exitOperaciones(InterpreterParser.OperacionesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#procedure_declaration}.
 	 * @param ctx the parse tree
@@ -277,4 +247,64 @@ public interface InterpreterListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#procedure_body}.
+	 * @param ctx the parse tree
+	 */
+	void enterProcedure_body(InterpreterParser.Procedure_bodyContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#procedure_body}.
+	 * @param ctx the parse tree
+	 */
+	void exitProcedure_body(InterpreterParser.Procedure_bodyContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#procedure_call}.
+	 * @param ctx the parse tree
+	 */
+	void enterProcedure_call(InterpreterParser.Procedure_callContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#procedure_call}.
+	 * @param ctx the parse tree
+	 */
+	void exitProcedure_call(InterpreterParser.Procedure_callContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#function_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction_declaration(InterpreterParser.Function_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#function_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction_declaration(InterpreterParser.Function_declarationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#function_Call}.
+	 * @param ctx the parse tree
+	 */
+	void enterFunction_Call(InterpreterParser.Function_CallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#function_Call}.
+	 * @param ctx the parse tree
+	 */
+	void exitFunction_Call(InterpreterParser.Function_CallContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameters(InterpreterParser.ParametersContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#parameters}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameters(InterpreterParser.ParametersContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#parameter_dec}.
+	 * @param ctx the parse tree
+	 */
+	void enterParameter_dec(InterpreterParser.Parameter_decContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#parameter_dec}.
+	 * @param ctx the parse tree
+	 */
+	void exitParameter_dec(InterpreterParser.Parameter_decContext ctx);
 }
