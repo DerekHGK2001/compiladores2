@@ -29,11 +29,4 @@ public class CustomErrorListener extends BaseErrorListener {
         return errores;
     }
 
-    public String getTokenStreamText(Token start, Token stop) {
-        if (start != null && stop != null && start.getTokenIndex() >= 0 && stop.getTokenIndex() >= 0) {
-            Interval interval = new Interval(start.getStartIndex(), stop.getStopIndex());
-            return tokens.getText(interval);
-        }
-        return "";
-    }
 }
