@@ -19,15 +19,24 @@ public class visitors extends InterpreterBaseVisitor {
         String type = ctx.TYPE().getText();
         for (TerminalNode idNode : ctx.ID()) {
             String name = idNode.getText();
-            EntryVariable entry = new EntryVariable(name, type, ambito);
-            symbolTable.put(name, entry);
+
+            // Verificar si la variable ya existe en la tabla de símbolos
+            if (symbolTable.containsKey(name)) {
+                System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
+            } else {
+                // Si no existe, crear una nueva entrada en la tabla de símbolos
+                EntryVariable entry = new EntryVariable(name, type, ambito);
+                symbolTable.put(name, entry);
+            }
         }
         return null;
     }
 
     @Override
     public Object visitVariable_init(InterpreterParser.Variable_initContext ctx) {
-        // Aquí puedes realizar la validación semántica según tus reglas específicas
+
+
         return null;
     }
+
 }

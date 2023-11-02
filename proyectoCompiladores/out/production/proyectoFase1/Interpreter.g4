@@ -34,13 +34,16 @@ parameter: ID COLON TYPE;
 statements: statement*;
 
 // Variable Initialization
-variable_init: ID ASSIGN (ID | NUMBER | TEXT | expression | anidar | array_access | arrayBi_access) SEMICOLON;
+variable_init: ID ASSIGN assign_variables SEMICOLON;
+
+//variables de asignacion
+assign_variables: ID | NUMBER | TEXT | expression | anidar | array_access | arrayBi_access;
 
 // Array Initialization
-array_init: array_access ASSIGN (ID | NUMBER | TEXT | expression | anidar | array_access | arrayBi_access) SEMICOLON;
+array_init: array_access ASSIGN assign_variables SEMICOLON;
 
 // 2D Array Initialization
-arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | expression | anidar | array_access | arrayBi_access) SEMICOLON;
+arrayBi_init: arrayBi_access ASSIGN assign_variables SEMICOLON;
 
 // Array Access
 array_access: ID OPEN_BRACKET expression CLOSE_BRACKET;
@@ -52,10 +55,10 @@ arrayBi_access: ID OPEN_BRACKET expression COMMA expression CLOSE_BRACKET;
 for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (BEGIN statements END | statement);
 
 // Write Line Statement
-writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXT) (COMMA (ID | TEXT | array_access))* CLOSE_PARENTHESIS SEMICOLON;
+writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXT) (COMMA (ID | TEXT | array_access | arrayBi_access ))* CLOSE_PARENTHESIS SEMICOLON;
 
 // Write Statement
-write: WRITE OPEN_PARENTHESIS (ID | TEXT) (COMMA (ID | TEXT | array_access))* CLOSE_PARENTHESIS SEMICOLON;
+write: WRITE OPEN_PARENTHESIS (ID | TEXT) (COMMA (ID | TEXT | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
 
 // While Loop
 while_loop: WHILE expression DO BEGIN statements END;
@@ -100,7 +103,7 @@ WHILE: 'while';
 COMMENT : '{' .*? '}' -> skip;
 DO: 'do';
 ARRAY: 'array';
-WRITLN: 'writeln';
+WRITELN: 'writeln';
 WRITE: 'write';
 PLUS: '+';
 MINUS: '-';
