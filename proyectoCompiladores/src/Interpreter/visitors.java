@@ -34,9 +34,23 @@ public class visitors extends InterpreterBaseVisitor {
 
     @Override
     public Object visitVariable_init(InterpreterParser.Variable_initContext ctx) {
+        for (TerminalNode idNode : ctx.getTokens(InterpreterLexer.ID)) {
+            String name = idNode.getText();
+
+            if (!symbolTable.containsKey(name)) {
+                System.err.println("Error: La variable '" + name + "' no existe.");
+            }
+        }
+
+        return null;
+    }
+    
+    @Override
+    public Object visitAssign_variables(InterpreterParser.Assign_variablesContext ctx) {
 
 
         return null;
     }
+
 
 }

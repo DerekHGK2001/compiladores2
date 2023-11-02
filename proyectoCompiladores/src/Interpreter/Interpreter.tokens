@@ -49,6 +49,7 @@ FALSE=48
 TEXT=49
 WS=50
 STRING=51
+PROCEDURE=52
 'to'=1
 'of'=2
 'downto'=3

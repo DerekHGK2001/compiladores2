@@ -1,4 +1,4 @@
-// Generated from C:/Users/dhenr/Documents/Clases/Compiladores/proyectoFase1/src\Interpreter.g4 by ANTLR 4.12.0
+// Generated from C:/Users/dhenr/Documents/GitHub/compiladores2/proyectoCompiladores/src\Interpreter.g4 by ANTLR 4.12.0
 package Interpreter;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -107,6 +107,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariable_init(InterpreterParser.Variable_initContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#assign_variables}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssign_variables(InterpreterParser.Assign_variablesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#assign_variables}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssign_variables(InterpreterParser.Assign_variablesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#array_init}.
 	 * @param ctx the parse tree
@@ -257,4 +267,14 @@ public interface InterpreterListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAnidar(InterpreterParser.AnidarContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#procedure_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#procedure_declaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx);
 }

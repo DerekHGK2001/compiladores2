@@ -1,4 +1,4 @@
-// Generated from C:/Users/dhenr/Documents/Clases/Compiladores/proyectoFase1/src\Interpreter.g4 by ANTLR 4.12.0
+// Generated from C:/Users/dhenr/Documents/GitHub/compiladores2/proyectoCompiladores/src\Interpreter.g4 by ANTLR 4.12.0
 package Interpreter;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -82,6 +82,13 @@ public class InterpreterBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitVariable_init(InterpreterParser.Variable_initContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitAssign_variables(InterpreterParser.Assign_variablesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -187,4 +194,11 @@ public class InterpreterBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitAnidar(InterpreterParser.AnidarContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx) { return visitChildren(ctx); }
 }

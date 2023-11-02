@@ -1,4 +1,4 @@
-// Generated from C:/Users/dhenr/Documents/Clases/Compiladores/proyectoFase1/src\Interpreter.g4 by ANTLR 4.12.0
+// Generated from C:/Users/dhenr/Documents/GitHub/compiladores2/proyectoCompiladores/src\Interpreter.g4 by ANTLR 4.12.0
 package Interpreter;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -70,6 +70,12 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitVariable_init(InterpreterParser.Variable_initContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#assign_variables}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssign_variables(InterpreterParser.Assign_variablesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#array_init}.
 	 * @param ctx the parse tree
@@ -160,4 +166,10 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitAnidar(InterpreterParser.AnidarContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#procedure_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx);
 }

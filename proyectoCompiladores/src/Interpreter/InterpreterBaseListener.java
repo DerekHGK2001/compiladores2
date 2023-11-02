@@ -1,4 +1,4 @@
-// Generated from C:/Users/dhenr/Documents/Clases/Compiladores/proyectoFase1/src\Interpreter.g4 by ANTLR 4.12.0
+// Generated from C:/Users/dhenr/Documents/GitHub/compiladores2/proyectoCompiladores/src\Interpreter.g4 by ANTLR 4.12.0
 package Interpreter;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -132,6 +132,18 @@ public class InterpreterBaseListener implements InterpreterListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVariable_init(InterpreterParser.Variable_initContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterAssign_variables(InterpreterParser.Assign_variablesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAssign_variables(InterpreterParser.Assign_variablesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -312,6 +324,18 @@ public class InterpreterBaseListener implements InterpreterListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAnidar(InterpreterParser.AnidarContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
