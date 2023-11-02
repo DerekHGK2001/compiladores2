@@ -85,6 +85,12 @@ public class visitors extends InterpreterBaseVisitor {
                     System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un integer.");
                 }
             }
+        } else if (ctx.BOOLEANVALUE() != null) {
+            if(!error){
+                if (!firstTypeId.equalsIgnoreCase("boolean")) {
+                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un boolean.");
+                }
+            }
         } else if (ctx.array_access() != null) {
             // Aquí haces algo si el contexto es un array_access
         } else if (ctx.arrayBi_access() != null) {

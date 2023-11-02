@@ -42,7 +42,7 @@ const_variables: const_variable_declaration | const_array_declaration | const_ar
 statements: statement*;
 
 // Variable Initialization
-variable_init: ID ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
+variable_init: ID ASSIGN (ID | NUMBER | TEXT | BOOLEANVALUE | simple_expression | array_access | arrayBi_access) SEMICOLON;
 
 // Array Initialization
 array_init: array_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
@@ -159,15 +159,13 @@ OPEN_BRACKET: '[';
 CLOSE_BRACKET: ']';
 SEMICOLON: ';';
 
-// Identifiers
-ID: [a-zA-Z_][a-zA-Z0-9_]*;
+// Boolean Values
+BOOLEANVALUE: 'true'|'false';
 
+// Identifiers
+ID:[a-zA-Z][a-zA-Z0-9]*([_][a-zA-Z0-9]+)*;
 // Numbers
 NUMBER: [0-9]+;
-
-// Boolean Values
-TRUE: 'true';
-FALSE: 'false';
 
 // Text (Strings)
 TEXT: '"' ( ~["\r\n] | '""' )* '"';
