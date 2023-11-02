@@ -48,7 +48,7 @@ public class Main {
                 Map<String, Object> symbolTable = visitor.getSymbolTable();
 
                 // Imprimimos la tabla de símbolos.
-                /*System.out.println("\nTabla de Símbolos:");
+                System.out.println("\nTabla de Símbolos:");
                 for (Map.Entry<String, Object> entry : symbolTable.entrySet()) {
                     String variableName = entry.getKey();
                     Object variableEntry = entry.getValue();
@@ -59,7 +59,7 @@ public class Main {
                     } else {
                         System.err.println("Tipo desconocido para la variable: " + variableName);
                     }
-                }*/
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

@@ -51,7 +51,6 @@ FALSE=50
 TEXT=51
 WS=52
 STRING=53
-CONTS=54
 'to'=1
 'of'=2
 'downto'=3

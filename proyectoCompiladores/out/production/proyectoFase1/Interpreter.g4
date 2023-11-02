@@ -12,16 +12,31 @@ program: PROGRAM ID SEMICOLON
     ENDPROGRAM;
 
 // Declarations
-declarations: ((CONTS | VAR) variable_declaration | (CONTS | VAR) array_declaration | (CONTS | VAR) arraybi_declaration | function_declaration | procedure_declaration)+;
+declarations: ( var_variables | const_variables | function_declaration | procedure_declaration)+;
+
+// Variable Declaration const
+variable_declaration: VAR ID (COMMA ID)* COLON TYPE SEMICOLON;
+
+// Array Declaration const
+array_declaration: VAR ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
+
+// 2D Array Declaration const
+arraybi_declaration: VAR ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
+
+//donde se declaran las variables const
+var_variables: variable_declaration | array_declaration | arraybi_declaration ;
 
 // Variable Declaration
-variable_declaration: ID (COMMA ID)* COLON TYPE SEMICOLON;
+const_variable_declaration: CONST ID '=' (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
 
 // Array Declaration
-array_declaration: ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
+const_array_declaration: CONST ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
 
 // 2D Array Declaration
-arraybi_declaration: ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
+const_arraybi_declaration: CONST ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
+
+//donde se declaran las variables var
+const_variables: const_variable_declaration | const_array_declaration | const_arraybi_declaration ;
 
 // Statements
 statements: statement*;
@@ -104,7 +119,7 @@ BEGIN: 'begin';
 END: 'end;';
 ENDPROGRAM: 'end.';
 VAR: 'var';
- CONST:'const';
+CONST:'const';
 PRINTLN: 'println';
 COMMA: ',';
 FOR: 'for';

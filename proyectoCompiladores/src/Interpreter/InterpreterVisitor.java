@@ -41,6 +41,36 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArraybi_declaration(InterpreterParser.Arraybi_declarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#var_variables}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVar_variables(InterpreterParser.Var_variablesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#const_variable_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConst_variable_declaration(InterpreterParser.Const_variable_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#const_array_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConst_array_declaration(InterpreterParser.Const_array_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#const_arraybi_declaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConst_arraybi_declaration(InterpreterParser.Const_arraybi_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#const_variables}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitConst_variables(InterpreterParser.Const_variablesContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#statements}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
