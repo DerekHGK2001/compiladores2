@@ -30,3 +30,4 @@ public class EntryVariable extends SymbolEntry {
         return type;
     }
 }
+

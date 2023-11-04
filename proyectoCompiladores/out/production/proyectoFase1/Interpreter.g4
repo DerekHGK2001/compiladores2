@@ -42,13 +42,13 @@ const_variables: const_variable_declaration | const_array_declaration | const_ar
 statements: statement*;
 
 // Variable Initialization
-variable_init: ID ASSIGN (ID | NUMBER | TEXT | BOOLEANVALUE | simple_expression | array_access | arrayBi_access) SEMICOLON;
+variable_init: ID ASSIGN (ID | NUMBER | TEXT | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Initialization
-array_init: array_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
+array_init: array_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // 2D Array Initialization
-arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
+arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Access
 array_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) CLOSE_BRACKET;
@@ -72,7 +72,7 @@ while_loop: WHILE expression DO BEGIN statements END;
 if_statement: IF expression THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
 
 // General Statement
-statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | function_Call | BEGIN statements END;
+statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | BEGIN statements END;
 
 // Expressions
 expression: simple_expression (operaciones simple_expression)?;

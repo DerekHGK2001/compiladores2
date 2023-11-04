@@ -44,22 +44,6 @@ public class Main {
                 // Llamamos a visitProgram para activar el análisis semántico.
                 visitors visitor = new visitors();
                 visitor.visitProgram(programContext);
-
-                Map<String, Object> symbolTable = visitor.getSymbolTable();
-
-                // Imprimimos la tabla de símbolos.
-                /*System.out.println("\nTabla de Símbolos:");
-                for (Map.Entry<String, Object> entry : symbolTable.entrySet()) {
-                    String variableName = entry.getKey();
-                    Object variableEntry = entry.getValue();
-
-                    if (variableEntry instanceof EntryVariable) {
-                        EntryVariable entryVariable = (EntryVariable) variableEntry;
-                        System.out.println("Variable: " + entryVariable.getName() + ", Tipo: " + entryVariable.getType() + ", ámbito: " + entryVariable.getAmbit());
-                    } else {
-                        System.err.println("Tipo desconocido para la variable: " + variableName);
-                    }
-                }*/
             }
         } catch (IOException e) {
             e.printStackTrace();

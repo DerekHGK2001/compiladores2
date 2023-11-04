@@ -7,9 +7,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class visitors extends InterpreterBaseVisitor {
-    private static Map<String, Object> symbolTable = new HashMap<>();
-    public static Map<String, Object> getSymbolTable() {
-        return symbolTable;
+    private static Map<String, Object> symbolVariableTable = new HashMap<>();
+    public static Map<String, Object> getSymbolVariableTable() {
+        return symbolVariableTable;
+    }
+    private static Map<String, Object> symbolConstTable = new HashMap<>();
+    public static Map<String, Object> getSymbolConstTable() {
+        return symbolConstTable;
     }
     public int ambito = 0;
 
@@ -20,14 +24,14 @@ public class visitors extends InterpreterBaseVisitor {
             String name = idNode.getText();
 
             // Verificar si la variable ya existe en la tabla de símbolos
-            if (symbolTable.containsKey(name)) {
+            if (symbolVariableTable.containsKey(name)) {
 
                 System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
 
             } else {
                 // Si no existe, crear una nueva entrada en la tabla de símbolos
                 EntryVariable entry = new EntryVariable(name, type, ambito);
-                symbolTable.put(name, entry);
+                symbolVariableTable.put(name, entry);
             }
         }
         return null;
@@ -41,22 +45,27 @@ public class visitors extends InterpreterBaseVisitor {
         String firstTypeId = "";
         String secondTypeId = "";
 
-        if (!symbolTable.containsKey(firstId)) {
+        if(symbolConstTable.containsKey(firstId)){
+            System.err.println("Error: Una constante no puede cambiar de valor.");
+            return null;
+        }
+
+        if (!symbolVariableTable.containsKey(firstId)) {
             System.err.println("Error: La variable '" + firstId + "' no existe.");
             return null;
         } else {
 
-            EntryVariable entry = (EntryVariable) symbolTable.get(firstId);
+            EntryVariable entry = (EntryVariable) symbolVariableTable.get(firstId);
 
             firstTypeId = entry.getType();
         }
 
         if (idNodes.size() == 2) {
             String secondId = idNodes.get(1).getText();
-            if (!symbolTable.containsKey(secondId)) {
+            if (!symbolVariableTable.containsKey(secondId)) {
                 System.err.println("Error: La variable '" + secondId + "' no existe.");
             } else {
-                EntryVariable entry = (EntryVariable) symbolTable.get(secondId);
+                EntryVariable entry = (EntryVariable) symbolVariableTable.get(secondId);
                 secondTypeId = entry.getType();
 
                 if (!firstTypeId.equalsIgnoreCase(secondTypeId) && !firstTypeId.equalsIgnoreCase("string")) {
@@ -87,6 +96,26 @@ public class visitors extends InterpreterBaseVisitor {
             // Aquí haces algo si el contexto es un arrayBi_access
         }
 
+        return null;
+    }
+
+    @Override
+    public Object visitConst_variable_declaration(InterpreterParser.Const_variable_declarationContext ctx) {
+
+        for (TerminalNode idNode : ctx.ID()) {
+            String name = idNode.getText();
+
+            // Verificar si la variable ya existe en la tabla de símbolos
+            if (symbolVariableTable.containsKey(name) || symbolConstTable.containsKey(name)) {
+
+                System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
+
+            } else {
+                // Si no existe, crear una nueva entrada en la tabla de símbolos
+                EntryConst entry = new EntryConst(name, ambito);
+                getSymbolConstTable().put(name, entry);
+            }
+        }
         return null;
     }
 

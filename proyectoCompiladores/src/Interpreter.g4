@@ -14,41 +14,41 @@ program: PROGRAM ID SEMICOLON
 // Declarations
 declarations: ( var_variables | const_variables | function_declaration | procedure_declaration)+;
 
-// Variable Declaration const
+// Variable Declaration
 variable_declaration: VAR ID (COMMA ID)* COLON TYPE SEMICOLON;
 
-// Array Declaration const
+// Array Declaration
 array_declaration: VAR ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
 
-// 2D Array Declaration const
+// 2D Array Declaration
 arraybi_declaration: VAR ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
 
-//donde se declaran las variables const
+//donde se declaran las variables var
 var_variables: variable_declaration | array_declaration | arraybi_declaration ;
 
-// Variable Declaration
+// Variable Declaration const
 const_variable_declaration: CONST ID '=' (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
 
-// Array Declaration
+// Array Declaration const
 const_array_declaration: CONST ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
 
-// 2D Array Declaration
+// 2D Array Declaration const
 const_arraybi_declaration: CONST ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
 
-//donde se declaran las variables var
+//donde se declaran las variables const
 const_variables: const_variable_declaration | const_array_declaration | const_arraybi_declaration ;
 
 // Statements
 statements: statement*;
 
 // Variable Initialization
-variable_init: ID ASSIGN (ID | NUMBER | TEXT | BOOLEANVALUE | simple_expression | array_access | arrayBi_access) SEMICOLON;
+variable_init: ID ASSIGN (ID | NUMBER | TEXT | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Initialization
-array_init: array_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
+array_init: array_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // 2D Array Initialization
-arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
+arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Access
 array_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) CLOSE_BRACKET;
@@ -72,7 +72,7 @@ while_loop: WHILE expression DO BEGIN statements END;
 if_statement: IF expression THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
 
 // General Statement
-statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | function_Call | BEGIN statements END;
+statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | BEGIN statements END;
 
 // Expressions
 expression: simple_expression (operaciones simple_expression)?;
