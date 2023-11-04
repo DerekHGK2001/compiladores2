@@ -14,28 +14,28 @@ program: PROGRAM ID SEMICOLON
 // Declarations
 declarations: ( var_variables | const_variables | function_declaration | procedure_declaration)+;
 
-// Variable Declaration const
+// Variable Declaration
 variable_declaration: VAR ID (COMMA ID)* COLON TYPE SEMICOLON;
 
-// Array Declaration const
+// Array Declaration
 array_declaration: VAR ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
 
-// 2D Array Declaration const
+// 2D Array Declaration
 arraybi_declaration: VAR ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
 
-//donde se declaran las variables const
+//donde se declaran las variables var
 var_variables: variable_declaration | array_declaration | arraybi_declaration ;
 
-// Variable Declaration
+// Variable Declaration const
 const_variable_declaration: CONST ID '=' (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
 
-// Array Declaration
+// Array Declaration const
 const_array_declaration: CONST ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
 
-// 2D Array Declaration
+// 2D Array Declaration const
 const_arraybi_declaration: CONST ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
 
-//donde se declaran las variables var
+//donde se declaran las variables const
 const_variables: const_variable_declaration | const_array_declaration | const_arraybi_declaration ;
 
 // Statements
