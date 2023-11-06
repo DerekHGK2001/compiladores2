@@ -14,6 +14,9 @@ program: PROGRAM ID SEMICOLON
 // Declarations
 declarations: ( var_variables | const_variables | function_declaration | procedure_declaration)+;
 
+//funcion read
+read_call: READ OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
+
 // Variable Declaration
 variable_declaration: VAR ID (COMMA ID)* COLON TYPE SEMICOLON;
 
@@ -72,7 +75,7 @@ while_loop: WHILE expression DO BEGIN statements END;
 if_statement: IF expression THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
 
 // General Statement
-statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | BEGIN statements END;
+statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | read_call | BEGIN statements END;
 
 // Expressions
 expression: simple_expression (operaciones simple_expression)?;
@@ -102,7 +105,7 @@ procedure_call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS SEMICOLON 
 // Function Declaration
 function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters  COLON TYPE CLOSE_PARENTHESIS COLON TYPE SEMICOLON BEGIN statements END;
 
-function_Call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS SEMICOLON;
+function_Call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS;
 
 // Parameters
 parameters: ((ID) (COMMA ID)*)?;
@@ -110,6 +113,7 @@ parameters: ((ID) (COMMA ID)*)?;
 parameter_dec: (((ID|TEXT|NUMBER) | simple_expression) (COMMA ((ID|TEXT|NUMBER) | simple_expression))*)?;
 
 // Keywords and Operators
+READ: 'read';
 TO: 'to';
 OF: 'of';
 DOWNTO: 'downto';
