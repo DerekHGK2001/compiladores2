@@ -16,6 +16,7 @@ declarations: ( VAR var_variables+ | CONST const_variables+ | function_declarati
 
 //funcion read
 read_call: READ OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
+readln_call: READLN OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
 
 // Variable Declaration
 variable_declaration: ID (COMMA ID)* COLON TYPE SEMICOLON;
@@ -75,7 +76,7 @@ while_loop: WHILE expression DO BEGIN statements END;
 if_statement: IF (expression|comparison) THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
 
 // General Statement
-statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | read_call | BEGIN statements END;
+statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | read_call | readln_call | BEGIN statements END;
 
 // Expressions
 expression: simple_expression (operaciones simple_expression)?;
@@ -116,6 +117,7 @@ parameters: ((ID) (COMMA ID)*)?;
 parameter_dec: (((ID|TEXT | CHAR |NUMBER|FLOAT|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT | CHAR |NUMBER|FLOAT|BOOLEANVALUE) | simple_expression))*)?;
 
 // Keywords and Operators
+READLN: 'readln';
 READ: 'read';
 TO: 'to';
 OF: 'of';

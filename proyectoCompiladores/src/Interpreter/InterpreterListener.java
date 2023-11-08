@@ -38,6 +38,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitRead_call(InterpreterParser.Read_callContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#readln_call}.
+	 * @param ctx the parse tree
+	 */
+	void enterReadln_call(InterpreterParser.Readln_callContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#readln_call}.
+	 * @param ctx the parse tree
+	 */
+	void exitReadln_call(InterpreterParser.Readln_callContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#variable_declaration}.
 	 * @param ctx the parse tree
 	 */

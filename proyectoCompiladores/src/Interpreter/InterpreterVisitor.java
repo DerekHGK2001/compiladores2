@@ -29,6 +29,12 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRead_call(InterpreterParser.Read_callContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#readln_call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReadln_call(InterpreterParser.Readln_callContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#variable_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
