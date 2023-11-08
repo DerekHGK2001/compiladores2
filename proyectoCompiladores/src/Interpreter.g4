@@ -30,7 +30,7 @@ arraybi_declaration: VAR ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS*
 var_variables: variable_declaration | array_declaration | arraybi_declaration ;
 
 // Variable Declaration const
-const_variable_declaration: CONST ID '=' (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
+const_variable_declaration: CONST ID '=' (ID | NUMBER | TEXT | BOOLEANVALUE |simple_expression | array_access | arrayBi_access) SEMICOLON;
 
 // Array Declaration const
 const_array_declaration: CONST ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
@@ -81,13 +81,11 @@ statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt |
 expression: simple_expression (operaciones simple_expression)?;
 
 // Simple Expressions
-simple_expression: term (operaciones_simples term)*;
-
-// Terms
-term: factor (operaciones_simples factor)*;
-
+simple_expression: factor (operaciones_simples factor)*;
 // Factors
-factor: ID | NUMBER | (OPEN_PARENTHESIS expression CLOSE_PARENTHESIS);
+factor: ID | NUMBER | operacones_parentesis;
+
+operacones_parentesis:OPEN_PARENTHESIS simple_expression CLOSE_PARENTHESIS;
 
 // Operaciones Matemáticas Simples
 operaciones_simples: PLUS | MINUS | MULT | DIV;

@@ -28,6 +28,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitDeclarations(InterpreterParser.DeclarationsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#read_call}.
+	 * @param ctx the parse tree
+	 */
+	void enterRead_call(InterpreterParser.Read_callContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#read_call}.
+	 * @param ctx the parse tree
+	 */
+	void exitRead_call(InterpreterParser.Read_callContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#variable_declaration}.
 	 * @param ctx the parse tree
 	 */
@@ -248,16 +258,6 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitSimple_expression(InterpreterParser.Simple_expressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#term}.
-	 * @param ctx the parse tree
-	 */
-	void enterTerm(InterpreterParser.TermContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#term}.
-	 * @param ctx the parse tree
-	 */
-	void exitTerm(InterpreterParser.TermContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#factor}.
 	 * @param ctx the parse tree
 	 */
@@ -267,6 +267,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFactor(InterpreterParser.FactorContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#operacones_parentesis}.
+	 * @param ctx the parse tree
+	 */
+	void enterOperacones_parentesis(InterpreterParser.Operacones_parentesisContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#operacones_parentesis}.
+	 * @param ctx the parse tree
+	 */
+	void exitOperacones_parentesis(InterpreterParser.Operacones_parentesisContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#operaciones_simples}.
 	 * @param ctx the parse tree

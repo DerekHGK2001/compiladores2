@@ -14,6 +14,9 @@ program: PROGRAM ID SEMICOLON
 // Declarations
 declarations: ( var_variables | const_variables | function_declaration | procedure_declaration)+;
 
+//funcion read
+read_call: READ OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
+
 // Variable Declaration
 variable_declaration: VAR ID (COMMA ID)* COLON TYPE SEMICOLON;
 
@@ -27,7 +30,7 @@ arraybi_declaration: VAR ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS*
 var_variables: variable_declaration | array_declaration | arraybi_declaration ;
 
 // Variable Declaration const
-const_variable_declaration: CONST ID '=' (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access) SEMICOLON;
+const_variable_declaration: CONST ID '=' (ID | NUMBER | TEXT | BOOLEANVALUE |simple_expression | array_access | arrayBi_access) SEMICOLON;
 
 // Array Declaration const
 const_array_declaration: CONST ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
@@ -72,19 +75,17 @@ while_loop: WHILE expression DO BEGIN statements END;
 if_statement: IF expression THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
 
 // General Statement
-statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | BEGIN statements END;
+statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | read_call | BEGIN statements END;
 
 // Expressions
 expression: simple_expression (operaciones simple_expression)?;
 
 // Simple Expressions
-simple_expression: term (operaciones_simples term)*;
-
-// Terms
-term: factor (operaciones_simples factor)*;
-
+simple_expression: factor (operaciones_simples factor)*;
 // Factors
-factor: ID | NUMBER | (OPEN_PARENTHESIS expression CLOSE_PARENTHESIS);
+factor: ID | NUMBER | operacones_parentesis;
+
+operacones_parentesis:OPEN_PARENTHESIS simple_expression CLOSE_PARENTHESIS;
 
 // Operaciones Matemáticas Simples
 operaciones_simples: PLUS | MINUS | MULT | DIV;
@@ -102,7 +103,7 @@ procedure_call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS SEMICOLON 
 // Function Declaration
 function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters  COLON TYPE CLOSE_PARENTHESIS COLON TYPE SEMICOLON BEGIN statements END;
 
-function_Call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS SEMICOLON;
+function_Call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS;
 
 // Parameters
 parameters: ((ID) (COMMA ID)*)?;
@@ -110,6 +111,7 @@ parameters: ((ID) (COMMA ID)*)?;
 parameter_dec: (((ID|TEXT|NUMBER) | simple_expression) (COMMA ((ID|TEXT|NUMBER) | simple_expression))*)?;
 
 // Keywords and Operators
+READ: 'read';
 TO: 'to';
 OF: 'of';
 DOWNTO: 'downto';

@@ -23,6 +23,12 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclarations(InterpreterParser.DeclarationsContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#read_call}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRead_call(InterpreterParser.Read_callContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#variable_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -155,17 +161,17 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSimple_expression(InterpreterParser.Simple_expressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#term}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTerm(InterpreterParser.TermContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#factor}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFactor(InterpreterParser.FactorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#operacones_parentesis}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOperacones_parentesis(InterpreterParser.Operacones_parentesisContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#operaciones_simples}.
 	 * @param ctx the parse tree
