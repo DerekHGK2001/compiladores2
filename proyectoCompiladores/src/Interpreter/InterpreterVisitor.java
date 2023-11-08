@@ -155,6 +155,12 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(InterpreterParser.ExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#comparison}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitComparison(InterpreterParser.ComparisonContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#simple_expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

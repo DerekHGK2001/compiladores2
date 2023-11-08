@@ -30,7 +30,7 @@ arraybi_declaration: VAR ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS*
 var_variables: variable_declaration | array_declaration | arraybi_declaration ;
 
 // Variable Declaration const
-const_variable_declaration: CONST ID '=' (ID | NUMBER | TEXT | BOOLEANVALUE |simple_expression | array_access | arrayBi_access) SEMICOLON;
+const_variable_declaration: CONST ID '=' (ID | NUMBER| FLOAT | TEXT | BOOLEANVALUE |simple_expression | array_access | arrayBi_access) SEMICOLON;
 
 // Array Declaration const
 const_array_declaration: CONST ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
@@ -45,13 +45,13 @@ const_variables: const_variable_declaration | const_array_declaration | const_ar
 statements: statement*;
 
 // Variable Initialization
-variable_init: ID ASSIGN (ID | NUMBER | TEXT | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+variable_init: ID ASSIGN (ID | NUMBER | FLOAT | TEXT | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Initialization
-array_init: array_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+array_init: array_access ASSIGN (ID | NUMBER | FLOAT | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // 2D Array Initialization
-arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | FLOAT | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Access
 array_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) CLOSE_BRACKET;
@@ -72,7 +72,7 @@ write: WRITE OPEN_PARENTHESIS (ID | TEXT) (COMMA (ID | TEXT | array_access | arr
 while_loop: WHILE expression DO BEGIN statements END;
 
 // If Statement
-if_statement: IF expression THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
+if_statement: IF (expression|comparison) THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
 
 // General Statement
 statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | read_call | BEGIN statements END;
@@ -80,10 +80,13 @@ statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt |
 // Expressions
 expression: simple_expression (operaciones simple_expression)?;
 
+//Comparacion de strings
+comparison: (ID | TEXT | NUMBER |FLOAT | BOOLEANVALUE) (EQUALS | NOT_EQUALS) (ID | TEXT | NUMBER | BOOLEANVALUE);
+
 // Simple Expressions
 simple_expression: factor (operaciones_simples factor)*;
 // Factors
-factor: ID | NUMBER | operacones_parentesis;
+factor: ID | NUMBER | FLOAT | operacones_parentesis;
 
 operacones_parentesis:OPEN_PARENTHESIS simple_expression CLOSE_PARENTHESIS;
 
@@ -91,7 +94,7 @@ operacones_parentesis:OPEN_PARENTHESIS simple_expression CLOSE_PARENTHESIS;
 operaciones_simples: PLUS | MINUS | MULT | DIV;
 
 // Operaciones de Comparación
-operaciones: EQUALS | NOT_EQUALS | LESS_THAN | LESS_THAN_OR_EQUALS | GREATER_THAN | GREATER_THAN_OR_EQUALS;
+operaciones: LESS_THAN | LESS_THAN_OR_EQUALS | GREATER_THAN | GREATER_THAN_OR_EQUALS;
 
 // Procedure Declaration
 procedure_declaration: PROCEDURE ID  OPEN_PARENTHESIS parameters  COLON TYPE CLOSE_PARENTHESIS SEMICOLON procedure_body;
@@ -108,7 +111,7 @@ function_Call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS;
 // Parameters
 parameters: ((ID) (COMMA ID)*)?;
 
-parameter_dec: (((ID|TEXT|NUMBER) | simple_expression) (COMMA ((ID|TEXT|NUMBER) | simple_expression))*)?;
+parameter_dec: (((ID|TEXT|NUMBER|FLOAT|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT|NUMBER|FLOAT|BOOLEANVALUE) | simple_expression))*)?;
 
 // Keywords and Operators
 READ: 'read';
@@ -148,7 +151,7 @@ GREATER_THAN_OR_EQUALS: '>=';
 LESS_THAN_OR_EQUALS: '<=';
 EQUALS: '=';
 NOT_EQUALS: '<>';
-TYPE: 'integer' | 'string' | 'boolean' | 'char' | 'float' | 'const';
+TYPE: 'integer' | 'string' | 'boolean' | 'char' | 'real' | 'const';
 ASSIGN: ':=';
 
 // Punctuation and Delimiters
@@ -168,6 +171,7 @@ BOOLEANVALUE: 'true'|'false';
 ID:[a-zA-Z][a-zA-Z0-9]*([_][a-zA-Z0-9]+)*;
 // Numbers
 NUMBER: [0-9]+;
+FLOAT: [0-9]+ '.' [0-9]+;
 
 // Text (Strings)
 TEXT: '"' ( ~["\r\n] | '""' )* '"';

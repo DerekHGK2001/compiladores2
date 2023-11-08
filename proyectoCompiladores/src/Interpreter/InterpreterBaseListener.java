@@ -305,6 +305,18 @@ public class InterpreterBaseListener implements InterpreterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterComparison(InterpreterParser.ComparisonContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComparison(InterpreterParser.ComparisonContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterSimple_expression(InterpreterParser.Simple_expressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
