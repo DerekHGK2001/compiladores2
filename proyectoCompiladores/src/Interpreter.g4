@@ -81,7 +81,9 @@ statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt |
 expression: simple_expression (operaciones simple_expression)?;
 
 //Comparacion de strings
-comparison: (ID | TEXT | NUMBER |FLOAT | BOOLEANVALUE) (EQUALS | NOT_EQUALS) (ID | TEXT | NUMBER | BOOLEANVALUE);
+comparison: terms (EQUALS | NOT_EQUALS) terms;
+
+terms: (ID | TEXT | NUMBER |FLOAT | BOOLEANVALUE);
 
 // Simple Expressions
 simple_expression: factor (operaciones_simples factor)*;

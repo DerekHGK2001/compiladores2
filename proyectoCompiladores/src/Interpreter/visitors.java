@@ -225,4 +225,77 @@ public class visitors extends InterpreterBaseVisitor {
         visit(ctx.simple_expression());
         return null;
     }
+
+    @Override
+    public Object visitComparison(InterpreterParser.ComparisonContext ctx) {
+
+        String tipoTerm1 = "";
+        String tipoTerm2 = "";
+
+        if(ctx.terms(0).ID()!=null){
+
+            String idTerm = ctx.terms(0).ID().getText();
+
+            if(symbolVariableTable.containsKey(idTerm)){
+                EntryVariable entry = (EntryVariable) symbolVariableTable.get(idTerm);
+                tipoTerm1 = entry.getType();
+
+            }else if(symbolConstTable.containsKey(idTerm)){
+                EntryConst entry = (EntryConst) symbolConstTable.get(idTerm);
+                tipoTerm1 = entry.getType();
+
+            }else{
+                System.err.println("Error: La variable '" + idTerm + "' no existe.");
+            }
+
+        }else if(ctx.terms(0).NUMBER()!=null){
+            tipoTerm1="integer";
+
+        }else if(ctx.terms(0).TEXT()!=null){
+            tipoTerm1="string";
+
+        }else if(ctx.terms(0).FLOAT()!=null){
+            tipoTerm1="real";
+
+        }else if(ctx.terms(0).BOOLEANVALUE()!=null){
+            tipoTerm1="boolean";
+
+        }
+
+        if(ctx.terms(1).ID()!=null){
+
+            String idTerm = ctx.terms(1).ID().getText();
+
+            if(symbolVariableTable.containsKey(idTerm)){
+                EntryVariable entry = (EntryVariable) symbolVariableTable.get(idTerm);
+                tipoTerm2 = entry.getType();
+
+            }else if(symbolConstTable.containsKey(idTerm)){
+                EntryConst entry = (EntryConst) symbolConstTable.get(idTerm);
+                tipoTerm2 = entry.getType();
+
+            }else{
+                System.err.println("Error: La variable '" + idTerm + "' no existe.");
+            }
+
+        }else if(ctx.terms(1).NUMBER()!=null){
+            tipoTerm2="integer";
+
+        }else if(ctx.terms(1).TEXT()!=null){
+            tipoTerm2="string";
+
+        }else if(ctx.terms(1).FLOAT()!=null){
+            tipoTerm2="real";
+
+        }else if(ctx.terms(1).BOOLEANVALUE()!=null){
+            tipoTerm2="boolean";
+
+        }
+
+        if(tipoTerm1!=tipoTerm2){
+            System.err.println("Error: no se puede comparar un '" + tipoTerm1 + "' con un '" + tipoTerm2 + "'");
+        }
+
+        return null;
+    }
 }

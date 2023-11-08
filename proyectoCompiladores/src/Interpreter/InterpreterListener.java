@@ -258,6 +258,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitComparison(InterpreterParser.ComparisonContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#terms}.
+	 * @param ctx the parse tree
+	 */
+	void enterTerms(InterpreterParser.TermsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#terms}.
+	 * @param ctx the parse tree
+	 */
+	void exitTerms(InterpreterParser.TermsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#simple_expression}.
 	 * @param ctx the parse tree
 	 */
