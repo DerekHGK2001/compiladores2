@@ -16,6 +16,8 @@ declarations: ( VAR var_variables+ | CONST const_variables+ | function_declarati
 
 //funcion read
 read_call: READ OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
+
+//funcion readln
 readln_call: READLN OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
 
 // Variable Declaration
