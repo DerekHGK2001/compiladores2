@@ -100,6 +100,10 @@ public class visitors extends InterpreterBaseVisitor {
             if (!firstTypeId.equalsIgnoreCase("string")) {
                 System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un String.");
             }
+        } else if (ctx.CHAR() != null) {
+            if (!firstTypeId.equalsIgnoreCase("char")) {
+                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un String.");
+            }
         } else if (ctx.simple_expression() != null) {
             boolean isFloat = false;
 
@@ -143,6 +147,8 @@ public class visitors extends InterpreterBaseVisitor {
 
             if (ctx.TEXT() != null) {
                 type = "string";
+            }else if(ctx.CHAR()!=null){
+                type = "char";
             }else{
                 System.err.println("Error: Una constante solo puede ser un string o char.");
             }
@@ -222,6 +228,9 @@ public class visitors extends InterpreterBaseVisitor {
         }else if(ctx.terms(0).TEXT()!=null){
             tipoTerm1="string";
 
+        }else if(ctx.terms(0).CHAR()!=null){
+            tipoTerm1="char";
+
         }else if(ctx.terms(0).FLOAT()!=null){
             tipoTerm1="real";
 
@@ -252,6 +261,9 @@ public class visitors extends InterpreterBaseVisitor {
         }else if(ctx.terms(1).TEXT()!=null){
             tipoTerm2="string";
 
+        }else if(ctx.terms(1).CHAR()!=null){
+            tipoTerm2="char";
+
         }else if(ctx.terms(1).FLOAT()!=null){
             tipoTerm2="real";
 
@@ -260,7 +272,7 @@ public class visitors extends InterpreterBaseVisitor {
 
         }
 
-        if(tipoTerm1!=tipoTerm2){
+        if(!tipoTerm1.equalsIgnoreCase(tipoTerm2)){
             System.err.println("Error: no se puede comparar un '" + tipoTerm1 + "' con un '" + tipoTerm2 + "'");
         }
 

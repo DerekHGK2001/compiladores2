@@ -30,7 +30,7 @@ arraybi_declaration: ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUM
 var_variables: variable_declaration | array_declaration | arraybi_declaration ;
 
 // Variable Declaration const
-const_variable_declaration: ID '=' ( TEXT ) SEMICOLON;
+const_variable_declaration: ID '=' ( TEXT | CHAR ) SEMICOLON;
 
 // Array Declaration const
 const_array_declaration: ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
@@ -45,13 +45,13 @@ const_variables: const_variable_declaration | const_array_declaration | const_ar
 statements: statement*;
 
 // Variable Initialization
-variable_init: ID ASSIGN (ID | NUMBER | FLOAT | TEXT | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+variable_init: ID ASSIGN (ID | NUMBER | FLOAT | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Initialization
-array_init: array_access ASSIGN (ID | NUMBER | FLOAT | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+array_init: array_access ASSIGN (ID | NUMBER | FLOAT | TEXT | CHAR | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // 2D Array Initialization
-arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | FLOAT | TEXT | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | FLOAT | TEXT | CHAR | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Access
 array_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) CLOSE_BRACKET;
@@ -63,10 +63,10 @@ arrayBi_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) COMMA (simple_expr
 for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (BEGIN statements END | statement);
 
 // Write Line Statement
-writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXT) (COMMA (ID | TEXT | array_access | arrayBi_access ))* CLOSE_PARENTHESIS SEMICOLON;
+writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXT | CHAR) (COMMA (ID | TEXT | CHAR | array_access | arrayBi_access ))* CLOSE_PARENTHESIS SEMICOLON;
 
 // Write Statement
-write: WRITE OPEN_PARENTHESIS (ID | TEXT) (COMMA (ID | TEXT | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
+write: WRITE OPEN_PARENTHESIS (ID | TEXT | CHAR) (COMMA (ID | TEXT | CHAR | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
 
 // While Loop
 while_loop: WHILE expression DO BEGIN statements END;
@@ -83,7 +83,7 @@ expression: simple_expression (operaciones simple_expression)?;
 //Comparacion de strings
 comparison: terms (EQUALS | NOT_EQUALS) terms;
 
-terms: (ID | TEXT | NUMBER |FLOAT | BOOLEANVALUE);
+terms: (ID | TEXT | CHAR | NUMBER |FLOAT | BOOLEANVALUE);
 
 // Simple Expressions
 simple_expression: factor (operaciones_simples factor)*;
@@ -113,7 +113,7 @@ function_Call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS;
 // Parameters
 parameters: ((ID) (COMMA ID)*)?;
 
-parameter_dec: (((ID|TEXT|NUMBER|FLOAT|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT|NUMBER|FLOAT|BOOLEANVALUE) | simple_expression))*)?;
+parameter_dec: (((ID|TEXT | CHAR |NUMBER|FLOAT|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT | CHAR |NUMBER|FLOAT|BOOLEANVALUE) | simple_expression))*)?;
 
 // Keywords and Operators
 READ: 'read';
@@ -177,6 +177,9 @@ FLOAT: [0-9]+ '.' [0-9]+;
 
 // Text (Strings)
 TEXT: '"' ( ~["\r\n] | '""' )* '"';
+
+// Char
+CHAR: '\'' ~['\r\n] '\'';
 
 // Whitespace
 WS: [ \t\n\r]+ -> skip;
