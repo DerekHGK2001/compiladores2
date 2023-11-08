@@ -141,38 +141,10 @@ public class visitors extends InterpreterBaseVisitor {
         } else {
             String type = "";
 
-            if (ctx.ID().size() > 1) {
-                String name2 = idNodes.get(1).getText();
-
-                if (symbolVariableTable.containsKey(name2)) {
-                    EntryVariable entry = (EntryVariable) symbolVariableTable.get(name2);
-                    type = entry.getType();
-                } else if (symbolConstTable.containsKey(name2)) {
-                    EntryConst entry = (EntryConst) symbolConstTable.get(name2);
-                    type = entry.getType();
-                } else {
-                    System.err.println("Error: La variable '" + name2 + "' no existe.");
-                }
-            }
-
             if (ctx.TEXT() != null) {
                 type = "string";
-            }
-
-            if (ctx.NUMBER() != null) {
-                type = "integer";
-            }
-
-            if (ctx.simple_expression() != null) {
-                type = "real";
-            }
-
-            if (ctx.FLOAT() != null) {
-                type = "real";
-            }
-
-            if (ctx.BOOLEANVALUE() != null) {
-                type = "boolean";
+            }else{
+                System.err.println("Error: Una constante solo puede ser un string o char.");
             }
 
             EntryConst entry = new EntryConst(name, type, ambito);
@@ -203,11 +175,7 @@ public class visitors extends InterpreterBaseVisitor {
                     System.err.println("Error: La variable '" + idTerm + "' tiene que ser un Integer o un real.");
                 }
             } else if (symbolConstTable.containsKey(idTerm)) {
-                EntryConst entry = (EntryConst) symbolConstTable.get(idTerm);
-
-                if (!entry.getType().equalsIgnoreCase("integer") && !entry.getType().equalsIgnoreCase("real")) {
-                    System.err.println("Error: La constante '" + idTerm + "' tiene que ser un Integer o un real.");
-                }
+                System.err.println("Error: La constante '" + idTerm + "' no es valida.");
             } else {
                 System.err.println("Error: La variable '" + idTerm + "' no existe.");
             }
