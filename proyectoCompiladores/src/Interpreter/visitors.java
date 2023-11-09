@@ -73,14 +73,8 @@ public class visitors extends InterpreterBaseVisitor {
                 EntryConst entry = (EntryConst) symbolConstTable.get(secondId);
                 String secondTypeId = entry.getType();
 
-                if(!firstTypeId.equalsIgnoreCase("real")){
-                    if (!firstTypeId.equalsIgnoreCase(secondTypeId) && !firstTypeId.equalsIgnoreCase("string")) {
-                        System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
-                    }
-                }else{
-                    if (!firstTypeId.equalsIgnoreCase("integer") && !firstTypeId.equalsIgnoreCase("real")) {
-                        System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
-                    }
+                if (!firstTypeId.equalsIgnoreCase(secondTypeId) && !firstTypeId.equalsIgnoreCase("string")) {
+                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
                 }
 
             } else {
@@ -89,14 +83,10 @@ public class visitors extends InterpreterBaseVisitor {
         }
 
         if (ctx.NUMBER() != null) {
-            if (!firstTypeId.equalsIgnoreCase("integer") && !firstTypeId.equalsIgnoreCase("string") && !firstTypeId.equalsIgnoreCase("real")) {
+            if (!firstTypeId.equalsIgnoreCase("integer") && !firstTypeId.equalsIgnoreCase("string")) {
                 System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un Integer.");
             }
-        } else if (ctx.FLOAT() != null) {
-            if (!firstTypeId.equalsIgnoreCase("real") && !firstTypeId.equalsIgnoreCase("string")) {
-                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un real.");
-            }
-        } else if (ctx.TEXT() != null) {
+        }else if (ctx.TEXT() != null) {
             if (!firstTypeId.equalsIgnoreCase("string")) {
                 System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un String.");
             }
@@ -105,26 +95,11 @@ public class visitors extends InterpreterBaseVisitor {
                 System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un String.");
             }
         } else if (ctx.simple_expression() != null) {
-            boolean isFloat = false;
 
-            for (int i = 0; i < ctx.simple_expression().factor().size(); i++) {
-                if (ctx.simple_expression().factor(i).FLOAT() != null) {
-                    isFloat = true;
-                }
-            }
-
-            if (isFloat) {
-                if (!firstTypeId.equalsIgnoreCase("real")) {
-                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un real.");
-                } else {
-                    visit(ctx.simple_expression());
-                }
+            if (!firstTypeId.equalsIgnoreCase("integer")) {
+                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un integer.");
             } else {
-                if (!firstTypeId.equalsIgnoreCase("integer") && !firstTypeId.equalsIgnoreCase("real")) {
-                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un integer.");
-                } else {
-                    visit(ctx.simple_expression());
-                }
+                visit(ctx.simple_expression());
             }
         } else if (ctx.BOOLEANVALUE() != null) {
             if (!firstTypeId.equalsIgnoreCase("boolean")) {
@@ -177,8 +152,8 @@ public class visitors extends InterpreterBaseVisitor {
             if (symbolVariableTable.containsKey(idTerm)) {
                 EntryVariable entry = (EntryVariable) symbolVariableTable.get(idTerm);
 
-                if (!entry.getType().equalsIgnoreCase("integer") && !entry.getType().equalsIgnoreCase("real")) {
-                    System.err.println("Error: La variable '" + idTerm + "' tiene que ser un Integer o un real.");
+                if (!entry.getType().equalsIgnoreCase("integer")) {
+                    System.err.println("Error: La variable '" + idTerm + "' tiene que ser un Integer.");
                 }
             } else if (symbolConstTable.containsKey(idTerm)) {
                 System.err.println("Error: La constante '" + idTerm + "' no es valida.");
@@ -231,12 +206,12 @@ public class visitors extends InterpreterBaseVisitor {
         }else if(ctx.terms(0).CHAR()!=null){
             tipoTerm1="char";
 
-        }else if(ctx.terms(0).FLOAT()!=null){
-            tipoTerm1="real";
-
         }else if(ctx.terms(0).BOOLEANVALUE()!=null){
             tipoTerm1="boolean";
 
+        }else if(ctx.terms(0).simple_expression()!=null){
+            tipoTerm1="integer";
+            visit(ctx.terms(0).simple_expression());
         }
 
         if(ctx.terms(1).ID()!=null){
@@ -264,12 +239,12 @@ public class visitors extends InterpreterBaseVisitor {
         }else if(ctx.terms(1).CHAR()!=null){
             tipoTerm2="char";
 
-        }else if(ctx.terms(1).FLOAT()!=null){
-            tipoTerm2="real";
-
         }else if(ctx.terms(1).BOOLEANVALUE()!=null){
             tipoTerm2="boolean";
 
+        }else if(ctx.terms(1).simple_expression()!=null){
+            tipoTerm2="integer";
+            visit(ctx.terms(1).simple_expression());
         }
 
         if(!tipoTerm1.equalsIgnoreCase(tipoTerm2)){

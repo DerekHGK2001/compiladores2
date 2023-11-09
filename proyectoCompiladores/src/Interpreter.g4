@@ -48,13 +48,13 @@ const_variables: const_variable_declaration | const_array_declaration | const_ar
 statements: statement*;
 
 // Variable Initialization
-variable_init: ID ASSIGN (ID | NUMBER | FLOAT | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+variable_init: ID ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Initialization
-array_init: array_access ASSIGN (ID | NUMBER | FLOAT | TEXT | CHAR | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+array_init: array_access ASSIGN (ID | NUMBER | TEXT | CHAR | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // 2D Array Initialization
-arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | FLOAT | TEXT | CHAR | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | CHAR | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Access
 array_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) CLOSE_BRACKET;
@@ -72,7 +72,7 @@ writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXT | CHAR) (COMMA (ID | TEXT | CH
 write: WRITE OPEN_PARENTHESIS (ID | TEXT | CHAR) (COMMA (ID | TEXT | CHAR | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
 
 // While Loop
-while_loop: WHILE expression DO BEGIN statements END;
+while_loop: WHILE OPEN_PARENTHESIS (expression|comparison) CLOSE_PARENTHESIS DO BEGIN statements END;
 
 // If Statement
 if_statement: IF (expression|comparison) THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
@@ -86,12 +86,12 @@ expression: simple_expression (operaciones simple_expression)?;
 //Comparacion de strings
 comparison: terms (EQUALS | NOT_EQUALS) terms;
 
-terms: (ID | TEXT | CHAR | NUMBER |FLOAT | BOOLEANVALUE);
+terms: (ID | TEXT | CHAR | NUMBER | BOOLEANVALUE | simple_expression);
 
 // Simple Expressions
 simple_expression: factor (operaciones_simples factor)*;
 // Factors
-factor: ID | NUMBER | FLOAT | operacones_parentesis;
+factor: ID | NUMBER | operacones_parentesis;
 
 operacones_parentesis:OPEN_PARENTHESIS simple_expression CLOSE_PARENTHESIS;
 
@@ -109,14 +109,14 @@ procedure_body:BEGIN declarations* statements END;
 procedure_call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS SEMICOLON ;
 
 // Function Declaration
-function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters  COLON TYPE CLOSE_PARENTHESIS COLON TYPE SEMICOLON BEGIN statements END;
+function_declaration: FUNCTION ID OPEN_PARENTHESIS (parameters  COLON TYPE)* CLOSE_PARENTHESIS COLON TYPE SEMICOLON BEGIN statements END;
 
 function_Call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS;
 
 // Parameters
 parameters: ((ID) (COMMA ID)*)?;
 
-parameter_dec: (((ID|TEXT | CHAR |NUMBER|FLOAT|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT | CHAR |NUMBER|FLOAT|BOOLEANVALUE) | simple_expression))*)?;
+parameter_dec: (((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression))*)?;
 
 // Keywords and Operators
 READLN: 'readln';
@@ -157,7 +157,7 @@ GREATER_THAN_OR_EQUALS: '>=';
 LESS_THAN_OR_EQUALS: '<=';
 EQUALS: '=';
 NOT_EQUALS: '<>';
-TYPE: 'integer' | 'string' | 'boolean' | 'char' | 'real' | 'const';
+TYPE: 'integer' | 'string' | 'boolean' | 'char' | 'const';
 ASSIGN: ':=';
 
 // Punctuation and Delimiters
@@ -177,7 +177,6 @@ BOOLEANVALUE: 'true'|'false';
 ID:[a-zA-Z][a-zA-Z0-9]*([_][a-zA-Z0-9]+)*;
 // Numbers
 NUMBER: [0-9]+;
-FLOAT: [0-9]+ '.' [0-9]+;
 
 // Text (Strings)
 TEXT: '"' ( ~["\r\n] | '""' )* '"';
