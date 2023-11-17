@@ -115,7 +115,7 @@ public class visitors extends InterpreterBaseVisitor {
         List<TerminalNode> idNodes = ctx.getTokens(InterpreterLexer.ID);
         String name = idNodes.get(0).getText();
 
-        if (symbolVariableTable.containsKey(name) || symbolConstTable.containsKey(name)) {
+        if (exist(name)) {
             System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
         } else {
             String type = "";
@@ -253,4 +253,41 @@ public class visitors extends InterpreterBaseVisitor {
 
         return null;
     }
+
+    @Override
+    public Object visitWriteln_stmt(InterpreterParser.Writeln_stmtContext ctx) {
+
+        if(ctx.ID()!=null){
+            for(int i =0; i<ctx.ID().size();i++){
+                String idTerm = ctx.ID(i).getText();
+                if(!exist(idTerm)){
+                    System.err.println("Error: La variable '" + idTerm + "' no existe.");
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitWrite(InterpreterParser.WriteContext ctx) {
+
+        if(ctx.ID()!=null){
+            for(int i =0; i<ctx.ID().size();i++){
+                String idTerm = ctx.ID(i).getText();
+                if(!exist(idTerm)){
+                    System.err.println("Error: La variable '" + idTerm + "' no existe.");
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean exist(String id){
+        if(!symbolVariableTable.containsKey(id) && !symbolConstTable.containsKey(id)){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 }
