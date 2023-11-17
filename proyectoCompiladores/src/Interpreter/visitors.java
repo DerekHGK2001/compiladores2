@@ -116,7 +116,7 @@ public class visitors extends InterpreterBaseVisitor {
         String name = idNodes.get(0).getText();
 
         if (exist(name)) {
-            System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
+            System.err.println("Error: La variable o constante '" + name + "' ya ha sido declarada anteriormente.");
         } else {
             String type = "";
 
@@ -261,7 +261,7 @@ public class visitors extends InterpreterBaseVisitor {
             for(int i =0; i<ctx.ID().size();i++){
                 String idTerm = ctx.ID(i).getText();
                 if(!exist(idTerm)){
-                    System.err.println("Error: La variable '" + idTerm + "' no existe.");
+                    System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
                 }
             }
         }
@@ -275,8 +275,32 @@ public class visitors extends InterpreterBaseVisitor {
             for(int i =0; i<ctx.ID().size();i++){
                 String idTerm = ctx.ID(i).getText();
                 if(!exist(idTerm)){
-                    System.err.println("Error: La variable '" + idTerm + "' no existe.");
+                    System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
                 }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitRead_call(InterpreterParser.Read_callContext ctx) {
+
+        if(ctx.ID()!=null){
+            String idTerm = ctx.ID().getText();
+            if(!exist(idTerm)){
+                System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitReadln_call(InterpreterParser.Readln_callContext ctx) {
+
+        if(ctx.ID()!=null){
+            String idTerm = ctx.ID().getText();
+            if(!exist(idTerm)){
+                System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
             }
         }
         return null;
