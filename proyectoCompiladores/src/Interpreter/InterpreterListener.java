@@ -348,6 +348,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitFunction_declaration(InterpreterParser.Function_declarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#statement_function}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement_function(InterpreterParser.Statement_functionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#statement_function}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement_function(InterpreterParser.Statement_functionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#function_Call}.
 	 * @param ctx the parse tree
 	 */
@@ -358,23 +368,23 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitFunction_Call(InterpreterParser.Function_CallContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#parameters}.
+	 * Enter a parse tree produced by {@link InterpreterParser#parameters_declaration}.
 	 * @param ctx the parse tree
 	 */
-	void enterParameters(InterpreterParser.ParametersContext ctx);
+	void enterParameters_declaration(InterpreterParser.Parameters_declarationContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#parameters}.
+	 * Exit a parse tree produced by {@link InterpreterParser#parameters_declaration}.
 	 * @param ctx the parse tree
 	 */
-	void exitParameters(InterpreterParser.ParametersContext ctx);
+	void exitParameters_declaration(InterpreterParser.Parameters_declarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#parameter_dec}.
+	 * Enter a parse tree produced by {@link InterpreterParser#parameter_init}.
 	 * @param ctx the parse tree
 	 */
-	void enterParameter_dec(InterpreterParser.Parameter_decContext ctx);
+	void enterParameter_init(InterpreterParser.Parameter_initContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#parameter_dec}.
+	 * Exit a parse tree produced by {@link InterpreterParser#parameter_init}.
 	 * @param ctx the parse tree
 	 */
-	void exitParameter_dec(InterpreterParser.Parameter_decContext ctx);
+	void exitParameter_init(InterpreterParser.Parameter_initContext ctx);
 }

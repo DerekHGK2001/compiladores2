@@ -215,21 +215,27 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunction_declaration(InterpreterParser.Function_declarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#statement_function}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement_function(InterpreterParser.Statement_functionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#function_Call}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFunction_Call(InterpreterParser.Function_CallContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#parameters}.
+	 * Visit a parse tree produced by {@link InterpreterParser#parameters_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParameters(InterpreterParser.ParametersContext ctx);
+	T visitParameters_declaration(InterpreterParser.Parameters_declarationContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#parameter_dec}.
+	 * Visit a parse tree produced by {@link InterpreterParser#parameter_init}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParameter_dec(InterpreterParser.Parameter_decContext ctx);
+	T visitParameter_init(InterpreterParser.Parameter_initContext ctx);
 }

@@ -105,14 +105,16 @@ operaciones_simples: PLUS | MINUS | MULT | DIV;
 operaciones: LESS_THAN | LESS_THAN_OR_EQUALS | GREATER_THAN | GREATER_THAN_OR_EQUALS;
 
 // Function Declaration
-function_declaration: FUNCTION ID OPEN_PARENTHESIS (parameters  COLON TYPE)* CLOSE_PARENTHESIS COLON TYPE SEMICOLON BEGIN statements END;
+function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters_declaration CLOSE_PARENTHESIS COLON TYPE SEMICOLON declarations* BEGIN statement_function* END;
 
-function_Call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS;
+statement_function: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | read_call | readln_call;
+
+function_Call: ID OPEN_PARENTHESIS (parameter_init) CLOSE_PARENTHESIS;
 
 // Parameters
-parameters: ((ID) (COMMA ID)*)?;
+parameters_declaration: (ID (COMMA ID)*) COLON TYPE (SEMICOLON parameters_declaration)*;
 
-parameter_dec: (((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression))*)?;
+parameter_init: (((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression))*)?;
 
 // Keywords and Operators
 READLN: 'readln';

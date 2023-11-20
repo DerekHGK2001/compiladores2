@@ -10,6 +10,7 @@ public class visitors extends InterpreterBaseVisitor {
 
     private static Map<String, Object> symbolVariableTable = new HashMap<>();
     private static Map<String, Object> symbolConstTable = new HashMap<>();
+    private static Map<String, Object> symbolFunctionTable = new HashMap<>();
     private int ambito = 0;
 
     public int getAmbito() {
@@ -41,11 +42,92 @@ public class visitors extends InterpreterBaseVisitor {
                 System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
             } else {
                 EntryVariable entry = new EntryVariable(name, type, getAmbito());
-                symbolVariableTable.put(name, entry);
-                System.out.println(name + " " + getAmbito());
+                getSymbolVariableTable().put(name, entry);
             }
         }
 
+        return null;
+    }
+
+    @Override
+    public Object visitFunction_declaration(InterpreterParser.Function_declarationContext ctx) {
+        sumarAmbito();
+
+        if(ctx.parameters_declaration()!=null){
+            visit(ctx.parameters_declaration());
+        }
+
+        if(ctx.declarations()!=null){
+            for(int i=0;i<ctx.declarations().size();i++){
+                visit(ctx.declarations(i));
+            }
+        }
+
+        if(ctx.statement_function()!=null){
+            for(int i=0;i<ctx.statement_function().size();i++){
+                visit(ctx.statement_function(i));
+            }
+        }
+
+        eliminarVariable_Constante(getAmbito());
+        restarAmbito();
+        return null;
+    }
+
+    public Object visitParameters_declaration(InterpreterParser.Parameters_declarationContext ctx) {
+
+        if(ctx.ID()!=null){
+            for(int i =0; i<ctx.ID().size(); ++i){
+                if (!exist(ctx.ID(i).getText())) {
+                    EntryVariable entry = new EntryVariable(ctx.ID(i).getText(), ctx.TYPE().getText(), getAmbito());
+                    getSymbolVariableTable().put(ctx.ID(i).getText(), entry);
+                }
+            }
+        }
+
+        if(ctx.parameters_declaration()!=null){
+            for(int i=0; i<ctx.parameters_declaration().size();i++){
+                visit(ctx.parameters_declaration(i));
+            }
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitStatement_function(InterpreterParser.Statement_functionContext ctx) {
+
+        if(ctx.variable_init()!=null){
+            visit(ctx.variable_init());
+        }
+
+        if(ctx.for_loop()!=null){
+            visit(ctx.for_loop());
+        }
+
+        if(ctx.while_loop()!=null){
+            visit(ctx.while_loop());
+        }
+
+        if(ctx.write()!=null){
+            visit(ctx.write());
+        }
+
+        if(ctx.writeln_stmt()!=null){
+            visit(ctx.writeln_stmt());
+        }
+
+        if(ctx.if_statement()!=null){
+            visit(ctx.if_statement());
+        }
+
+        if(ctx.read_call()!=null){
+            visit(ctx.read_call());
+        }
+
+        if(ctx.readln_call()!=null){
+            visit(ctx.readln_call());
+        }
         return null;
     }
 
@@ -141,7 +223,6 @@ public class visitors extends InterpreterBaseVisitor {
 
             EntryConst entry = new EntryConst(name, type, getAmbito());
             getSymbolConstTable().put(name, entry);
-            System.out.println(name + " " + getAmbito());
         }
 
         return null;
@@ -449,7 +530,6 @@ public class visitors extends InterpreterBaseVisitor {
             }
         }
 
-        // Eliminar constantes
         if (!symbolConstTable.isEmpty()) {
             List<String> constantesToRemove = new ArrayList<>();
             for (Map.Entry<String, Object> entry : symbolConstTable.entrySet()) {

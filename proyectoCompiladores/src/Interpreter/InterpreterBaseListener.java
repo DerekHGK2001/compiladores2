@@ -425,6 +425,18 @@ public class InterpreterBaseListener implements InterpreterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStatement_function(InterpreterParser.Statement_functionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatement_function(InterpreterParser.Statement_functionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunction_Call(InterpreterParser.Function_CallContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -437,25 +449,25 @@ public class InterpreterBaseListener implements InterpreterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParameters(InterpreterParser.ParametersContext ctx) { }
+	@Override public void enterParameters_declaration(InterpreterParser.Parameters_declarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParameters(InterpreterParser.ParametersContext ctx) { }
+	@Override public void exitParameters_declaration(InterpreterParser.Parameters_declarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParameter_dec(InterpreterParser.Parameter_decContext ctx) { }
+	@Override public void enterParameter_init(InterpreterParser.Parameter_initContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParameter_dec(InterpreterParser.Parameter_decContext ctx) { }
+	@Override public void exitParameter_init(InterpreterParser.Parameter_initContext ctx) { }
 
 	/**
 	 * {@inheritDoc}
