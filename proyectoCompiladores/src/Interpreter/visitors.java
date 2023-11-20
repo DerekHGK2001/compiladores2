@@ -58,9 +58,12 @@ public class visitors extends InterpreterBaseVisitor {
         functionEntry = null;
 
         // Verificar si la función ya existe en la tabla de símbolos
-        if (symbolFunctionTable.containsKey(functionName)) {
-            System.err.println("Error: La función '" + functionName + "' ya ha sido declarada anteriormente.");
-            return null;  // O manejar el error de otra manera según tus necesidades
+        if (symbolFunctionTable.containsKey(functionName) || exist(functionName)) {
+            System.err.println("Error: Ya existe una variable o funcion con el nombre '" + functionName + "'.");
+
+            eliminarVariable_Constante(getAmbito());
+            restarAmbito();
+            return null;
         } else {
             // Crear la entrada de la función
             functionEntry = new EntryFunction(functionName, returnType, getAmbito());
@@ -68,7 +71,7 @@ public class visitors extends InterpreterBaseVisitor {
 
         // Si hay parámetros, agregarlos a la entrada de la función
         if (ctx.parameters_declaration() != null) {
-            
+
             visit(ctx.parameters_declaration());
         }
 
@@ -221,6 +224,19 @@ public class visitors extends InterpreterBaseVisitor {
         } else if (ctx.BOOLEANVALUE() != null) {
             if (!firstTypeId.equalsIgnoreCase("boolean")) {
                 System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un boolean.");
+            }
+        }else if (ctx.function_Call() != null) {
+            if (symbolFunctionTable.containsKey(ctx.function_Call().ID().getText())) {
+
+                EntryFunction functionEntry = (EntryFunction) symbolFunctionTable.get(ctx.function_Call().ID().getText());
+                String returnType = functionEntry.getType();
+
+                if (!firstTypeId.equalsIgnoreCase(returnType)) {
+                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + returnType + ".");
+                }
+
+            } else {
+                System.err.println("Error: La función '" + ctx.function_Call().ID().getText() + "' no existe.");
             }
         }
 
