@@ -66,10 +66,10 @@ arrayBi_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) COMMA (simple_expr
 for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (statement_bucle | BEGIN statement_bucle* END);
 
 // Write Line Statement
-writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXT | CHAR) (COMMA (ID | TEXT | CHAR | array_access | arrayBi_access ))* CLOSE_PARENTHESIS SEMICOLON;
+writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXTWRITE | CHAR) (COMMA (ID | TEXTWRITE | CHAR | array_access | arrayBi_access ))* CLOSE_PARENTHESIS SEMICOLON;
 
 // Write Statement
-write: WRITE OPEN_PARENTHESIS (ID | TEXT | CHAR) (COMMA (ID | TEXT | CHAR | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
+write: WRITE OPEN_PARENTHESIS (ID | TEXTWRITE | CHAR) (COMMA (ID | TEXTWRITE | CHAR | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
 
 // While Loop
 while_loop: WHILE (OPEN_PARENTHESIS (expression|comparison) CLOSE_PARENTHESIS | (expression|comparison) ) DO BEGIN statement_bucle* END;
@@ -105,7 +105,7 @@ operaciones_simples: PLUS | MINUS | MULT | DIV;
 operaciones: LESS_THAN | LESS_THAN_OR_EQUALS | GREATER_THAN | GREATER_THAN_OR_EQUALS;
 
 // Function Declaration
-function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters_declaration CLOSE_PARENTHESIS COLON TYPE SEMICOLON declarations* BEGIN statement_function* END;
+function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters_declaration? CLOSE_PARENTHESIS COLON TYPE SEMICOLON declarations* BEGIN statement_function* END;
 
 statement_function: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | read_call | readln_call;
 
@@ -178,6 +178,8 @@ NUMBER: [0-9]+;
 
 // Text (Strings)
 TEXT: '"' ( ~["\r\n] | '""' )* '"';
+
+TEXTWRITE: '\'' ( ~["\r\n] | '\'\'' )* '\'';
 
 // Char
 CHAR: '\'' ~['\r\n] '\'';

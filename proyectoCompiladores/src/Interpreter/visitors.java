@@ -48,23 +48,41 @@ public class visitors extends InterpreterBaseVisitor {
 
         return null;
     }
-
+    EntryFunction functionEntry;
     @Override
     public Object visitFunction_declaration(InterpreterParser.Function_declarationContext ctx) {
         sumarAmbito();
 
-        if(ctx.parameters_declaration()!=null){
+        String functionName = ctx.ID().getText();
+        String returnType = ctx.TYPE().getText();
+        functionEntry = null;
+
+        // Verificar si la función ya existe en la tabla de símbolos
+        if (symbolFunctionTable.containsKey(functionName)) {
+            System.err.println("Error: La función '" + functionName + "' ya ha sido declarada anteriormente.");
+            return null;  // O manejar el error de otra manera según tus necesidades
+        } else {
+            // Crear la entrada de la función
+            functionEntry = new EntryFunction(functionName, returnType, getAmbito());
+        }
+
+        // Si hay parámetros, agregarlos a la entrada de la función
+        if (ctx.parameters_declaration() != null) {
+            
             visit(ctx.parameters_declaration());
         }
 
-        if(ctx.declarations()!=null){
-            for(int i=0;i<ctx.declarations().size();i++){
+        // Agregar la función a la tabla de símbolos
+        symbolFunctionTable.put(functionName, functionEntry);
+
+        if (ctx.declarations() != null) {
+            for (int i = 0; i < ctx.declarations().size(); i++) {
                 visit(ctx.declarations(i));
             }
         }
 
-        if(ctx.statement_function()!=null){
-            for(int i=0;i<ctx.statement_function().size();i++){
+        if (ctx.statement_function() != null) {
+            for (int i = 0; i < ctx.statement_function().size(); i++) {
                 visit(ctx.statement_function(i));
             }
         }
@@ -81,6 +99,12 @@ public class visitors extends InterpreterBaseVisitor {
                 if (!exist(ctx.ID(i).getText())) {
                     EntryVariable entry = new EntryVariable(ctx.ID(i).getText(), ctx.TYPE().getText(), getAmbito());
                     getSymbolVariableTable().put(ctx.ID(i).getText(), entry);
+
+                    Map<String, Object> parametros = new HashMap<>();
+                    String parameterName = ctx.ID(i).getText();
+                    String parameterType = ctx.TYPE().getText();
+                    parametros.put(parameterName, parameterType);
+                    functionEntry.addParameter(parametros);
                 }
             }
         }
