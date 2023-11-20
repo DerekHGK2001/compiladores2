@@ -159,6 +159,12 @@ public class visitors extends InterpreterBaseVisitor {
     }
 
     @Override
+    public Object visitFunction_Call(InterpreterParser.Function_CallContext ctx) {
+        
+        return null;
+    }
+
+    @Override
     public Object visitVariable_init(InterpreterParser.Variable_initContext ctx) {
         List<TerminalNode> idNodes = ctx.getTokens(InterpreterLexer.ID);
 
@@ -233,6 +239,8 @@ public class visitors extends InterpreterBaseVisitor {
 
                 if (!firstTypeId.equalsIgnoreCase(returnType)) {
                     System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + returnType + ".");
+                }else{
+                    visit(ctx.function_Call());
                 }
 
             } else {
