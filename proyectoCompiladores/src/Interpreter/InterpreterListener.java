@@ -248,6 +248,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitStatement(InterpreterParser.StatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#statement_bucle}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement_bucle(InterpreterParser.Statement_bucleContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#statement_bucle}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement_bucle(InterpreterParser.Statement_bucleContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#expression}.
 	 * @param ctx the parse tree
 	 */
@@ -327,36 +337,6 @@ public interface InterpreterListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitOperaciones(InterpreterParser.OperacionesContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#procedure_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#procedure_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#procedure_body}.
-	 * @param ctx the parse tree
-	 */
-	void enterProcedure_body(InterpreterParser.Procedure_bodyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#procedure_body}.
-	 * @param ctx the parse tree
-	 */
-	void exitProcedure_body(InterpreterParser.Procedure_bodyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#procedure_call}.
-	 * @param ctx the parse tree
-	 */
-	void enterProcedure_call(InterpreterParser.Procedure_callContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#procedure_call}.
-	 * @param ctx the parse tree
-	 */
-	void exitProcedure_call(InterpreterParser.Procedure_callContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#function_declaration}.
 	 * @param ctx the parse tree

@@ -10,8 +10,18 @@ public class visitors extends InterpreterBaseVisitor {
 
     private static Map<String, Object> symbolVariableTable = new HashMap<>();
     private static Map<String, Object> symbolConstTable = new HashMap<>();
-    public int ambito = 0;
+    private int ambito = 0;
 
+    public int getAmbito() {
+        return ambito;
+    }
+
+    public void sumarAmbito(){
+        ambito++;
+    }
+    public void restarAmbito(){
+        ambito--;
+    }
     public static Map<String, Object> getSymbolVariableTable() {
         return symbolVariableTable;
     }
@@ -27,11 +37,12 @@ public class visitors extends InterpreterBaseVisitor {
         for (TerminalNode idNode : ctx.ID()) {
             String name = idNode.getText();
 
-            if (symbolVariableTable.containsKey(name)) {
+            if (exist(name)) {
                 System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
             } else {
-                EntryVariable entry = new EntryVariable(name, type, ambito);
+                EntryVariable entry = new EntryVariable(name, type, getAmbito());
                 symbolVariableTable.put(name, entry);
+                System.out.println(name + " " + getAmbito());
             }
         }
 
@@ -128,8 +139,9 @@ public class visitors extends InterpreterBaseVisitor {
                 System.err.println("Error: Una constante solo puede ser un string o char.");
             }
 
-            EntryConst entry = new EntryConst(name, type, ambito);
+            EntryConst entry = new EntryConst(name, type, getAmbito());
             getSymbolConstTable().put(name, entry);
+            System.out.println(name + " " + getAmbito());
         }
 
         return null;
@@ -313,5 +325,144 @@ public class visitors extends InterpreterBaseVisitor {
             return true;
         }
     }
+
+    @Override
+    public Object visitFor_loop(InterpreterParser.For_loopContext ctx) {
+        sumarAmbito();
+        if(ctx.ID()!=null){
+            for(int i =0; i<ctx.ID().size();i++){
+                String idTerm = ctx.ID(i).getText();
+                if(!exist(idTerm)){
+                    System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
+                }
+            }
+        }
+
+        if(ctx.statement_bucle()!=null){
+            for(int i =0; i<ctx.statement_bucle().size();i++){
+
+                visit(ctx.statement_bucle(i));
+
+            }
+        }
+
+        eliminarVariable_Constante(getAmbito());
+        restarAmbito();
+
+        return null;
+    }
+
+    @Override
+    public Object visitWhile_loop(InterpreterParser.While_loopContext ctx) {
+        sumarAmbito();
+
+        if(ctx.comparison()!=null){
+            visit(ctx.comparison());
+        }
+
+        if(ctx.expression()!=null){
+            visit(ctx.expression());
+        }
+
+        if(ctx.statement_bucle()!=null){
+            for(int i =0; i<ctx.statement_bucle().size();i++){
+                visit(ctx.statement_bucle(i));
+            }
+        }
+
+        eliminarVariable_Constante(getAmbito());
+        restarAmbito();
+
+        return null;
+    }
+
+    @Override
+    public Object visitStatement_bucle(InterpreterParser.Statement_bucleContext ctx) {
+
+        if(ctx.declarations()!=null){
+
+            if(ctx.declarations().const_variables()!=null){
+                for(int i2=0; i2<ctx.declarations().const_variables().size();i2++) {
+                    if(ctx.declarations().const_variables(i2).const_variable_declaration()!=null){
+                        visit(ctx.declarations().const_variables(i2).const_variable_declaration());
+                    }
+                }
+            }
+
+            if(ctx.declarations().var_variables()!=null){
+
+                for(int i2 =0; i2<ctx.declarations().var_variables().size();i2++) {
+                    if(ctx.declarations().var_variables(i2).variable_declaration()!=null){
+                        visit(ctx.declarations().var_variables(i2).variable_declaration());
+                    }
+                }
+            }
+
+        }
+
+        if(ctx.variable_init()!=null){
+            visit(ctx.variable_init());
+        }
+
+        if(ctx.for_loop()!=null){
+            visit(ctx.for_loop());
+        }
+
+        if(ctx.while_loop()!=null){
+            visit(ctx.while_loop());
+        }
+
+        if(ctx.write()!=null){
+            visit(ctx.write());
+        }
+
+        if(ctx.writeln_stmt()!=null){
+            visit(ctx.writeln_stmt());
+        }
+
+        if(ctx.if_statement()!=null){
+            visit(ctx.if_statement());
+        }
+
+        if(ctx.read_call()!=null){
+            visit(ctx.read_call());
+        }
+
+        if(ctx.readln_call()!=null){
+            visit(ctx.readln_call());
+        }
+        return null;
+    }
+
+    public void eliminarVariable_Constante(int ambito) {
+        
+        if (!symbolVariableTable.isEmpty()) {
+            List<String> variablesToRemove = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : symbolVariableTable.entrySet()) {
+                EntryVariable variableEntry = (EntryVariable) entry.getValue();
+                if (variableEntry.getAmbit() == ambito) {
+                    variablesToRemove.add(entry.getKey());
+                }
+            }
+            for (String variable : variablesToRemove) {
+                symbolVariableTable.remove(variable);
+            }
+        }
+
+        // Eliminar constantes
+        if (!symbolConstTable.isEmpty()) {
+            List<String> constantesToRemove = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : symbolConstTable.entrySet()) {
+                EntryConst constEntry = (EntryConst) entry.getValue();
+                if (constEntry.getAmbit() == ambito) {
+                    constantesToRemove.add(entry.getKey());
+                }
+            }
+            for (String constante : constantesToRemove) {
+                symbolConstTable.remove(constante);
+            }
+        }
+    }
+
 
 }

@@ -305,6 +305,18 @@ public class InterpreterBaseListener implements InterpreterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStatement_bucle(InterpreterParser.Statement_bucleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStatement_bucle(InterpreterParser.Statement_bucleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExpression(InterpreterParser.ExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -396,42 +408,6 @@ public class InterpreterBaseListener implements InterpreterListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitOperaciones(InterpreterParser.OperacionesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterProcedure_body(InterpreterParser.Procedure_bodyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitProcedure_body(InterpreterParser.Procedure_bodyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterProcedure_call(InterpreterParser.Procedure_callContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitProcedure_call(InterpreterParser.Procedure_callContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

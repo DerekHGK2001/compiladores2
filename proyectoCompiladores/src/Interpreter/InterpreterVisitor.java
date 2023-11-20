@@ -155,6 +155,12 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(InterpreterParser.StatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#statement_bucle}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement_bucle(InterpreterParser.Statement_bucleContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -202,24 +208,6 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitOperaciones(InterpreterParser.OperacionesContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#procedure_declaration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitProcedure_declaration(InterpreterParser.Procedure_declarationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#procedure_body}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitProcedure_body(InterpreterParser.Procedure_bodyContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link InterpreterParser#procedure_call}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitProcedure_call(InterpreterParser.Procedure_callContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#function_declaration}.
 	 * @param ctx the parse tree

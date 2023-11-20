@@ -12,7 +12,7 @@ program: PROGRAM ID SEMICOLON
     ENDPROGRAM;
 
 // Declarations
-declarations: ( VAR var_variables+ | CONST const_variables+ | function_declaration | procedure_declaration)+;
+declarations: ( VAR var_variables+ | CONST const_variables+ | function_declaration )+;
 
 //funcion read
 read_call: READ OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
@@ -63,7 +63,7 @@ array_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) CLOSE_BRACKET;
 arrayBi_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) COMMA (simple_expression|NUMBER|ID) CLOSE_BRACKET;
 
 // For Loop
-for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (BEGIN statements END | statement);
+for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (statement_bucle | BEGIN statement_bucle* END);
 
 // Write Line Statement
 writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXT | CHAR) (COMMA (ID | TEXT | CHAR | array_access | arrayBi_access ))* CLOSE_PARENTHESIS SEMICOLON;
@@ -72,13 +72,16 @@ writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXT | CHAR) (COMMA (ID | TEXT | CH
 write: WRITE OPEN_PARENTHESIS (ID | TEXT | CHAR) (COMMA (ID | TEXT | CHAR | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
 
 // While Loop
-while_loop: WHILE OPEN_PARENTHESIS (expression|comparison) CLOSE_PARENTHESIS DO BEGIN statements END;
+while_loop: WHILE (OPEN_PARENTHESIS (expression|comparison) CLOSE_PARENTHESIS | (expression|comparison) ) DO BEGIN statement_bucle* END;
 
 // If Statement
 if_statement: IF (expression|comparison) THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
 
 // General Statement
-statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | procedure_call | read_call | readln_call | BEGIN statements END;
+statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | read_call | readln_call;
+
+// bucle Statement
+statement_bucle: declarations | variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | read_call | readln_call;
 
 // Expressions
 expression: simple_expression (operaciones simple_expression)?;
@@ -100,13 +103,6 @@ operaciones_simples: PLUS | MINUS | MULT | DIV;
 
 // Operaciones de Comparación
 operaciones: LESS_THAN | LESS_THAN_OR_EQUALS | GREATER_THAN | GREATER_THAN_OR_EQUALS;
-
-// Procedure Declaration
-procedure_declaration: PROCEDURE ID  OPEN_PARENTHESIS parameters  COLON TYPE CLOSE_PARENTHESIS SEMICOLON procedure_body;
-
-procedure_body:BEGIN declarations* statements END;
-
-procedure_call: ID OPEN_PARENTHESIS (parameter_dec) CLOSE_PARENTHESIS SEMICOLON ;
 
 // Function Declaration
 function_declaration: FUNCTION ID OPEN_PARENTHESIS (parameters  COLON TYPE)* CLOSE_PARENTHESIS COLON TYPE SEMICOLON BEGIN statements END;
