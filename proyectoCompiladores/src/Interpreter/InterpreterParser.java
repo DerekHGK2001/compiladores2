@@ -25,7 +25,7 @@ public class InterpreterParser extends Parser {
 		LESS_THAN_OR_EQUALS=36, EQUALS=37, NOT_EQUALS=38, TYPE=39, ASSIGN=40, 
 		COLON=41, DOTDOT=42, POINT=43, OPEN_PARENTHESIS=44, CLOSE_PARENTHESIS=45, 
 		OPEN_BRACKET=46, CLOSE_BRACKET=47, SEMICOLON=48, BOOLEANVALUE=49, ID=50, 
-		NUMBER=51, TEXT=52, TEXTWRITE=53, CHAR=54, WS=55, STRING=56;
+		NUMBER=51, TEXT=52, CHAR=53, TEXTWRITE=54, WS=55, STRING=56;
 	public static final int
 		RULE_program = 0, RULE_declarations = 1, RULE_read_call = 2, RULE_readln_call = 3, 
 		RULE_variable_declaration = 4, RULE_array_declaration = 5, RULE_arraybi_declaration = 6, 
@@ -74,7 +74,7 @@ public class InterpreterParser extends Parser {
 			"GREATER_THAN", "LESS_THAN", "GREATER_THAN_OR_EQUALS", "LESS_THAN_OR_EQUALS", 
 			"EQUALS", "NOT_EQUALS", "TYPE", "ASSIGN", "COLON", "DOTDOT", "POINT", 
 			"OPEN_PARENTHESIS", "CLOSE_PARENTHESIS", "OPEN_BRACKET", "CLOSE_BRACKET", 
-			"SEMICOLON", "BOOLEANVALUE", "ID", "NUMBER", "TEXT", "TEXTWRITE", "CHAR", 
+			"SEMICOLON", "BOOLEANVALUE", "ID", "NUMBER", "TEXT", "CHAR", "TEXTWRITE", 
 			"WS", "STRING"
 		};
 	}
@@ -3886,7 +3886,7 @@ public class InterpreterParser extends Parser {
 			setState(591);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 26476239996846080L) != 0)) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & 17469040742105088L) != 0)) {
 				{
 				setState(579);
 				_errHandler.sync(this);
@@ -3895,7 +3895,7 @@ public class InterpreterParser extends Parser {
 					{
 					setState(577);
 					_la = _input.LA(1);
-					if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 26458647810801664L) != 0)) ) {
+					if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 17451448556060672L) != 0)) ) {
 					_errHandler.recoverInline(this);
 					}
 					else {
@@ -3927,7 +3927,7 @@ public class InterpreterParser extends Parser {
 						{
 						setState(582);
 						_la = _input.LA(1);
-						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 26458647810801664L) != 0)) ) {
+						if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 17451448556060672L) != 0)) ) {
 						_errHandler.recoverInline(this);
 						}
 						else {
@@ -4054,10 +4054,10 @@ public class InterpreterParser extends Parser {
 		"$\u0005$\u023d\b$\n$\f$\u0240\t$\u0001%\u0001%\u0003%\u0244\b%\u0001%"+
 		"\u0001%\u0001%\u0003%\u0249\b%\u0005%\u024b\b%\n%\f%\u024e\t%\u0003%\u0250"+
 		"\b%\u0001%\u0000\u0000&\u0000\u0002\u0004\u0006\b\n\f\u000e\u0010\u0012"+
-		"\u0014\u0016\u0018\u001a\u001c\u001e \"$&(*,.02468:<>@BDFHJ\u0000\b\u0002"+
-		"\u00004466\u0001\u000023\u0002\u0000\u0003\u0003\u0005\u0005\u0002\u0000"+
-		"2256\u0001\u0000%&\u0001\u0000\u0016\u0019\u0001\u0000!$\u0002\u00001"+
-		"466\u02a3\u0000L\u0001\u0000\u0000\u0000\u0002f\u0001\u0000\u0000\u0000"+
+		"\u0014\u0016\u0018\u001a\u001c\u001e \"$&(*,.02468:<>@BDFHJ\u0000\b\u0001"+
+		"\u000045\u0001\u000023\u0002\u0000\u0003\u0003\u0005\u0005\u0002\u0000"+
+		"2256\u0001\u0000%&\u0001\u0000\u0016\u0019\u0001\u0000!$\u0001\u00001"+
+		"5\u02a3\u0000L\u0001\u0000\u0000\u0000\u0002f\u0001\u0000\u0000\u0000"+
 		"\u0004j\u0001\u0000\u0000\u0000\u0006p\u0001\u0000\u0000\u0000\bv\u0001"+
 		"\u0000\u0000\u0000\n\u0082\u0001\u0000\u0000\u0000\f\u009c\u0001\u0000"+
 		"\u0000\u0000\u000e\u00c7\u0001\u0000\u0000\u0000\u0010\u00c9\u0001\u0000"+
@@ -4180,7 +4180,7 @@ public class InterpreterParser extends Parser {
 		"\u0001\u0000\u0000\u0000\u011a\u0118\u0001\u0000\u0000\u0000\u011b\u011c"+
 		"\u00052\u0000\u0000\u011c\u0126\u0005(\u0000\u0000\u011d\u0127\u00052"+
 		"\u0000\u0000\u011e\u0127\u00053\u0000\u0000\u011f\u0127\u00054\u0000\u0000"+
-		"\u0120\u0127\u00056\u0000\u0000\u0121\u0127\u00051\u0000\u0000\u0122\u0127"+
+		"\u0120\u0127\u00055\u0000\u0000\u0121\u0127\u00051\u0000\u0000\u0122\u0127"+
 		"\u00038\u001c\u0000\u0123\u0127\u0003 \u0010\u0000\u0124\u0127\u0003\""+
 		"\u0011\u0000\u0125\u0127\u0003F#\u0000\u0126\u011d\u0001\u0000\u0000\u0000"+
 		"\u0126\u011e\u0001\u0000\u0000\u0000\u0126\u011f\u0001\u0000\u0000\u0000"+
@@ -4190,7 +4190,7 @@ public class InterpreterParser extends Parser {
 		"\u0127\u0128\u0001\u0000\u0000\u0000\u0128\u0129\u00050\u0000\u0000\u0129"+
 		"\u001b\u0001\u0000\u0000\u0000\u012a\u012b\u0003 \u0010\u0000\u012b\u0134"+
 		"\u0005(\u0000\u0000\u012c\u0135\u00052\u0000\u0000\u012d\u0135\u00053"+
-		"\u0000\u0000\u012e\u0135\u00054\u0000\u0000\u012f\u0135\u00056\u0000\u0000"+
+		"\u0000\u0000\u012e\u0135\u00054\u0000\u0000\u012f\u0135\u00055\u0000\u0000"+
 		"\u0130\u0135\u00038\u001c\u0000\u0131\u0135\u0003 \u0010\u0000\u0132\u0135"+
 		"\u0003\"\u0011\u0000\u0133\u0135\u0003F#\u0000\u0134\u012c\u0001\u0000"+
 		"\u0000\u0000\u0134\u012d\u0001\u0000\u0000\u0000\u0134\u012e\u0001\u0000"+
@@ -4200,7 +4200,7 @@ public class InterpreterParser extends Parser {
 		"\u0000\u0000\u0136\u0137\u00050\u0000\u0000\u0137\u001d\u0001\u0000\u0000"+
 		"\u0000\u0138\u0139\u0003\"\u0011\u0000\u0139\u0142\u0005(\u0000\u0000"+
 		"\u013a\u0143\u00052\u0000\u0000\u013b\u0143\u00053\u0000\u0000\u013c\u0143"+
-		"\u00054\u0000\u0000\u013d\u0143\u00056\u0000\u0000\u013e\u0143\u00038"+
+		"\u00054\u0000\u0000\u013d\u0143\u00055\u0000\u0000\u013e\u0143\u00038"+
 		"\u001c\u0000\u013f\u0143\u0003 \u0010\u0000\u0140\u0143\u0003\"\u0011"+
 		"\u0000\u0141\u0143\u0003F#\u0000\u0142\u013a\u0001\u0000\u0000\u0000\u0142"+
 		"\u013b\u0001\u0000\u0000\u0000\u0142\u013c\u0001\u0000\u0000\u0000\u0142"+
@@ -4233,8 +4233,8 @@ public class InterpreterParser extends Parser {
 		"\u0000\u0000\u016e\u0166\u0001\u0000\u0000\u0000\u016f%\u0001\u0000\u0000"+
 		"\u0000\u0170\u0171\u0005\u0014\u0000\u0000\u0171\u0172\u0005,\u0000\u0000"+
 		"\u0172\u017d\u0007\u0003\u0000\u0000\u0173\u0179\u0005\u000e\u0000\u0000"+
-		"\u0174\u017a\u00052\u0000\u0000\u0175\u017a\u00055\u0000\u0000\u0176\u017a"+
-		"\u00056\u0000\u0000\u0177\u017a\u0003 \u0010\u0000\u0178\u017a\u0003\""+
+		"\u0174\u017a\u00052\u0000\u0000\u0175\u017a\u00056\u0000\u0000\u0176\u017a"+
+		"\u00055\u0000\u0000\u0177\u017a\u0003 \u0010\u0000\u0178\u017a\u0003\""+
 		"\u0011\u0000\u0179\u0174\u0001\u0000\u0000\u0000\u0179\u0175\u0001\u0000"+
 		"\u0000\u0000\u0179\u0176\u0001\u0000\u0000\u0000\u0179\u0177\u0001\u0000"+
 		"\u0000\u0000\u0179\u0178\u0001\u0000\u0000\u0000\u017a\u017c\u0001\u0000"+
@@ -4245,7 +4245,7 @@ public class InterpreterParser extends Parser {
 		"\u0182\'\u0001\u0000\u0000\u0000\u0183\u0184\u0005\u0015\u0000\u0000\u0184"+
 		"\u0185\u0005,\u0000\u0000\u0185\u0190\u0007\u0003\u0000\u0000\u0186\u018c"+
 		"\u0005\u000e\u0000\u0000\u0187\u018d\u00052\u0000\u0000\u0188\u018d\u0005"+
-		"5\u0000\u0000\u0189\u018d\u00056\u0000\u0000\u018a\u018d\u0003 \u0010"+
+		"6\u0000\u0000\u0189\u018d\u00055\u0000\u0000\u018a\u018d\u0003 \u0010"+
 		"\u0000\u018b\u018d\u0003\"\u0011\u0000\u018c\u0187\u0001\u0000\u0000\u0000"+
 		"\u018c\u0188\u0001\u0000\u0000\u0000\u018c\u0189\u0001\u0000\u0000\u0000"+
 		"\u018c\u018a\u0001\u0000\u0000\u0000\u018c\u018b\u0001\u0000\u0000\u0000"+
@@ -4306,7 +4306,7 @@ public class InterpreterParser extends Parser {
 		"\u01e3\u0001\u0000\u0000\u0000\u01e33\u0001\u0000\u0000\u0000\u01e4\u01e5"+
 		"\u00036\u001b\u0000\u01e5\u01e6\u0007\u0004\u0000\u0000\u01e6\u01e7\u0003"+
 		"6\u001b\u0000\u01e75\u0001\u0000\u0000\u0000\u01e8\u01ef\u00052\u0000"+
-		"\u0000\u01e9\u01ef\u00054\u0000\u0000\u01ea\u01ef\u00056\u0000\u0000\u01eb"+
+		"\u0000\u01e9\u01ef\u00054\u0000\u0000\u01ea\u01ef\u00055\u0000\u0000\u01eb"+
 		"\u01ef\u00053\u0000\u0000\u01ec\u01ef\u00051\u0000\u0000\u01ed\u01ef\u0003"+
 		"8\u001c\u0000\u01ee\u01e8\u0001\u0000\u0000\u0000\u01ee\u01e9\u0001\u0000"+
 		"\u0000\u0000\u01ee\u01ea\u0001\u0000\u0000\u0000\u01ee\u01eb\u0001\u0000"+

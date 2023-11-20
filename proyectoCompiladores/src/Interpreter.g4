@@ -179,10 +179,10 @@ NUMBER: [0-9]+;
 // Text (Strings)
 TEXT: '"' ( ~["\r\n] | '""' )* '"';
 
-TEXTWRITE: '\'' ( ~["\r\n] | '\'\'' )* '\'';
-
 // Char
 CHAR: '\'' ~['\r\n] '\'';
+
+TEXTWRITE: '\'' ( ~["\r\n] | '\'\'' )* '\'';
 
 // Whitespace
 WS: [ \t\n\r]+ -> skip;

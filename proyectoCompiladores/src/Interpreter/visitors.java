@@ -49,6 +49,7 @@ public class visitors extends InterpreterBaseVisitor {
         return null;
     }
     EntryFunction functionEntry;
+    boolean retorna = false;
     @Override
     public Object visitFunction_declaration(InterpreterParser.Function_declarationContext ctx) {
         sumarAmbito();
@@ -90,6 +91,10 @@ public class visitors extends InterpreterBaseVisitor {
             }
         }
 
+        if(!retorna){
+            System.err.println("Error: Una funcion debe de retornar un valor. ");
+        }
+
         eliminarVariable_Constante(getAmbito());
         restarAmbito();
         return null;
@@ -125,7 +130,67 @@ public class visitors extends InterpreterBaseVisitor {
     public Object visitStatement_function(InterpreterParser.Statement_functionContext ctx) {
 
         if(ctx.variable_init()!=null){
-            visit(ctx.variable_init());
+            if(ctx.variable_init().ID(0).getText().equals(functionEntry.getName())){
+                retorna = true;
+
+                if(ctx.variable_init().ID(1)!=null){
+                    if(symbolVariableTable.containsKey(ctx.variable_init().ID(1).getText())){
+                        EntryVariable entry = (EntryVariable) symbolVariableTable.get(ctx.variable_init().ID(1).getText());
+                        String secondTypeId = entry.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
+                            System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                        }
+                    }else if(symbolConstTable.containsKey(ctx.variable_init().ID(1).getText())){
+                        EntryVariable entry = (EntryVariable) symbolConstTable.get(ctx.variable_init().ID(1).getText());
+                        String secondTypeId = entry.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
+                            System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                        }
+                    }
+                    else{
+                        System.err.println("Error: La variable o constante '" + ctx.variable_init().ID(1).getText() + "' no existe.");
+                    }
+                }
+
+                if(ctx.variable_init().NUMBER()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("integer")) {
+                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                    }
+                }
+
+                if(ctx.variable_init().TEXT()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("string")) {
+                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un String.");
+                    }
+                }
+
+                if(ctx.variable_init().CHAR()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("char")) {
+                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un Char.");
+                    }
+                }
+
+                if(ctx.variable_init().BOOLEANVALUE()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("boolean")) {
+                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un Boolean.");
+                    }
+                }
+
+                if(ctx.variable_init().simple_expression()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("integer")) {
+                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                    }
+                }
+
+                if(ctx.variable_init().function_Call()!=null){
+                    System.err.println("Error: Una funcion no puede retornar otra funcion.");
+                }
+
+            }else{
+                visit(ctx.variable_init());
+            }
         }
 
         if(ctx.for_loop()!=null){
@@ -155,12 +220,13 @@ public class visitors extends InterpreterBaseVisitor {
         if(ctx.readln_call()!=null){
             visit(ctx.readln_call());
         }
+
         return null;
     }
 
     @Override
     public Object visitFunction_Call(InterpreterParser.Function_CallContext ctx) {
-        
+
         return null;
     }
 
