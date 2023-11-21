@@ -228,7 +228,9 @@ public class visitors extends InterpreterBaseVisitor {
 
     @Override
     public Object visitFunction_Call(InterpreterParser.Function_CallContext ctx) {
+        if(ctx.parameter_init()!=null){
 
+        }
         return null;
     }
 
@@ -313,9 +315,9 @@ public class visitors extends InterpreterBaseVisitor {
 
                 if (!firstTypeId.equalsIgnoreCase(returnType)) {
                     System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + returnType + ".");
-                }else{
-                    visit(ctx.function_Call());
                 }
+
+                visit(ctx.function_Call());
 
             } else {
                 System.err.println("Error: La función '" + ctx.function_Call().ID().getText() + "' no existe.");
