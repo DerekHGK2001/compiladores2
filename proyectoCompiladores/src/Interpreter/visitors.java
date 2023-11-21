@@ -57,6 +57,7 @@ public class visitors extends InterpreterBaseVisitor {
         String functionName = ctx.ID().getText();
         String returnType = ctx.TYPE().getText();
         functionEntry = null;
+        retorna = false;
 
         // Verificar si la función ya existe en la tabla de símbolos
         if (symbolFunctionTable.containsKey(functionName) || exist(functionName)) {
@@ -179,6 +180,7 @@ public class visitors extends InterpreterBaseVisitor {
                 }
 
                 if(ctx.variable_init().simple_expression()!=null){
+                    visit(ctx.variable_init().simple_expression());
                     if (!functionEntry.getType().equalsIgnoreCase("integer")) {
                         System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
                     }
@@ -226,6 +228,12 @@ public class visitors extends InterpreterBaseVisitor {
 
     @Override
     public Object visitFunction_Call(InterpreterParser.Function_CallContext ctx) {
+
+        return null;
+    }
+
+    @Override
+    public Object visitParameter_init(InterpreterParser.Parameter_initContext ctx) {
 
         return null;
     }

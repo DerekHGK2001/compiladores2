@@ -109,12 +109,12 @@ function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters_declaration? CLOSE
 
 statement_function: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | read_call | readln_call;
 
-function_Call: ID OPEN_PARENTHESIS (parameter_init) CLOSE_PARENTHESIS;
+function_Call: ID OPEN_PARENTHESIS parameter_init? CLOSE_PARENTHESIS;
 
 // Parameters
 parameters_declaration: (ID (COMMA ID)*) COLON TYPE (SEMICOLON parameters_declaration)*;
 
-parameter_init: (((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression))*)?;
+parameter_init: (((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression))*);
 
 // Keywords and Operators
 READLN: 'readln';
