@@ -35,14 +35,8 @@ var_variables: variable_declaration | array_declaration | arraybi_declaration ;
 // Variable Declaration const
 const_variable_declaration: ID '=' ( TEXT | CHAR ) SEMICOLON;
 
-// Array Declaration const
-const_array_declaration: ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
-
-// 2D Array Declaration const
-const_arraybi_declaration: ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
-
 //donde se declaran las variables const
-const_variables: const_variable_declaration | const_array_declaration | const_arraybi_declaration ;
+const_variables: const_variable_declaration;
 
 // Statements
 statements: statement*;
