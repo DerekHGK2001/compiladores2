@@ -98,26 +98,6 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitConst_variable_declaration(InterpreterParser.Const_variable_declarationContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#const_array_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterConst_array_declaration(InterpreterParser.Const_array_declarationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#const_array_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitConst_array_declaration(InterpreterParser.Const_array_declarationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link InterpreterParser#const_arraybi_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void enterConst_arraybi_declaration(InterpreterParser.Const_arraybi_declarationContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link InterpreterParser#const_arraybi_declaration}.
-	 * @param ctx the parse tree
-	 */
-	void exitConst_arraybi_declaration(InterpreterParser.Const_arraybi_declarationContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#const_variables}.
 	 * @param ctx the parse tree
 	 */

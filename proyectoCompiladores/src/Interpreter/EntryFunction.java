@@ -30,19 +30,4 @@ public class EntryFunction extends SymbolEntry {
         parameters.add(parameterType);
     }
 
-    // En tu clase EntryFunction
-    public void printParameters() {
-        if (parameters != null && !parameters.isEmpty()) {
-            System.out.print("Parámetros: ");
-            for (Map<String, Object> parameter : parameters) {
-                for (Map.Entry<String, Object> entry : parameter.entrySet()) {
-                    System.out.print(entry.getKey() + ": " + entry.getValue() + ", ");
-                }
-            }
-            System.out.println();
-        } else {
-            System.out.println("La función no tiene parámetros.");
-        }
-    }
-
 }

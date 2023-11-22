@@ -228,15 +228,108 @@ public class visitors extends InterpreterBaseVisitor {
 
     @Override
     public Object visitFunction_Call(InterpreterParser.Function_CallContext ctx) {
+
+        boolean tieneParametro;
+        ArrayList<String> listaP = new ArrayList<>();
+        String functionName = ctx.ID().getText();
+
+        EntryFunction functionEntry = (EntryFunction) symbolFunctionTable.get(functionName);
+        ArrayList<Map<String, Object>> parameters = functionEntry.getParameters();
+
+        if (parameters != null && !parameters.isEmpty()) {
+            tieneParametro = true;
+            for (Map<String, Object> parameter : parameters) {
+                for (Map.Entry<String, Object> entry : parameter.entrySet()) {
+                    listaP.add((String) entry.getValue());
+                }
+            }
+            System.out.println();
+        } else {
+            tieneParametro = false;
+        }
+
         if(ctx.parameter_init()!=null){
 
+            if(!tieneParametro){
+                System.err.println("Error: La funcion " + functionName + " no pide parametros.");
+                return null;
+            }
+
+            InterpreterParser.Parameter_initContext parametroInit = ctx.parameter_init();
+
+
+            if(parametroInit.terms()!=null){
+
+                if(parametroInit.terms().size()!= listaP.size()){
+                    System.err.println("Error: En la funcion " + functionName + " se ingresaron " + parametroInit.terms().size() + " parametros pero pide " + listaP.size() + " parametros.");
+                    return null;
+                }
+
+                for(int i =0; i<parametroInit.terms().size(); i++){
+
+                    if(parametroInit.terms(i).ID()!=null){
+                        String idName = parametroInit.terms(i).ID().getText();
+
+                        if(symbolVariableTable.containsKey(idName)){
+                            EntryVariable entry = (EntryVariable) symbolVariableTable.get(idName);
+                            String TypeId = entry.getType();
+
+                            if (!listaP.get(i).equalsIgnoreCase(TypeId)) {
+                                System.err.println("Error: En la funcion " + functionName + " la variable o constante " + idName + " debe de ser un " + listaP.get(i) + " .");
+                            }
+
+                        } else if(symbolConstTable.containsKey(idName)){
+                            EntryConst entry = (EntryConst) symbolConstTable.get(idName);
+                            String TypeId = entry.getType();
+
+                            if (!listaP.get(i).equalsIgnoreCase(TypeId)) {
+                                System.err.println("Error: En la funcion " + functionName + " la variable o constante " + idName + " debe de ser un " + listaP.get(i) + " .");
+                            }
+
+                        } else {
+                            System.err.println("Error: La variable o constante '" + idName + "' no existe.");
+                        }
+                    }
+
+                    if(parametroInit.terms(i).CHAR()!=null){
+                        if(!listaP.get(i).equalsIgnoreCase("char")){
+                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un char.");
+                        }
+                    }
+
+                    if(parametroInit.terms(i).BOOLEANVALUE()!=null){
+                        if(!listaP.get(i).equalsIgnoreCase("boolean")){
+                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un boolean.");
+                        }
+                    }
+
+                    if(parametroInit.terms(i).NUMBER()!=null){
+                        if(!listaP.get(i).equalsIgnoreCase("integer")){
+                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un integer.");
+                        }
+                    }
+
+                    if(parametroInit.terms(i).TEXT()!=null){
+                        if(!listaP.get(i).equalsIgnoreCase("string")){
+                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un string.");
+                        }
+                    }
+
+                    if(parametroInit.terms(i).simple_expression()!=null){
+                        if(!listaP.get(i).equalsIgnoreCase("integer")){
+                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un integer.");
+                        }else{
+                            visit(parametroInit.terms(i).simple_expression());
+                        }
+                    }
+                }
+            }
+        }else{
+            if(tieneParametro){
+                System.err.println("Error: La funcion " + functionName + " pide parametros.");
+                return null;
+            }
         }
-        return null;
-    }
-
-    @Override
-    public Object visitParameter_init(InterpreterParser.Parameter_initContext ctx) {
-
         return null;
     }
 
@@ -280,7 +373,7 @@ public class visitors extends InterpreterBaseVisitor {
                 }
 
             } else {
-                System.err.println("Error: La constante '" + secondId + "' no existe.");
+                System.err.println("Error: La variable o constante '" + secondId + "' no existe.");
             }
         }
 

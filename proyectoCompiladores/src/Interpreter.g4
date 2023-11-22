@@ -108,7 +108,7 @@ function_Call: ID OPEN_PARENTHESIS parameter_init? CLOSE_PARENTHESIS;
 // Parameters
 parameters_declaration: (ID (COMMA ID)*) COLON TYPE (SEMICOLON parameters_declaration)*;
 
-parameter_init: ((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression) (COMMA ((ID|TEXT | CHAR |NUMBER|BOOLEANVALUE) | simple_expression))*;
+parameter_init: terms (COMMA terms)*;
 
 // Keywords and Operators
 READLN: 'readln';
