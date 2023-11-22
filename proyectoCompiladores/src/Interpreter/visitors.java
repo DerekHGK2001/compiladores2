@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class visitors extends InterpreterBaseVisitor {
-
+    private List<String> listaErrores = new ArrayList<>();
     private static Map<String, Object> symbolVariableTable = new HashMap<>();
     private static Map<String, Object> symbolConstTable = new HashMap<>();
     private static Map<String, Object> symbolFunctionTable = new HashMap<>();
@@ -39,7 +39,7 @@ public class visitors extends InterpreterBaseVisitor {
             String name = idNode.getText();
 
             if (exist(name)) {
-                System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
+                listaErrores.add("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
             } else {
                 EntryVariable entry = new EntryVariable(name, type, getAmbito());
                 getSymbolVariableTable().put(name, entry);
@@ -61,7 +61,7 @@ public class visitors extends InterpreterBaseVisitor {
 
         // Verificar si la función ya existe en la tabla de símbolos
         if (symbolFunctionTable.containsKey(functionName) || exist(functionName)) {
-            System.err.println("Error: Ya existe una variable o funcion con el nombre '" + functionName + "'.");
+            listaErrores.add("Error: Ya existe una variable o funcion con el nombre '" + functionName + "'.");
 
             eliminarVariable_Constante(getAmbito());
             restarAmbito();
@@ -73,7 +73,6 @@ public class visitors extends InterpreterBaseVisitor {
 
         // Si hay parámetros, agregarlos a la entrada de la función
         if (ctx.parameters_declaration() != null) {
-
             visit(ctx.parameters_declaration());
         }
 
@@ -93,7 +92,7 @@ public class visitors extends InterpreterBaseVisitor {
         }
 
         if(!retorna){
-            System.err.println("Error: Una funcion debe de retornar un valor. ");
+            listaErrores.add("Error: La funcion '" + functionName + "' debe de retornar un valor.");
         }
 
         eliminarVariable_Constante(getAmbito());
@@ -109,6 +108,12 @@ public class visitors extends InterpreterBaseVisitor {
                     EntryVariable entry = new EntryVariable(ctx.ID(i).getText(), ctx.TYPE().getText(), getAmbito());
                     getSymbolVariableTable().put(ctx.ID(i).getText(), entry);
 
+                    Map<String, Object> parametros = new HashMap<>();
+                    String parameterName = ctx.ID(i).getText();
+                    String parameterType = ctx.TYPE().getText();
+                    parametros.put(parameterName, parameterType);
+                    functionEntry.addParameter(parametros);
+                }else{
                     Map<String, Object> parametros = new HashMap<>();
                     String parameterName = ctx.ID(i).getText();
                     String parameterType = ctx.TYPE().getText();
@@ -140,54 +145,54 @@ public class visitors extends InterpreterBaseVisitor {
                         String secondTypeId = entry.getType();
 
                         if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
-                            System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
                         }
                     }else if(symbolConstTable.containsKey(ctx.variable_init().ID(1).getText())){
                         EntryVariable entry = (EntryVariable) symbolConstTable.get(ctx.variable_init().ID(1).getText());
                         String secondTypeId = entry.getType();
 
                         if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
-                            System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
                         }
                     }
                     else{
-                        System.err.println("Error: La variable o constante '" + ctx.variable_init().ID(1).getText() + "' no existe.");
+                        listaErrores.add("Error: La variable o constante '" + ctx.variable_init().ID(1).getText() + "' no existe.");
                     }
                 }
 
                 if(ctx.variable_init().NUMBER()!=null){
                     if (!functionEntry.getType().equalsIgnoreCase("integer")) {
-                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
                     }
                 }
 
                 if(ctx.variable_init().TEXT()!=null){
                     if (!functionEntry.getType().equalsIgnoreCase("string")) {
-                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un String.");
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un String.");
                     }
                 }
 
                 if(ctx.variable_init().CHAR()!=null){
                     if (!functionEntry.getType().equalsIgnoreCase("char")) {
-                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un Char.");
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Char.");
                     }
                 }
 
                 if(ctx.variable_init().BOOLEANVALUE()!=null){
                     if (!functionEntry.getType().equalsIgnoreCase("boolean")) {
-                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un Boolean.");
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Boolean.");
                     }
                 }
 
                 if(ctx.variable_init().simple_expression()!=null){
                     visit(ctx.variable_init().simple_expression());
                     if (!functionEntry.getType().equalsIgnoreCase("integer")) {
-                        System.err.println("Error: Una funcion de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
                     }
                 }
 
                 if(ctx.variable_init().function_Call()!=null){
-                    System.err.println("Error: Una funcion no puede retornar otra funcion.");
+                    listaErrores.add("Error: Una funcion no puede retornar otra funcion.");
                 }
 
             }else{
@@ -251,7 +256,7 @@ public class visitors extends InterpreterBaseVisitor {
         if(ctx.parameter_init()!=null){
 
             if(!tieneParametro){
-                System.err.println("Error: La funcion " + functionName + " no pide parametros.");
+                listaErrores.add("Error: La funcion " + functionName + " no pide parametros.");
                 return null;
             }
 
@@ -261,7 +266,7 @@ public class visitors extends InterpreterBaseVisitor {
             if(parametroInit.terms()!=null){
 
                 if(parametroInit.terms().size()!= listaP.size()){
-                    System.err.println("Error: En la funcion " + functionName + " se ingresaron " + parametroInit.terms().size() + " parametros pero pide " + listaP.size() + " parametros.");
+                    listaErrores.add("Error: En la funcion '" + functionName + "' se ingresaron " + parametroInit.terms().size() + " parametros pero pide " + listaP.size() + " parametros.");
                     return null;
                 }
 
@@ -275,7 +280,7 @@ public class visitors extends InterpreterBaseVisitor {
                             String TypeId = entry.getType();
 
                             if (!listaP.get(i).equalsIgnoreCase(TypeId)) {
-                                System.err.println("Error: En la funcion " + functionName + " la variable o constante " + idName + " debe de ser un " + listaP.get(i) + " .");
+                                listaErrores.add("Error: En la funcion '" + functionName + "' la variable o constante '" + idName + "' debe de ser un " + listaP.get(i) + ".");
                             }
 
                         } else if(symbolConstTable.containsKey(idName)){
@@ -283,41 +288,41 @@ public class visitors extends InterpreterBaseVisitor {
                             String TypeId = entry.getType();
 
                             if (!listaP.get(i).equalsIgnoreCase(TypeId)) {
-                                System.err.println("Error: En la funcion " + functionName + " la variable o constante " + idName + " debe de ser un " + listaP.get(i) + " .");
+                                listaErrores.add("Error: En la funcion '" + functionName + "' la variable o constante '" + idName + "' debe de ser un " + listaP.get(i) + ".");
                             }
 
                         } else {
-                            System.err.println("Error: La variable o constante '" + idName + "' no existe.");
+                            listaErrores.add("Error: La variable o constante '" + idName + "' no existe.");
                         }
                     }
 
                     if(parametroInit.terms(i).CHAR()!=null){
                         if(!listaP.get(i).equalsIgnoreCase("char")){
-                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un char.");
+                            listaErrores.add("Error: La funcion '" + functionName + "' pide un " + listaP.get(i) + " no un char.");
                         }
                     }
 
                     if(parametroInit.terms(i).BOOLEANVALUE()!=null){
                         if(!listaP.get(i).equalsIgnoreCase("boolean")){
-                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un boolean.");
+                            listaErrores.add("Error: La funcion '" + functionName + "' pide un " + listaP.get(i) + " no un boolean.");
                         }
                     }
 
                     if(parametroInit.terms(i).NUMBER()!=null){
                         if(!listaP.get(i).equalsIgnoreCase("integer")){
-                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un integer.");
+                            listaErrores.add("Error: La funcion '" + functionName + "' pide un " + listaP.get(i) + " no un integer.");
                         }
                     }
 
                     if(parametroInit.terms(i).TEXT()!=null){
                         if(!listaP.get(i).equalsIgnoreCase("string")){
-                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un string.");
+                            listaErrores.add("Error: La funcion '" + functionName + "' pide un " + listaP.get(i) + " no un string.");
                         }
                     }
 
                     if(parametroInit.terms(i).simple_expression()!=null){
                         if(!listaP.get(i).equalsIgnoreCase("integer")){
-                            System.err.println("Error: La funcion " + functionName + " pide un " + listaP.get(i) + " no un integer.");
+                            listaErrores.add("Error: La funcion '" + functionName + "' pide un " + listaP.get(i) + " no un integer.");
                         }else{
                             visit(parametroInit.terms(i).simple_expression());
                         }
@@ -326,7 +331,7 @@ public class visitors extends InterpreterBaseVisitor {
             }
         }else{
             if(tieneParametro){
-                System.err.println("Error: La funcion " + functionName + " pide parametros.");
+                listaErrores.add("Error: La funcion '" + functionName + "' pide parametros.");
                 return null;
             }
         }
@@ -341,12 +346,12 @@ public class visitors extends InterpreterBaseVisitor {
         String firstTypeId = "";
 
         if(symbolConstTable.containsKey(firstId)){
-            System.err.println("Error: Una constante no puede cambiar de valor.");
+            listaErrores.add("Error: Una constante no puede cambiar de valor.");
             return null;
         }
 
         if (!symbolVariableTable.containsKey(firstId)) {
-            System.err.println("Error: La variable '" + firstId + "' no existe.");
+            listaErrores.add("Error: La variable '" + firstId + "' no existe.");
             return null;
         } else {
             EntryVariable entry = (EntryVariable) symbolVariableTable.get(firstId);
@@ -361,7 +366,7 @@ public class visitors extends InterpreterBaseVisitor {
                 String secondTypeId = entry.getType();
 
                 if (!firstTypeId.equalsIgnoreCase(secondTypeId) && !firstTypeId.equalsIgnoreCase("string")) {
-                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
+                    listaErrores.add("Error: La variable '" + firstId + "' de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
                 }
 
             } else if(symbolConstTable.containsKey(secondId)){
@@ -369,36 +374,36 @@ public class visitors extends InterpreterBaseVisitor {
                 String secondTypeId = entry.getType();
 
                 if (!firstTypeId.equalsIgnoreCase(secondTypeId) && !firstTypeId.equalsIgnoreCase("string")) {
-                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
+                    listaErrores.add("Error: La variable '" + firstId + "' de tipo " + firstTypeId + " no se le puede asignar un " + secondTypeId + ".");
                 }
 
             } else {
-                System.err.println("Error: La variable o constante '" + secondId + "' no existe.");
+                listaErrores.add("Error: La variable o constante '" + secondId + "' no existe.");
             }
         }
 
         if (ctx.NUMBER() != null) {
             if (!firstTypeId.equalsIgnoreCase("integer") && !firstTypeId.equalsIgnoreCase("string")) {
-                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un Integer.");
+                listaErrores.add("Error: La variable '" + firstId + "' de tipo " + firstTypeId + " no se le puede asignar un Integer.");
             }
         }else if (ctx.TEXT() != null) {
             if (!firstTypeId.equalsIgnoreCase("string")) {
-                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un String.");
+                listaErrores.add("Error: La variable '" + firstId + "' de tipo " + firstTypeId + " no se le puede asignar un String.");
             }
         } else if (ctx.CHAR() != null) {
             if (!firstTypeId.equalsIgnoreCase("char")) {
-                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un String.");
+                listaErrores.add("Error: La variable '" + firstId + "' de tipo " + firstTypeId + " no se le puede asignar un String.");
             }
         } else if (ctx.simple_expression() != null) {
 
             if (!firstTypeId.equalsIgnoreCase("integer")) {
-                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un integer.");
+                listaErrores.add("Error: La variable '" + firstId + "' de tipo " + firstTypeId + " no se le puede asignar un integer.");
             } else {
                 visit(ctx.simple_expression());
             }
         } else if (ctx.BOOLEANVALUE() != null) {
             if (!firstTypeId.equalsIgnoreCase("boolean")) {
-                System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un boolean.");
+                listaErrores.add("Error: La variable '" + firstId + "' de tipo " + firstTypeId + " no se le puede asignar un boolean.");
             }
         }else if (ctx.function_Call() != null) {
             if (symbolFunctionTable.containsKey(ctx.function_Call().ID().getText())) {
@@ -407,13 +412,13 @@ public class visitors extends InterpreterBaseVisitor {
                 String returnType = functionEntry.getType();
 
                 if (!firstTypeId.equalsIgnoreCase(returnType)) {
-                    System.err.println("Error: A una variable de tipo " + firstTypeId + " no se le puede asignar un " + returnType + ".");
+                    listaErrores.add("Error: La variable '" + firstId + "' de tipo " + firstTypeId + " no se le puede asignar un " + returnType + ".");
                 }
 
                 visit(ctx.function_Call());
 
             } else {
-                System.err.println("Error: La función '" + ctx.function_Call().ID().getText() + "' no existe.");
+                listaErrores.add("Error: La función '" + ctx.function_Call().ID().getText() + "' no existe.");
             }
         }
 
@@ -426,7 +431,7 @@ public class visitors extends InterpreterBaseVisitor {
         String name = idNodes.get(0).getText();
 
         if (exist(name)) {
-            System.err.println("Error: La variable o constante '" + name + "' ya ha sido declarada anteriormente.");
+            listaErrores.add("Error: La variable o constante '" + name + "' ya ha sido declarada anteriormente.");
         } else {
             String type = "";
 
@@ -435,7 +440,7 @@ public class visitors extends InterpreterBaseVisitor {
             }else if(ctx.CHAR()!=null){
                 type = "char";
             }else{
-                System.err.println("Error: Una constante solo puede ser un string o char.");
+                listaErrores.add("Error: Una constante solo puede ser un string o char.");
             }
 
             EntryConst entry = new EntryConst(name, type, getAmbito());
@@ -463,12 +468,12 @@ public class visitors extends InterpreterBaseVisitor {
                 EntryVariable entry = (EntryVariable) symbolVariableTable.get(idTerm);
 
                 if (!entry.getType().equalsIgnoreCase("integer")) {
-                    System.err.println("Error: La variable '" + idTerm + "' tiene que ser un Integer.");
+                    listaErrores.add("Error: La variable '" + idTerm + "' tiene que ser un Integer.");
                 }
             } else if (symbolConstTable.containsKey(idTerm)) {
-                System.err.println("Error: La constante '" + idTerm + "' no es valida.");
+                listaErrores.add("Error: La constante '" + idTerm + "' no es valida.");
             } else {
-                System.err.println("Error: La variable '" + idTerm + "' no existe.");
+                listaErrores.add("Error: La variable '" + idTerm + "' no existe.");
             }
         }
 
@@ -504,7 +509,7 @@ public class visitors extends InterpreterBaseVisitor {
                 tipoTerm1 = entry.getType();
 
             }else{
-                System.err.println("Error: La variable '" + idTerm + "' no existe.");
+                listaErrores.add("Error: La variable '" + idTerm + "' no existe.");
             }
 
         }else if(ctx.terms(0).NUMBER()!=null){
@@ -537,7 +542,7 @@ public class visitors extends InterpreterBaseVisitor {
                 tipoTerm2 = entry.getType();
 
             }else{
-                System.err.println("Error: La variable '" + idTerm + "' no existe.");
+                listaErrores.add("Error: La variable '" + idTerm + "' no existe.");
             }
 
         }else if(ctx.terms(1).NUMBER()!=null){
@@ -558,7 +563,7 @@ public class visitors extends InterpreterBaseVisitor {
         }
 
         if(!tipoTerm1.equalsIgnoreCase(tipoTerm2)){
-            System.err.println("Error: no se puede comparar un '" + tipoTerm1 + "' con un '" + tipoTerm2 + "'");
+            listaErrores.add("Error: no se puede comparar un '" + tipoTerm1 + "' con un '" + tipoTerm2 + "'");
         }
 
         return null;
@@ -571,7 +576,7 @@ public class visitors extends InterpreterBaseVisitor {
             for(int i =0; i<ctx.ID().size();i++){
                 String idTerm = ctx.ID(i).getText();
                 if(!exist(idTerm)){
-                    System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
+                    listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
                 }
             }
         }
@@ -585,7 +590,7 @@ public class visitors extends InterpreterBaseVisitor {
             for(int i =0; i<ctx.ID().size();i++){
                 String idTerm = ctx.ID(i).getText();
                 if(!exist(idTerm)){
-                    System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
+                    listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
                 }
             }
         }
@@ -598,7 +603,7 @@ public class visitors extends InterpreterBaseVisitor {
         if(ctx.ID()!=null){
             String idTerm = ctx.ID().getText();
             if(!exist(idTerm)){
-                System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
+                listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
             }
         }
         return null;
@@ -610,7 +615,7 @@ public class visitors extends InterpreterBaseVisitor {
         if(ctx.ID()!=null){
             String idTerm = ctx.ID().getText();
             if(!exist(idTerm)){
-                System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
+                listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
             }
         }
         return null;
@@ -631,7 +636,7 @@ public class visitors extends InterpreterBaseVisitor {
             for(int i =0; i<ctx.ID().size();i++){
                 String idTerm = ctx.ID(i).getText();
                 if(!exist(idTerm)){
-                    System.err.println("Error: La variable o constante '" + idTerm + "' no existe.");
+                    listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
                 }
             }
         }
@@ -761,5 +766,7 @@ public class visitors extends InterpreterBaseVisitor {
         }
     }
 
-
+    public List<String> getListaErrores() {
+        return listaErrores;
+    }
 }

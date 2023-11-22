@@ -6,7 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -35,15 +35,27 @@ public class Main {
             InterpreterParser.ProgramContext programContext = parser.program();
 
             if (!errorListener.getErrores().isEmpty()) {
-                System.err.println("Se encontraron errores:");
+                System.err.println("\nSe encontraron errores sintácticos:");
                 for (String error : errorListener.getErrores()) {
                     System.err.println(error);
                 }
             } else {
-                System.out.println("\nAnálisis Léxico y Sintáctico finalizado con éxito\n");
+                System.out.println("\nAnálisis Léxico y Sintáctico finalizado con éxito");
+
                 // Llamamos a visitProgram para activar el análisis semántico.
                 visitors visitor = new visitors();
                 visitor.visitProgram(programContext);
+
+                // Verificar si hay errores semánticos
+                List<String> listaErrores = visitor.getListaErrores();
+                if (!listaErrores.isEmpty()) {
+                    System.err.println("Se encontraron errores semánticos:");
+                    for (String error : listaErrores) {
+                        System.err.println(error);
+                    }
+                } else {
+                    System.out.println("Análisis Semántico finalizado con éxito");
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
