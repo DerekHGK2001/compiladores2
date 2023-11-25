@@ -47,6 +47,12 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitArray_declaration(InterpreterParser.Array_declarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#array_range}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitArray_range(InterpreterParser.Array_rangeContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#arraybi_declaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -100,6 +106,12 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitArray_access(InterpreterParser.Array_accessContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#index}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIndex(InterpreterParser.IndexContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#arrayBi_access}.
 	 * @param ctx the parse tree

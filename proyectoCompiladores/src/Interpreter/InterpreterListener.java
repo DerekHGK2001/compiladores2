@@ -68,6 +68,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitArray_declaration(InterpreterParser.Array_declarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#array_range}.
+	 * @param ctx the parse tree
+	 */
+	void enterArray_range(InterpreterParser.Array_rangeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#array_range}.
+	 * @param ctx the parse tree
+	 */
+	void exitArray_range(InterpreterParser.Array_rangeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#arraybi_declaration}.
 	 * @param ctx the parse tree
 	 */
@@ -157,6 +167,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitArray_access(InterpreterParser.Array_accessContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#index}.
+	 * @param ctx the parse tree
+	 */
+	void enterIndex(InterpreterParser.IndexContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#index}.
+	 * @param ctx the parse tree
+	 */
+	void exitIndex(InterpreterParser.IndexContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#arrayBi_access}.
 	 * @param ctx the parse tree

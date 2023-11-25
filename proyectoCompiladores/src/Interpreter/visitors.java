@@ -11,6 +11,7 @@ public class visitors extends InterpreterBaseVisitor {
     private static Map<String, Object> symbolVariableTable = new HashMap<>();
     private static Map<String, Object> symbolConstTable = new HashMap<>();
     private static Map<String, Object> symbolFunctionTable = new HashMap<>();
+    private static Map<String, Object> symbolArrayTable = new HashMap<>();
     private int ambito = 0;
 
     public int getAmbito() {
@@ -48,6 +49,177 @@ public class visitors extends InterpreterBaseVisitor {
 
         return null;
     }
+
+    @Override
+    public Object visitArray_declaration(InterpreterParser.Array_declarationContext ctx) {
+        String type = ctx.TYPE().getText();
+        String name = ctx.ID().getText();
+
+        if(symbolArrayTable.containsKey(name) || symbolFunctionTable.containsKey(name) || exist(name)){
+            listaErrores.add("Error: Ya existe una variable, funcion o arreglo con el nombre '" + name + "'.");
+        }else{
+
+            int limiteInf = Integer.parseInt(ctx.array_range().NUMBER(0).getText());
+            int limiteSup = Integer.parseInt(ctx.array_range().NUMBER(1).getText());
+
+            if(limiteInf<0)
+                listaErrores.add("Error: El limite inferior del arreglo '" + name + "' debe de ser mayor a 0.");
+
+            if(limiteSup<0)
+                listaErrores.add("Error: El limite superior del arreglo '" + name + "' debe de ser mayor a 0.");
+
+            EntryArray entry = new EntryArray(name, type, limiteInf, limiteSup, getAmbito());
+            symbolArrayTable.put(name, entry);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitArray_access(InterpreterParser.Array_accessContext ctx) {
+
+        String name = ctx.ID().getText();
+        if(symbolArrayTable.containsKey(name)){
+            EntryArray entryArray = (EntryArray) symbolArrayTable.get(name);
+
+            if(ctx.index().ID()!=null){
+                String IDname = ctx.index().ID().getText();
+                if(symbolVariableTable.containsKey(IDname)){
+
+                    EntryVariable entry = (EntryVariable) symbolVariableTable.get(IDname);
+
+                    if(!entry.getType().equalsIgnoreCase("Integer")){
+                        listaErrores.add("Error: La variable '" + IDname + "' debe de ser un Integer.");
+                    }
+
+
+                }else if (symbolConstTable.containsKey(IDname)){
+
+                    EntryConst entry = (EntryConst) symbolConstTable.get(IDname);
+
+                    if(!entry.getType().equalsIgnoreCase("Integer")){
+                        listaErrores.add("Error: La constante '" + IDname + "' debe de ser un Integer.");
+                    }
+
+                }else{
+                    listaErrores.add("Error: La variable o constante '" + IDname + "' no existe.");
+                }
+            }
+
+            if(ctx.index().NUMBER()!=null){
+                int indice = Integer.parseInt(ctx.index().NUMBER().getText());
+
+                int limiteInf = entryArray.getLimiteInferior();
+                int limiteSup = entryArray.getLimiteSuperior();
+
+                if(indice<limiteInf)
+                    listaErrores.add("Error: El indice asignado al arreglo '" + name + "' no puede ser menor al indice inferior asignado al arreglo.");
+                if(indice>limiteSup)
+                    listaErrores.add("Error: El indice asignado al arreglo '" + name + "' no puede ser mayor al indice superior asignado al arreglo.");
+            }
+
+        }else{
+            listaErrores.add("Error: El arreglo '" + name + "' no existe.");
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitArray_init(InterpreterParser.Array_initContext ctx) {
+
+        String name = ctx.array_access(0).ID().getText();
+        if(symbolArrayTable.containsKey(name)){
+
+            visit(ctx.array_access(0));
+            EntryArray entryArray = (EntryArray) symbolArrayTable.get(name);
+            String arrayType = entryArray.getType();
+
+            if(ctx.ID()!=null){
+                String secondId = ctx.ID().getText();
+
+                if(symbolVariableTable.containsKey(secondId)){
+                    EntryVariable entry = (EntryVariable) symbolVariableTable.get(secondId);
+                    String secondTypeId = entry.getType();
+
+                    if (!arrayType.equalsIgnoreCase(secondTypeId) && !arrayType.equalsIgnoreCase("string")) {
+                        listaErrores.add("Error: La variable '" + name + "' de tipo " + arrayType + " no se le puede asignar un " + secondTypeId + ".");
+                    }
+
+                } else if(symbolConstTable.containsKey(secondId)){
+                    EntryConst entry = (EntryConst) symbolConstTable.get(secondId);
+                    String secondTypeId = entry.getType();
+
+                    if (!arrayType.equalsIgnoreCase(secondTypeId) && !arrayType.equalsIgnoreCase("string")) {
+                        listaErrores.add("Error: La variable '" + name + "' de tipo " + arrayType + " no se le puede asignar un " + secondTypeId + ".");
+                    }
+
+                } else {
+                    listaErrores.add("Error: La variable o constante '" + secondId + "' no existe.");
+                }
+            }
+
+            if (ctx.NUMBER() != null) {
+                if (!arrayType.equalsIgnoreCase("integer") && !arrayType.equalsIgnoreCase("string")) {
+                    listaErrores.add("Error: La variable '" + name + "' de tipo " + arrayType + " no se le puede asignar un Integer.");
+                }
+            }else if (ctx.TEXT() != null) {
+                if (!arrayType.equalsIgnoreCase("string")) {
+                    listaErrores.add("Error: La variable '" + name + "' de tipo " + arrayType + " no se le puede asignar un String.");
+                }
+            } else if (ctx.CHAR() != null) {
+                if (!arrayType.equalsIgnoreCase("char")) {
+                    listaErrores.add("Error: La variable '" + name + "' de tipo " + arrayType + " no se le puede asignar un String.");
+                }
+            } else if (ctx.simple_expression() != null) {
+
+                if (!arrayType.equalsIgnoreCase("integer")) {
+                    listaErrores.add("Error: La variable '" + name + "' de tipo " + arrayType + " no se le puede asignar un integer.");
+                } else {
+                    visit(ctx.simple_expression());
+                }
+            } else if (ctx.BOOLEANVALUE() != null) {
+                if (!arrayType.equalsIgnoreCase("boolean")) {
+                    listaErrores.add("Error: La variable '" + name + "' de tipo " + arrayType + " no se le puede asignar un boolean.");
+                }
+            }else if (ctx.function_Call() != null) {
+                if (symbolFunctionTable.containsKey(ctx.function_Call().ID().getText())) {
+
+                    EntryFunction functionEntry = (EntryFunction) symbolFunctionTable.get(ctx.function_Call().ID().getText());
+                    String returnType = functionEntry.getType();
+
+                    if (!arrayType.equalsIgnoreCase(returnType)) {
+                        listaErrores.add("Error: La variable '" + name + "' de tipo " + arrayType + " no se le puede asignar un " + returnType + ".");
+                    }
+
+                    visit(ctx.function_Call());
+
+                } else {
+                    listaErrores.add("Error: La función '" + ctx.function_Call().ID().getText() + "' no existe.");
+                }
+            }else if(ctx.array_access().size()==2){
+                if(symbolArrayTable.containsKey(ctx.array_access(1).ID().getText())){
+
+                    visit(ctx.array_access(1));
+                    EntryArray entryArray2 = (EntryArray) symbolArrayTable.get(ctx.array_access(1).ID().getText());
+                    String arrayType2 = entryArray2.getType();
+
+                    if (!arrayType.equalsIgnoreCase(arrayType2)) {
+                        listaErrores.add("Error: La variable '" + name + "' de tipo " + arrayType + " no se le puede asignar un " + arrayType2 + ".");
+                    }
+
+                }else{
+                    listaErrores.add("Error: El arreglo '" + ctx.array_access(1).ID().getText() + "' no existe.");
+                }
+            }
+
+
+        }else{
+            listaErrores.add("Error: El arreglo '" + name + "' no existe.");
+        }
+
+        return null;
+    }
     EntryFunction functionEntry;
     boolean retorna = false;
     @Override
@@ -63,7 +235,7 @@ public class visitors extends InterpreterBaseVisitor {
         if (symbolFunctionTable.containsKey(functionName) || exist(functionName)) {
             listaErrores.add("Error: Ya existe una variable o funcion con el nombre '" + functionName + "'.");
 
-            eliminarVariable_Constante(getAmbito());
+            eliminarVariable_Constante_arreglo(getAmbito());
             restarAmbito();
             return null;
         } else {
@@ -95,7 +267,7 @@ public class visitors extends InterpreterBaseVisitor {
             listaErrores.add("Error: La funcion '" + functionName + "' debe de retornar un valor.");
         }
 
-        eliminarVariable_Constante(getAmbito());
+        eliminarVariable_Constante_arreglo(getAmbito());
         restarAmbito();
         return null;
     }
@@ -195,9 +367,29 @@ public class visitors extends InterpreterBaseVisitor {
                     listaErrores.add("Error: Una funcion no puede retornar otra funcion.");
                 }
 
+                if(ctx.variable_init().array_access()!=null){
+                    if(symbolArrayTable.containsKey(ctx.variable_init().array_access().ID().getText())){
+
+                        visit(ctx.variable_init().array_access());
+                        EntryArray entryArray = (EntryArray) symbolArrayTable.get(ctx.variable_init().array_access().ID().getText());
+                        String arrayType = entryArray.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(arrayType)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + arrayType + ".");
+                        }
+
+                    }else{
+                        listaErrores.add("Error: El arreglo '" + ctx.variable_init().array_access().ID().getText() + "' no existe.");
+                    }
+                }
+
             }else{
                 visit(ctx.variable_init());
             }
+        }
+
+        if(ctx.array_init()!=null){
+            visit(ctx.array_init());
         }
 
         if(ctx.for_loop()!=null){
@@ -226,6 +418,10 @@ public class visitors extends InterpreterBaseVisitor {
 
         if(ctx.readln_call()!=null){
             visit(ctx.readln_call());
+        }
+
+        if(ctx.array_init()!=null){
+            visit(ctx.array_init());
         }
 
         return null;
@@ -420,6 +616,20 @@ public class visitors extends InterpreterBaseVisitor {
             } else {
                 listaErrores.add("Error: La función '" + ctx.function_Call().ID().getText() + "' no existe.");
             }
+        }else if(ctx.array_access()!=null){
+            if(symbolArrayTable.containsKey(ctx.array_access().ID().getText())){
+
+                visit(ctx.array_access());
+                EntryArray entryArray = (EntryArray) symbolArrayTable.get(ctx.array_access().ID().getText());
+                String arrayType = entryArray.getType();
+
+                if (!firstTypeId.equalsIgnoreCase(arrayType)) {
+                    listaErrores.add("Error: La variable '" + firstId + "' de tipo " + firstTypeId + " no se le puede asignar un " + arrayType + ".");
+                }
+
+            }else{
+                listaErrores.add("Error: El arreglo '" + ctx.array_access().ID().getText() + "' no existe.");
+            }
         }
 
         return null;
@@ -580,6 +790,16 @@ public class visitors extends InterpreterBaseVisitor {
                 }
             }
         }
+
+        if(ctx.array_access()!=null){
+            for(int i =0; i<ctx.array_access().size();i++){
+                String idTerm = ctx.array_access(i).ID().getText();
+                if(!symbolArrayTable.containsKey(idTerm)){
+                    listaErrores.add("Error: El arreglo '" + idTerm + "' no existe.");
+                }else
+                    visit(ctx.array_access(i));
+            }
+        }
         return null;
     }
 
@@ -594,6 +814,16 @@ public class visitors extends InterpreterBaseVisitor {
                 }
             }
         }
+
+        if(ctx.array_access()!=null){
+            for(int i =0; i<ctx.array_access().size();i++){
+                String idTerm = ctx.array_access(i).ID().getText();
+                if(!symbolArrayTable.containsKey(idTerm)){
+                    listaErrores.add("Error: El arreglo '" + idTerm + "' no existe.");
+                }else
+                    visit(ctx.array_access(i));
+            }
+        }
         return null;
     }
 
@@ -606,6 +836,14 @@ public class visitors extends InterpreterBaseVisitor {
                 listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
             }
         }
+
+        if(ctx.array_access()!=null){
+            String idTerm = ctx.array_access().ID().getText();
+            if(!symbolArrayTable.containsKey(idTerm)){
+                listaErrores.add("Error: El arreglo '" + idTerm + "' no existe.");
+            }else
+                visit(ctx.array_access());
+        }
         return null;
     }
 
@@ -617,6 +855,14 @@ public class visitors extends InterpreterBaseVisitor {
             if(!exist(idTerm)){
                 listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
             }
+        }
+
+        if(ctx.array_access()!=null){
+            String idTerm = ctx.array_access().ID().getText();
+            if(!symbolArrayTable.containsKey(idTerm)){
+                listaErrores.add("Error: El arreglo '" + idTerm + "' no existe.");
+            }else
+                visit(ctx.array_access());
         }
         return null;
     }
@@ -649,7 +895,7 @@ public class visitors extends InterpreterBaseVisitor {
             }
         }
 
-        eliminarVariable_Constante(getAmbito());
+        eliminarVariable_Constante_arreglo(getAmbito());
         restarAmbito();
 
         return null;
@@ -673,7 +919,7 @@ public class visitors extends InterpreterBaseVisitor {
             }
         }
 
-        eliminarVariable_Constante(getAmbito());
+        eliminarVariable_Constante_arreglo(getAmbito());
         restarAmbito();
 
         return null;
@@ -697,6 +943,10 @@ public class visitors extends InterpreterBaseVisitor {
                 for(int i2 =0; i2<ctx.declarations().var_variables().size();i2++) {
                     if(ctx.declarations().var_variables(i2).variable_declaration()!=null){
                         visit(ctx.declarations().var_variables(i2).variable_declaration());
+                    }
+
+                    if(ctx.declarations().var_variables(i2).array_declaration()!=null){
+                        visit(ctx.declarations().var_variables(i2).array_declaration());
                     }
                 }
             }
@@ -734,10 +984,14 @@ public class visitors extends InterpreterBaseVisitor {
         if(ctx.readln_call()!=null){
             visit(ctx.readln_call());
         }
+
+        if(ctx.array_init()!=null){
+            visit(ctx.array_init());
+        }
         return null;
     }
 
-    public void eliminarVariable_Constante(int ambito) {
+    public void eliminarVariable_Constante_arreglo(int ambito) {
         
         if (!symbolVariableTable.isEmpty()) {
             List<String> variablesToRemove = new ArrayList<>();
@@ -762,6 +1016,19 @@ public class visitors extends InterpreterBaseVisitor {
             }
             for (String constante : constantesToRemove) {
                 symbolConstTable.remove(constante);
+            }
+        }
+
+        if (!symbolArrayTable.isEmpty()) {
+            List<String> arrayToRemove = new ArrayList<>();
+            for (Map.Entry<String, Object> entry : symbolArrayTable.entrySet()) {
+                EntryArray entryArray = (EntryArray) entry.getValue();
+                if (entryArray.getAmbit() == ambito) {
+                    arrayToRemove.add(entry.getKey());
+                }
+            }
+            for (String arreglo : arrayToRemove) {
+                symbolArrayTable.remove(arreglo);
             }
         }
     }

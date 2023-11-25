@@ -15,19 +15,21 @@ program: PROGRAM ID SEMICOLON
 declarations: ( VAR var_variables+ | CONST const_variables+ | function_declaration )+;
 
 //funcion read
-read_call: READ OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
+read_call: READ OPEN_PARENTHESIS (ID | array_access) CLOSE_PARENTHESIS SEMICOLON;
 
 //funcion readln
-readln_call: READLN OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
+readln_call: READLN OPEN_PARENTHESIS (ID | array_access) CLOSE_PARENTHESIS SEMICOLON;
 
 // Variable Declaration
 variable_declaration: ID (COMMA ID)* COLON TYPE SEMICOLON;
 
 // Array Declaration
-array_declaration: ID COLON ARRAY (OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET)? OF TYPE SEMICOLON;
+array_declaration: ID COLON ARRAY OPEN_BRACKET array_range CLOSE_BRACKET OF TYPE SEMICOLON;
+
+array_range: NUMBER DOTDOT NUMBER;
 
 // 2D Array Declaration
-arraybi_declaration: ID COLON ARRAY OPEN_BRACKET MINUS* NUMBER DOTDOT MINUS* NUMBER COMMA MINUS* NUMBER DOTDOT MINUS* NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
+arraybi_declaration: ID COLON ARRAY OPEN_BRACKET NUMBER DOTDOT NUMBER COMMA NUMBER DOTDOT NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
 
 //donde se declaran las variables var
 var_variables: variable_declaration | array_declaration | arraybi_declaration ;
@@ -45,25 +47,27 @@ statements: statement*;
 variable_init: ID ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Initialization
-array_init: array_access ASSIGN (ID | NUMBER | TEXT | CHAR | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+array_init: array_access ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // 2D Array Initialization
-arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | CHAR | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
 
 // Array Access
-array_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) CLOSE_BRACKET;
+array_access: ID OPEN_BRACKET index CLOSE_BRACKET;
+
+index: NUMBER|ID;
 
 // 2D Array Access
-arrayBi_access: ID OPEN_BRACKET (simple_expression|NUMBER|ID) COMMA (simple_expression|NUMBER|ID) CLOSE_BRACKET;
+arrayBi_access: ID OPEN_BRACKET (NUMBER|ID) COMMA (simple_expression|NUMBER|ID) CLOSE_BRACKET;
 
 // For Loop
 for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (statement_bucle | BEGIN statement_bucle* END);
 
 // Write Line Statement
-writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXTWRITE | CHAR) (COMMA (ID | TEXTWRITE | CHAR | array_access | arrayBi_access ))* CLOSE_PARENTHESIS SEMICOLON;
+writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXTWRITE | CHAR | array_access | arrayBi_access) (COMMA (ID | TEXTWRITE | CHAR | array_access | arrayBi_access ))* CLOSE_PARENTHESIS SEMICOLON;
 
 // Write Statement
-write: WRITE OPEN_PARENTHESIS (ID | TEXTWRITE | CHAR) (COMMA (ID | TEXTWRITE | CHAR | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
+write: WRITE OPEN_PARENTHESIS (ID | TEXTWRITE | CHAR | array_access | arrayBi_access) (COMMA (ID | TEXTWRITE | CHAR | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
 
 // While Loop
 while_loop: WHILE (OPEN_PARENTHESIS (expression|comparison) CLOSE_PARENTHESIS | (expression|comparison) ) DO BEGIN statement_bucle* END;
@@ -168,7 +172,7 @@ BOOLEANVALUE: 'true'|'false';
 // Identifiers
 ID:[a-zA-Z][a-zA-Z0-9]*([_][a-zA-Z0-9]+)*;
 // Numbers
-NUMBER: [0-9]+;
+NUMBER: [0-9]+ ;
 
 // Text (Strings)
 TEXT: '"' ( ~["\r\n] | '""' )* '"';
