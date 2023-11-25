@@ -16,7 +16,8 @@ public class Main {
         boolean finalizar = false;
 
         try {
-            File fileM = new File("C:/Users/dhenr/Documents/Clases/Compiladores/minipascal.txt");
+            //File fileM = new File("C:/Users/dhenr/Documents/Clases/Compiladores/minipascal.txt");
+            File fileM = new File("C:/Users/jmald/Documents/ProyectoCompiladores/minipascal.txt");
             BufferedReader reader = new BufferedReader(new FileReader(fileM));
             StringBuilder contenido = new StringBuilder();
             String linea;

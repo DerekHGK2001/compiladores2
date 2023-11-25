@@ -11,6 +11,8 @@ public class visitors extends InterpreterBaseVisitor {
     private static Map<String, Object> symbolVariableTable = new HashMap<>();
     private static Map<String, Object> symbolConstTable = new HashMap<>();
     private static Map<String, Object> symbolFunctionTable = new HashMap<>();
+
+    private static Map<String, Object> symbolArrayTable = new HashMap<>();
     private int ambito = 0;
 
     public int getAmbito() {
@@ -29,6 +31,168 @@ public class visitors extends InterpreterBaseVisitor {
 
     public static Map<String, Object> getSymbolConstTable() {
         return symbolConstTable;
+    }
+
+    public static Map<String, Object> getSymbolArrayTable() {
+        return symbolArrayTable;
+    }
+
+    @Override
+    public Object visitArray_declaration(InterpreterParser.Array_declarationContext ctx) {
+        List<TerminalNode> idNodes = ctx.getTokens(InterpreterLexer.ID);
+        String name = idNodes.get(0).getText();
+
+        String type = ctx.TYPE().getText();
+
+        if (exist(name)) {
+            System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
+        } else {
+            int minus1 = 1;
+            int minus2 = 1;
+            if(ctx.MINUS(0) != null)
+            {
+                minus1 = -1;
+            }
+
+            if(ctx.MINUS(1) != null)
+            {
+                minus2 = -1;
+            }
+
+            String startsize = ctx.NUMBER(0).getText();
+            String endsize = ctx.NUMBER(1).getText();
+
+            int start = Integer.parseInt(startsize);
+            int end = Integer.parseInt(endsize);
+
+            start *= minus1;
+            end *= minus2;
+
+
+            if(start < 0 || end < 0)
+            {
+                System.err.println("Error: El rango del tamano del arreglo no debe contener negativos");
+            }
+            else if(start != 1)
+            {
+                System.err.println("Error: El rango del tamano del arreglo debe empezar con 1");
+            }else if(end <= start)
+            {
+                System.err.println("Error: El rango final del tamano del arreglo debe ser mayor que el rango inicial");
+            }
+
+            EntryArray entry = new EntryArray(name, type, getAmbito());
+            getSymbolArrayTable().put(name, entry);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitArraybi_declaration(InterpreterParser.Arraybi_declarationContext ctx) {
+        List<TerminalNode> idNodes = ctx.getTokens(InterpreterLexer.ID);
+        String name = idNodes.get(0).getText();
+
+        String type = ctx.TYPE().getText();
+
+        if (exist(name)) {
+            System.err.println("Error: La variable '" + name + "' ya ha sido declarada anteriormente.");
+        } else {
+            int minus1 = 1;
+            int minus2 = 1;
+            int minus3 = 1;
+            int minus4 = 1;
+
+            if(ctx.MINUS(0) != null)
+            {
+                minus1 = -1;
+            }
+
+            if(ctx.MINUS(1) != null)
+            {
+                minus2 = -1;
+            }
+
+            if(ctx.MINUS(2) != null)
+            {
+                minus3 = -1;
+            }
+
+            if(ctx.MINUS(3) != null)
+            {
+                minus4 = -1;
+            }
+
+            String startsize1 = ctx.NUMBER(0).getText();
+            String endsize1 = ctx.NUMBER(1).getText();
+
+            String startsize2 = ctx.NUMBER(2).getText();
+            String endsize2 = ctx.NUMBER(3).getText();
+
+            int start1 = Integer.parseInt(startsize1);
+            int end1 = Integer.parseInt(endsize1);
+            int start2 = Integer.parseInt(startsize2);
+            int end2 = Integer.parseInt(endsize2);
+
+            start1 *= minus1;
+            end1 *= minus2;
+            start2 *= minus3;
+            end2 *= minus4;
+
+
+            if(start1 < 0 || end1 < 0)
+            {
+                System.err.println("Error: El primer rango del tamano del arreglo no debe contener negativos");
+            }
+            else if(start1 != 1)
+            {
+                System.err.println("Error: El primer rango del tamano del arreglo debe empezar con 1");
+            }else if(end1 <= start1)
+            {
+                System.err.println("Error: El primer rango final del tamano del arreglo debe ser mayor que el primer rango inicial");
+            }
+
+            if(start2 < 0 || end2 < 0)
+            {
+                System.err.println("Error: El segundo rango del tamano del arreglo no debe contener negativos");
+            }
+            else if(start2 != 1)
+            {
+                System.err.println("Error: El segundo rango del tamano del arreglo debe empezar con 1");
+            }else if(end2 <= start2)
+            {
+                System.err.println("Error: El segundo rango final del tamano del arreglo debe ser mayor que el segundo rango inicial");
+            }
+
+            EntryArray entry = new EntryArray(name, type, getAmbito());
+            getSymbolArrayTable().put(name, entry);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitArray_init(InterpreterParser.Array_initContext ctx) {
+
+        return null;
+    }
+
+    @Override
+    public Object visitArrayBi_init(InterpreterParser.ArrayBi_initContext ctx) {
+
+        return null;
+    }
+
+    @Override
+    public Object visitArray_access(InterpreterParser.Array_accessContext ctx) {
+
+        return null;
+    }
+
+    @Override
+    public Object visitArrayBi_access(InterpreterParser.ArrayBi_accessContext ctx) {
+
+        return null;
     }
 
     @Override
@@ -424,7 +588,7 @@ public class visitors extends InterpreterBaseVisitor {
     }
 
     public boolean exist(String id){
-        if(!symbolVariableTable.containsKey(id) && !symbolConstTable.containsKey(id)){
+        if(!symbolVariableTable.containsKey(id) && !symbolConstTable.containsKey(id) && !symbolArrayTable.containsKey(id)){
             return false;
         }else{
             return true;
