@@ -29,7 +29,7 @@ array_declaration: ID COLON ARRAY OPEN_BRACKET array_range CLOSE_BRACKET OF TYPE
 array_range: NUMBER DOTDOT NUMBER;
 
 // 2D Array Declaration
-arraybi_declaration: ID COLON ARRAY OPEN_BRACKET NUMBER DOTDOT NUMBER COMMA NUMBER DOTDOT NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
+arraybi_declaration: ID COLON ARRAY OPEN_BRACKET array_range COMMA array_range CLOSE_BRACKET OF TYPE SEMICOLON;
 
 //donde se declaran las variables var
 var_variables: variable_declaration | array_declaration | arraybi_declaration ;
