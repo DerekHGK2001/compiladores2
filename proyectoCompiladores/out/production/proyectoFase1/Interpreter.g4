@@ -58,7 +58,7 @@ array_access: ID OPEN_BRACKET index CLOSE_BRACKET;
 index: NUMBER|ID;
 
 // 2D Array Access
-arrayBi_access: ID OPEN_BRACKET (NUMBER|ID) COMMA (simple_expression|NUMBER|ID) CLOSE_BRACKET;
+arrayBi_access: ID OPEN_BRACKET index COMMA index CLOSE_BRACKET;
 
 // For Loop
 for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (statement_bucle | BEGIN statement_bucle* END);

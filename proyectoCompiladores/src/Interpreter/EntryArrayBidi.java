@@ -3,19 +3,19 @@ package Interpreter;
 public class EntryArrayBidi extends SymbolEntry {
     private String name;
     private String type;
-    private int limiteInferior1;
-    private int limiteSuperior1;
-    private int limiteInferior2;
-    private int limiteSuperior2;
+    private int limiteInferiorFilas;
+    private int limiteSuperiorFilas;
+    private int limiteInferiorColumnas;
+    private int limiteSuperiorColumnas;
 
-    public EntryArrayBidi(String name, String type, int limiteInferior1, int limiteSuperior1, int limiteInferior2, int limiteSuperior2, int ambit) {
+    public EntryArrayBidi(String name, String type, int limiteInferiorFilas, int limiteSuperiorFilas, int limiteInferiorColumnas, int limiteSuperiorColumnas, int ambit) {
         super(ambit);
         this.name = name;
         this.type = type;
-        this.limiteInferior1 = limiteInferior1;
-        this.limiteSuperior1 = limiteSuperior1;
-        this.limiteInferior2 = limiteInferior2;
-        this.limiteSuperior2 = limiteSuperior2;
+        this.limiteInferiorFilas = limiteInferiorFilas;
+        this.limiteSuperiorFilas = limiteSuperiorFilas;
+        this.limiteInferiorColumnas = limiteInferiorColumnas;
+        this.limiteSuperiorColumnas = limiteSuperiorColumnas;
     }
 
     public String getName() {
@@ -26,11 +26,11 @@ public class EntryArrayBidi extends SymbolEntry {
         return type;
     }
 
-    public int getLimiteInferior1(){return limiteInferior1;}
+    public int getLimiteInferiorFilas(){return limiteInferiorFilas;}
 
-    public int getLimiteSuperior1(){return limiteSuperior1;}
+    public int getLimiteSuperiorFilas(){return limiteSuperiorFilas;}
 
-    public int getLimiteInferior2(){return limiteInferior2;}
+    public int getLimiteInferiorColumnas(){return limiteInferiorColumnas;}
 
-    public int getLimiteSuperior2(){return limiteSuperior2;}
+    public int getLimiteSuperiorColumnas(){return limiteSuperiorColumnas;}
 }
