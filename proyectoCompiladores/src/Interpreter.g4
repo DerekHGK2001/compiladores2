@@ -15,10 +15,10 @@ program: PROGRAM ID SEMICOLON
 declarations: ( VAR var_variables+ | CONST const_variables+ | function_declaration )+;
 
 //funcion read
-read_call: READ OPEN_PARENTHESIS (ID | array_access) CLOSE_PARENTHESIS SEMICOLON;
+read_call: READ OPEN_PARENTHESIS (ID | array_access | arrayBi_access) CLOSE_PARENTHESIS SEMICOLON;
 
 //funcion readln
-readln_call: READLN OPEN_PARENTHESIS (ID | array_access) CLOSE_PARENTHESIS SEMICOLON;
+readln_call: READLN OPEN_PARENTHESIS (ID | array_access | arrayBi_access) CLOSE_PARENTHESIS SEMICOLON;
 
 // Variable Declaration
 variable_declaration: ID (COMMA ID)* COLON TYPE SEMICOLON;

@@ -15,10 +15,10 @@ program: PROGRAM ID SEMICOLON
 declarations: ( VAR var_variables+ | CONST const_variables+ | function_declaration )+;
 
 //funcion read
-read_call: READ OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
+read_call: READ OPEN_PARENTHESIS (ID | array_access) CLOSE_PARENTHESIS SEMICOLON;
 
 //funcion readln
-readln_call: READLN OPEN_PARENTHESIS ID CLOSE_PARENTHESIS SEMICOLON;
+readln_call: READLN OPEN_PARENTHESIS (ID | array_access) CLOSE_PARENTHESIS SEMICOLON;
 
 // Variable Declaration
 variable_declaration: ID (COMMA ID)* COLON TYPE SEMICOLON;
@@ -29,7 +29,7 @@ array_declaration: ID COLON ARRAY OPEN_BRACKET array_range CLOSE_BRACKET OF TYPE
 array_range: NUMBER DOTDOT NUMBER;
 
 // 2D Array Declaration
-arraybi_declaration: ID COLON ARRAY OPEN_BRACKET NUMBER DOTDOT NUMBER COMMA NUMBER DOTDOT NUMBER CLOSE_BRACKET OF TYPE SEMICOLON;
+arraybi_declaration: ID COLON ARRAY OPEN_BRACKET array_range COMMA array_range CLOSE_BRACKET OF TYPE SEMICOLON;
 
 //donde se declaran las variables var
 var_variables: variable_declaration | array_declaration | arraybi_declaration ;
