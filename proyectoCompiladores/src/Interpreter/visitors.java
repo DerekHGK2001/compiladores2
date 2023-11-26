@@ -770,6 +770,39 @@ public class visitors extends InterpreterBaseVisitor {
                             visit(parametroInit.terms(i).simple_expression());
                         }
                     }
+
+                    if(parametroInit.terms(i).array_access()!=null){
+                        if(symbolArrayTable.containsKey(parametroInit.terms(i).array_access().ID().getText())){
+
+                            visit(parametroInit.terms(i).array_access());
+                            EntryArray entryArray = (EntryArray) symbolArrayTable.get(parametroInit.terms(i).array_access().ID().getText());
+                            String arrayType = entryArray.getType();
+
+                            if (!listaP.get(i).equalsIgnoreCase(arrayType)) {
+                                listaErrores.add("Error: La funcion '" + functionName + "' pide un " + listaP.get(i) + " no un " + arrayType + ".");
+                            }
+
+                        }else{
+                            listaErrores.add("Error: El arreglo '" + parametroInit.terms(i).array_access().ID().getText() + "' no existe.");
+                        }
+                    }
+
+                    if(parametroInit.terms(i).arrayBi_access()!=null) {
+
+                        if (symbolArraybiTable.containsKey(parametroInit.terms(i).arrayBi_access().ID().getText())) {
+
+                            visit(parametroInit.terms(i).arrayBi_access());
+                            EntryArrayBidi entryArray = (EntryArrayBidi) symbolArraybiTable.get(parametroInit.terms(i).arrayBi_access().ID().getText());
+                            String arrayType = entryArray.getType();
+
+                            if (!listaP.get(i).equalsIgnoreCase(arrayType)) {
+                                listaErrores.add("Error: La funcion '" + functionName + "' pide un " + listaP.get(i) + " no un " + arrayType + ".");
+                            }
+
+                        } else {
+                            listaErrores.add("Error: El arreglo bidimensional '" + parametroInit.terms(i).arrayBi_access().ID().getText() + "' no existe.");
+                        }
+                    }
                 }
             }
         }else{
@@ -948,6 +981,40 @@ public class visitors extends InterpreterBaseVisitor {
             }
         }
 
+        if(ctx.array_access()!=null){
+            if(symbolArrayTable.containsKey(ctx.array_access().ID().getText())){
+
+                visit(ctx.array_access());
+                EntryArray entryArray = (EntryArray) symbolArrayTable.get(ctx.array_access().ID().getText());
+                String arrayType = entryArray.getType();
+
+                if (!arrayType.equalsIgnoreCase("integer")) {
+                    listaErrores.add("Error: El arreglo '" + ctx.array_access().ID().getText() + "' tiene que ser un Integer.");
+                }
+
+
+            }else{
+                listaErrores.add("Error: El arreglo '" + ctx.array_access().ID().getText() + "' no existe.");
+            }
+        }
+
+        if(ctx.arrayBi_access()!=null) {
+            if (symbolArraybiTable.containsKey(ctx.arrayBi_access().ID().getText())) {
+
+                visit(ctx.arrayBi_access());
+                EntryArrayBidi entryArray = (EntryArrayBidi) symbolArraybiTable.get(ctx.arrayBi_access().ID().getText());
+                String arrayType = entryArray.getType();
+
+                if (!arrayType.equalsIgnoreCase("integer")) {
+                    listaErrores.add("Error: El arreglo bidimensional '" + ctx.arrayBi_access().ID().getText() + "' tiene que ser un Integer.");
+                }
+
+
+            } else {
+                listaErrores.add("Error: El arreglo bidimensional '" + ctx.arrayBi_access().ID().getText() + "' no existe.");
+            }
+        }
+
         if (ctx.operacones_parentesis() != null) {
             visit(ctx.operacones_parentesis());
         }
@@ -998,6 +1065,30 @@ public class visitors extends InterpreterBaseVisitor {
         }else if(ctx.terms(0).simple_expression()!=null){
             tipoTerm1="integer";
             visit(ctx.terms(0).simple_expression());
+        }else if(ctx.terms(0).array_access()!=null){
+            if(symbolArrayTable.containsKey(ctx.terms(0).array_access().ID().getText())){
+
+                visit(ctx.terms(0).array_access());
+                EntryArray entryArray = (EntryArray) symbolArrayTable.get(ctx.terms(0).array_access().ID().getText());
+                String arrayType = entryArray.getType();
+
+                tipoTerm1 = arrayType;
+
+            }else{
+                listaErrores.add("Error: El arreglo '" + ctx.terms(0).array_access().ID().getText() + "' no existe.");
+            }
+        }else if(ctx.terms(0).arrayBi_access()!=null) {
+            if (symbolArraybiTable.containsKey(ctx.terms(0).arrayBi_access().ID().getText())) {
+
+                visit(ctx.terms(0).arrayBi_access());
+                EntryArrayBidi entryArray = (EntryArrayBidi) symbolArraybiTable.get(ctx.terms(0).arrayBi_access().ID().getText());
+                String arrayType = entryArray.getType();
+
+                tipoTerm1 = arrayType;
+
+            } else {
+                listaErrores.add("Error: El arreglo bidimensional '" + ctx.terms(0).arrayBi_access().ID().getText() + "' no existe.");
+            }
         }
 
         if(ctx.terms(1).ID()!=null){
@@ -1016,6 +1107,30 @@ public class visitors extends InterpreterBaseVisitor {
                 listaErrores.add("Error: La variable '" + idTerm + "' no existe.");
             }
 
+        }else if(ctx.terms(1).array_access()!=null){
+            if(symbolArrayTable.containsKey(ctx.terms(1).array_access().ID().getText())){
+
+                visit(ctx.terms(1).array_access());
+                EntryArray entryArray = (EntryArray) symbolArrayTable.get(ctx.terms(1).array_access().ID().getText());
+                String arrayType = entryArray.getType();
+
+                tipoTerm1 = arrayType;
+
+            }else{
+                listaErrores.add("Error: El arreglo '" + ctx.terms(1).array_access().ID().getText() + "' no existe.");
+            }
+        }else if(ctx.terms(1).arrayBi_access()!=null) {
+            if (symbolArraybiTable.containsKey(ctx.terms(1).arrayBi_access().ID().getText())) {
+
+                visit(ctx.terms(1).arrayBi_access());
+                EntryArrayBidi entryArray = (EntryArrayBidi) symbolArraybiTable.get(ctx.terms(1).arrayBi_access().ID().getText());
+                String arrayType = entryArray.getType();
+
+                tipoTerm1 = arrayType;
+
+            } else {
+                listaErrores.add("Error: El arreglo bidimensional '" + ctx.terms(0).arrayBi_access().ID().getText() + "' no existe.");
+            }
         }else if(ctx.terms(1).NUMBER()!=null){
             tipoTerm2="integer";
 

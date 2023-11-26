@@ -87,12 +87,12 @@ expression: simple_expression (operaciones simple_expression)?;
 //Comparacion de strings
 comparison: terms (EQUALS | NOT_EQUALS) terms;
 
-terms: (ID | TEXT | CHAR | NUMBER | BOOLEANVALUE | simple_expression);
+terms: (ID | TEXT | CHAR | NUMBER | BOOLEANVALUE | array_access | arrayBi_access | simple_expression);
 
 // Simple Expressions
 simple_expression: factor (operaciones_simples factor)*;
 // Factors
-factor: ID | NUMBER | operacones_parentesis;
+factor: ID | NUMBER | array_access | arrayBi_access | operacones_parentesis;
 
 operacones_parentesis:OPEN_PARENTHESIS simple_expression CLOSE_PARENTHESIS;
 
