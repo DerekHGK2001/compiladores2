@@ -315,7 +315,7 @@ public class visitors extends InterpreterBaseVisitor {
                     listaErrores.add("Error: El arreglo '" + ctx.array_access(1).ID().getText() + "' no existe.");
                 }
             }else if(ctx.arrayBi_access()!=null){
-                if(symbolArrayTable.containsKey(ctx.arrayBi_access().ID().getText())){
+                if(symbolArraybiTable.containsKey(ctx.arrayBi_access().ID().getText())){
 
                     visit(ctx.arrayBi_access());
                     EntryArrayBidi entryArraybi = (EntryArrayBidi) symbolArraybiTable.get(ctx.arrayBi_access().ID().getText());
