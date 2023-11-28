@@ -238,6 +238,26 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitIf_statement(InterpreterParser.If_statementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#else_statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterElse_statement(InterpreterParser.Else_statementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#else_statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitElse_statement(InterpreterParser.Else_statementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#if_statement2}.
+	 * @param ctx the parse tree
+	 */
+	void enterIf_statement2(InterpreterParser.If_statement2Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#if_statement2}.
+	 * @param ctx the parse tree
+	 */
+	void exitIf_statement2(InterpreterParser.If_statement2Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#statement}.
 	 * @param ctx the parse tree
 	 */

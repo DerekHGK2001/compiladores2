@@ -73,7 +73,11 @@ write: WRITE OPEN_PARENTHESIS (ID | TEXTWRITE | CHAR | array_access | arrayBi_ac
 while_loop: WHILE (OPEN_PARENTHESIS (expression|comparison) CLOSE_PARENTHESIS | (expression|comparison) ) DO BEGIN statement_bucle* END;
 
 // If Statement
-if_statement: IF (expression|comparison) THEN (statement | BEGIN statements END) (ELSE (statement | BEGIN statements END))?;
+if_statement: IF (expression|comparison) THEN (if_statement2 | BEGIN if_statement2* END) (ELSE (else_statement | BEGIN else_statement* END))?;
+
+else_statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | read_call | readln_call;
+
+if_statement2: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | read_call | readln_call;
 
 // General Statement
 statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | read_call | readln_call;

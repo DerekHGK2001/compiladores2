@@ -149,6 +149,18 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIf_statement(InterpreterParser.If_statementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#else_statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElse_statement(InterpreterParser.Else_statementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#if_statement2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIf_statement2(InterpreterParser.If_statement2Context ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#statement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

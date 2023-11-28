@@ -496,6 +496,7 @@ public class visitors extends InterpreterBaseVisitor {
 
         eliminarVariable_Constante_arreglo(getAmbito());
         restarAmbito();
+        functionEntry = null;
         return null;
     }
 
@@ -653,6 +654,12 @@ public class visitors extends InterpreterBaseVisitor {
 
         if(ctx.if_statement()!=null){
             visit(ctx.if_statement());
+
+            if(ctx.if_statement().else_statement()!=null){
+                for(int i = 0; i<ctx.if_statement().else_statement().size(); i++){
+                    visit(ctx.if_statement().else_statement(i));
+                }
+            }
         }
 
         if(ctx.read_call()!=null){
@@ -1370,8 +1377,106 @@ public class visitors extends InterpreterBaseVisitor {
 
         }
 
-        if(ctx.variable_init()!=null){
-            visit(ctx.variable_init());
+        if(functionEntry!=null && ctx.variable_init()!=null){
+            if(ctx.variable_init().ID(0).getText().equals(functionEntry.getName())){
+                retorna = true;
+
+                if(ctx.variable_init().ID(1)!=null){
+                    if(symbolVariableTable.containsKey(ctx.variable_init().ID(1).getText())){
+                        EntryVariable entry = (EntryVariable) symbolVariableTable.get(ctx.variable_init().ID(1).getText());
+                        String secondTypeId = entry.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                        }
+                    }else if(symbolConstTable.containsKey(ctx.variable_init().ID(1).getText())){
+                        EntryVariable entry = (EntryVariable) symbolConstTable.get(ctx.variable_init().ID(1).getText());
+                        String secondTypeId = entry.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                        }
+                    }
+                    else{
+                        listaErrores.add("Error: La variable o constante '" + ctx.variable_init().ID(1).getText() + "' no existe.");
+                    }
+                }
+
+                if(ctx.variable_init().NUMBER()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("integer")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                    }
+                }
+
+                if(ctx.variable_init().TEXT()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("string")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un String.");
+                    }
+                }
+
+                if(ctx.variable_init().CHAR()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("char")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Char.");
+                    }
+                }
+
+                if(ctx.variable_init().BOOLEANVALUE()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("boolean")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Boolean.");
+                    }
+                }
+
+                if(ctx.variable_init().simple_expression()!=null){
+                    visit(ctx.variable_init().simple_expression());
+                    if (!functionEntry.getType().equalsIgnoreCase("integer")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                    }
+                }
+
+                if(ctx.variable_init().function_Call()!=null){
+                    listaErrores.add("Error: Una funcion no puede retornar otra funcion.");
+                }
+
+                if(ctx.variable_init().array_access()!=null){
+                    if(symbolArrayTable.containsKey(ctx.variable_init().array_access().ID().getText())){
+
+                        visit(ctx.variable_init().array_access());
+                        EntryArray entryArray = (EntryArray) symbolArrayTable.get(ctx.variable_init().array_access().ID().getText());
+                        String arrayType = entryArray.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(arrayType)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + arrayType + ".");
+                        }
+
+                    }else{
+                        listaErrores.add("Error: El arreglo '" + ctx.variable_init().array_access().ID().getText() + "' no existe.");
+                    }
+                }
+
+                if(ctx.variable_init().arrayBi_access()!=null){
+                    if(symbolArraybiTable.containsKey(ctx.variable_init().arrayBi_access().ID().getText())){
+
+                        visit(ctx.variable_init().arrayBi_access());
+                        EntryArrayBidi entryArray = (EntryArrayBidi) symbolArraybiTable.get(ctx.variable_init().arrayBi_access().ID().getText());
+                        String arrayType = entryArray.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(arrayType)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + arrayType + ".");
+                        }
+
+                    }else{
+                        listaErrores.add("Error: El arreglo bidimensional '" + ctx.variable_init().arrayBi_access().ID().getText() + "' no existe.");
+                    }
+                }
+
+            }else{
+                visit(ctx.variable_init());
+            }
+
+        }else{
+            if(ctx.variable_init()!=null){
+                visit(ctx.variable_init());
+            }
         }
 
         if(ctx.for_loop()!=null){
@@ -1392,6 +1497,12 @@ public class visitors extends InterpreterBaseVisitor {
 
         if(ctx.if_statement()!=null){
             visit(ctx.if_statement());
+
+            if(ctx.if_statement().else_statement()!=null){
+                for(int i = 0; i<ctx.if_statement().else_statement().size(); i++){
+                    visit(ctx.if_statement().else_statement(i));
+                }
+            }
         }
 
         if(ctx.read_call()!=null){
@@ -1409,6 +1520,313 @@ public class visitors extends InterpreterBaseVisitor {
         if(ctx.arrayBi_init()!=null){
             visit(ctx.arrayBi_init());
         }
+        return null;
+    }
+
+    @Override
+    public Object visitIf_statement2(InterpreterParser.If_statement2Context ctx) {
+
+        if(functionEntry!=null && ctx.variable_init()!=null){
+            if(ctx.variable_init().ID(0).getText().equals(functionEntry.getName())){
+
+                if(ctx.variable_init().ID(1)!=null){
+                    if(symbolVariableTable.containsKey(ctx.variable_init().ID(1).getText())){
+                        EntryVariable entry = (EntryVariable) symbolVariableTable.get(ctx.variable_init().ID(1).getText());
+                        String secondTypeId = entry.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                        }
+                    }else if(symbolConstTable.containsKey(ctx.variable_init().ID(1).getText())){
+                        EntryVariable entry = (EntryVariable) symbolConstTable.get(ctx.variable_init().ID(1).getText());
+                        String secondTypeId = entry.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                        }
+                    }
+                    else{
+                        listaErrores.add("Error: La variable o constante '" + ctx.variable_init().ID(1).getText() + "' no existe.");
+                    }
+                }
+
+                if(ctx.variable_init().NUMBER()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("integer")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                    }
+                }
+
+                if(ctx.variable_init().TEXT()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("string")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un String.");
+                    }
+                }
+
+                if(ctx.variable_init().CHAR()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("char")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Char.");
+                    }
+                }
+
+                if(ctx.variable_init().BOOLEANVALUE()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("boolean")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Boolean.");
+                    }
+                }
+
+                if(ctx.variable_init().simple_expression()!=null){
+                    visit(ctx.variable_init().simple_expression());
+                    if (!functionEntry.getType().equalsIgnoreCase("integer")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                    }
+                }
+
+                if(ctx.variable_init().function_Call()!=null){
+                    listaErrores.add("Error: Una funcion no puede retornar otra funcion.");
+                }
+
+                if(ctx.variable_init().array_access()!=null){
+                    if(symbolArrayTable.containsKey(ctx.variable_init().array_access().ID().getText())){
+
+                        visit(ctx.variable_init().array_access());
+                        EntryArray entryArray = (EntryArray) symbolArrayTable.get(ctx.variable_init().array_access().ID().getText());
+                        String arrayType = entryArray.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(arrayType)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + arrayType + ".");
+                        }
+
+                    }else{
+                        listaErrores.add("Error: El arreglo '" + ctx.variable_init().array_access().ID().getText() + "' no existe.");
+                    }
+                }
+
+                if(ctx.variable_init().arrayBi_access()!=null){
+                    if(symbolArraybiTable.containsKey(ctx.variable_init().arrayBi_access().ID().getText())){
+
+                        visit(ctx.variable_init().arrayBi_access());
+                        EntryArrayBidi entryArray = (EntryArrayBidi) symbolArraybiTable.get(ctx.variable_init().arrayBi_access().ID().getText());
+                        String arrayType = entryArray.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(arrayType)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + arrayType + ".");
+                        }
+
+                    }else{
+                        listaErrores.add("Error: El arreglo bidimensional '" + ctx.variable_init().arrayBi_access().ID().getText() + "' no existe.");
+                    }
+                }
+
+            }else{
+                visit(ctx.variable_init());
+            }
+
+        }else{
+            if(ctx.variable_init()!=null){
+                visit(ctx.variable_init());
+            }
+        }
+
+        if(ctx.array_init()!=null){
+            visit(ctx.array_init());
+        }
+
+        if(ctx.for_loop()!=null){
+            visit(ctx.for_loop());
+        }
+
+        if(ctx.while_loop()!=null){
+            visit(ctx.while_loop());
+        }
+
+        if(ctx.write()!=null){
+            visit(ctx.write());
+        }
+
+        if(ctx.writeln_stmt()!=null){
+            visit(ctx.writeln_stmt());
+        }
+
+        if(ctx.if_statement()!=null){
+            visit(ctx.if_statement());
+
+            if(ctx.if_statement().else_statement()!=null){
+                for(int i = 0; i<ctx.if_statement().else_statement().size(); i++){
+                    visit(ctx.if_statement().else_statement(i));
+                }
+            }
+        }
+
+        if(ctx.read_call()!=null){
+            visit(ctx.read_call());
+        }
+
+        if(ctx.readln_call()!=null){
+            visit(ctx.readln_call());
+        }
+
+        if(ctx.array_init()!=null){
+            visit(ctx.array_init());
+        }
+
+        if(ctx.arrayBi_init()!=null){
+            visit(ctx.arrayBi_init());
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitElse_statement(InterpreterParser.Else_statementContext ctx) {
+
+        if(functionEntry!=null && ctx.variable_init()!=null){
+            if(ctx.variable_init().ID(0).getText().equals(functionEntry.getName())){
+                retorna = true;
+
+                if(ctx.variable_init().ID(1)!=null){
+                    if(symbolVariableTable.containsKey(ctx.variable_init().ID(1).getText())){
+                        EntryVariable entry = (EntryVariable) symbolVariableTable.get(ctx.variable_init().ID(1).getText());
+                        String secondTypeId = entry.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                        }
+                    }else if(symbolConstTable.containsKey(ctx.variable_init().ID(1).getText())){
+                        EntryVariable entry = (EntryVariable) symbolConstTable.get(ctx.variable_init().ID(1).getText());
+                        String secondTypeId = entry.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(secondTypeId)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + secondTypeId + ".");
+                        }
+                    }
+                    else{
+                        listaErrores.add("Error: La variable o constante '" + ctx.variable_init().ID(1).getText() + "' no existe.");
+                    }
+                }
+
+                if(ctx.variable_init().NUMBER()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("integer")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                    }
+                }
+
+                if(ctx.variable_init().TEXT()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("string")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un String.");
+                    }
+                }
+
+                if(ctx.variable_init().CHAR()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("char")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Char.");
+                    }
+                }
+
+                if(ctx.variable_init().BOOLEANVALUE()!=null){
+                    if (!functionEntry.getType().equalsIgnoreCase("boolean")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Boolean.");
+                    }
+                }
+
+                if(ctx.variable_init().simple_expression()!=null){
+                    visit(ctx.variable_init().simple_expression());
+                    if (!functionEntry.getType().equalsIgnoreCase("integer")) {
+                        listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un Integer.");
+                    }
+                }
+
+                if(ctx.variable_init().function_Call()!=null){
+                    listaErrores.add("Error: Una funcion no puede retornar otra funcion.");
+                }
+
+                if(ctx.variable_init().array_access()!=null){
+                    if(symbolArrayTable.containsKey(ctx.variable_init().array_access().ID().getText())){
+
+                        visit(ctx.variable_init().array_access());
+                        EntryArray entryArray = (EntryArray) symbolArrayTable.get(ctx.variable_init().array_access().ID().getText());
+                        String arrayType = entryArray.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(arrayType)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + arrayType + ".");
+                        }
+
+                    }else{
+                        listaErrores.add("Error: El arreglo '" + ctx.variable_init().array_access().ID().getText() + "' no existe.");
+                    }
+                }
+
+                if(ctx.variable_init().arrayBi_access()!=null){
+                    if(symbolArraybiTable.containsKey(ctx.variable_init().arrayBi_access().ID().getText())){
+
+                        visit(ctx.variable_init().arrayBi_access());
+                        EntryArrayBidi entryArray = (EntryArrayBidi) symbolArraybiTable.get(ctx.variable_init().arrayBi_access().ID().getText());
+                        String arrayType = entryArray.getType();
+
+                        if (!functionEntry.getType().equalsIgnoreCase(arrayType)) {
+                            listaErrores.add("Error: La funcion '" + functionEntry.getName() + "' de tipo " + functionEntry.getType() + " no puede retornar un " + arrayType + ".");
+                        }
+
+                    }else{
+                        listaErrores.add("Error: El arreglo bidimensional '" + ctx.variable_init().arrayBi_access().ID().getText() + "' no existe.");
+                    }
+                }
+
+            }else{
+                visit(ctx.variable_init());
+            }
+
+        }else{
+            if(ctx.variable_init()!=null){
+                visit(ctx.variable_init());
+            }
+        }
+
+        if(ctx.array_init()!=null){
+            visit(ctx.array_init());
+        }
+
+        if(ctx.for_loop()!=null){
+            visit(ctx.for_loop());
+        }
+
+        if(ctx.while_loop()!=null){
+            visit(ctx.while_loop());
+        }
+
+        if(ctx.write()!=null){
+            visit(ctx.write());
+        }
+
+        if(ctx.writeln_stmt()!=null){
+            visit(ctx.writeln_stmt());
+        }
+
+        if(ctx.if_statement()!=null){
+            visit(ctx.if_statement());
+
+            if(ctx.if_statement().else_statement()!=null){
+                for(int i = 0; i<ctx.if_statement().else_statement().size(); i++){
+                    visit(ctx.if_statement().else_statement(i));
+                }
+            }
+        }
+
+        if(ctx.read_call()!=null){
+            visit(ctx.read_call());
+        }
+
+        if(ctx.readln_call()!=null){
+            visit(ctx.readln_call());
+        }
+
+        if(ctx.array_init()!=null){
+            visit(ctx.array_init());
+        }
+
+        if(ctx.arrayBi_init()!=null){
+            visit(ctx.arrayBi_init());
+        }
+
         return null;
     }
 
