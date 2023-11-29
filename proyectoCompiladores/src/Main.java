@@ -55,6 +55,9 @@ public class Main {
                     }
                 } else {
                     System.out.println("Análisis Semántico finalizado con éxito");
+
+                    visitorsLLVM visitorllvm = new visitorsLLVM();
+                    visitorllvm.visitProgram(programContext);
                 }
             }
         } catch (IOException e) {

@@ -9,7 +9,10 @@ program: PROGRAM ID SEMICOLON
     declarations*
     BEGIN
     statements
-    ENDPROGRAM;
+    endprogram;
+
+//end program
+endprogram: ENDP POINT;
 
 // Declarations
 declarations: ( VAR var_variables+ | CONST const_variables+ | function_declaration )+;
@@ -128,7 +131,7 @@ PROGRAM: 'program';
 PROCEDURE: 'procedure';
 BEGIN: 'begin';
 END: 'end;';
-ENDPROGRAM: 'end.';
+ENDP: 'end';
 VAR: 'var';
 CONST:'const';
 PRINTLN: 'println';

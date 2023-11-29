@@ -18,6 +18,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitProgram(InterpreterParser.ProgramContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#endprogram}.
+	 * @param ctx the parse tree
+	 */
+	void enterEndprogram(InterpreterParser.EndprogramContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#endprogram}.
+	 * @param ctx the parse tree
+	 */
+	void exitEndprogram(InterpreterParser.EndprogramContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#declarations}.
 	 * @param ctx the parse tree
 	 */

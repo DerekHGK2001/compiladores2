@@ -17,6 +17,12 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgram(InterpreterParser.ProgramContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#endprogram}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEndprogram(InterpreterParser.EndprogramContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#declarations}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
