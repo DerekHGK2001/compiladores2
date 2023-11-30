@@ -2,10 +2,7 @@ import Interpreter.*;
 import org.antlr.v4.runtime.*;
 
 import javax.swing.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.Scanner;
 
@@ -58,11 +55,77 @@ public class Main {
 
                     visitorsLLVM visitorllvm = new visitorsLLVM();
                     visitorllvm.visitProgram(programContext);
+
+
+                    try (FileWriter writer = new FileWriter("main.ll")) {
+                        writer.write(visitorllvm.getllvm());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    compileWithClang("main.ll","main");
+
+                    //compileWithExe();
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Error al leer el archivo Mini-Pascal: " + e.getMessage());
+        }
+    }
+
+
+    private static void compileWithClang(String llvmFileName, String outputFileName) {
+        try {
+            // Construir el comando para compilar con clang
+            ProcessBuilder processBuilder = new ProcessBuilder("clang", llvmFileName, "-o", outputFileName+".exe");
+
+            // Redirigir la salida y el error estándar al mismo flujo
+            processBuilder.redirectErrorStream(true);
+
+            // Ejecutar el proceso
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            // Esperar a que el proceso termine
+            int exitCode = process.waitFor();
+
+            // Verificar el código de salida
+            if (exitCode == 0) {
+                System.out.println("Compilación exitosa.");
+            } else {
+                System.err.println("Error durante la compilación. Código de salida: " + exitCode);
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void compileWithExe() {
+        try {
+            // Construir el comando para compilar con clang
+            ProcessBuilder processBuilder = new ProcessBuilder(".\\main.exe");
+
+            // Redirigir la salida y el error estándar al mismo flujo
+            processBuilder.redirectErrorStream(true);
+
+            // Ejecutar el proceso
+            Process process = processBuilder.start();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+            // Esperar a que el proceso termine
+            int exitCode = process.waitFor();
+
+            // Verificar el código de salida
+            if (exitCode == 0) {
+                System.out.println("Compilación exitosa.");
+            } else {
+                System.err.println("Error durante la compilación. Código de salida: " + exitCode);
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
