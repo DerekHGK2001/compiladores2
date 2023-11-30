@@ -14,6 +14,11 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
     private static String llvmHeader = "";
     private static String llvmBody = "";
     private static String llvmEND = "";
+    int writeI = 0;
+    int divisionI = 0;
+    int sumaI = 0;
+    int restaI = 0;
+    int multiplicacionI = 0;
 
     @Override
     public Object visitProgram(InterpreterParser.ProgramContext ctx) {
@@ -253,8 +258,6 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
         return null;
     }
-
-    int writeI = 0;
 
     @Override
     public Object visitWriteln_stmt(InterpreterParser.Writeln_stmtContext ctx) {
@@ -501,6 +504,17 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                 llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\00\\00\"\n";
             }
         }
+        return null;
+    }
+
+    @Override
+    public Object visitSimple_expression(InterpreterParser.Simple_expressionContext ctx) {
+
+        int seguidor = 0;
+        for(int i=0; i<ctx.factor().size(); i++){
+
+        }
+
         return null;
     }
 
