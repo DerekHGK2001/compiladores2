@@ -69,7 +69,7 @@ for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (statement_
 // Write Line Statement
 writeln_stmt: WRITELN OPEN_PARENTHESIS write_contain (COMMA write_contain)* CLOSE_PARENTHESIS SEMICOLON;
 
-write_contain: ID | TEXTWRITE | array_access | arrayBi_access;
+write_contain: ID | TEXTWRITE | CHAR | array_access | arrayBi_access;
 
 // Write Statement
 write: WRITE OPEN_PARENTHESIS write_contain (COMMA write_contain)* CLOSE_PARENTHESIS SEMICOLON;

@@ -285,13 +285,21 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                     llvmBody+="%formato_entero_"+writeI+"_"+idTerm+ " = getelementptr [4 x i8], [4 x i8]* @formato_entero_"+writeI+"_"+idTerm+ ", i32 0, i32 0\n";
                     llvmBody+="call i32 (i8*, ...) @printf(i8* %formato_entero_" +writeI+"_"+idTerm+ ", i32 %valorImp_" +writeI+"_"+idTerm+ ")\n";
 
-                    llvmEND+="@formato_entero_"+writeI+"_"+idTerm+ " = constant [4 x i8] c\"%d\\0a\\00\"\n";
+                    if(ii==ctx.write_contain().size()-1){
+                        llvmEND+="@formato_entero_"+writeI+"_"+idTerm+ " = constant [4 x i8] c\"%d\\0a\\00\"\n";
+                    }else{
+                        llvmEND+="@formato_entero_"+writeI+"_"+idTerm+ " = constant [4 x i8] c\"%d\\00\\00\"\n";
+                    }
                 }
                 if(tipo.equalsIgnoreCase("string")){
                     llvmBody+="%valorImp1_"+writeI+"_"+idTerm+ " = getelementptr [100 x i8], [100 x i8]* %" + idTerm + ", i32 0, i32 0\n";
                     llvmBody+="%valorImp2_"+writeI+"_"+idTerm+ " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @formato_" +writeI+"_"+idTerm+ ", i32 0, i32 0), i8* %valorImp1_" +writeI+"_"+idTerm+ ") \n";
 
-                    llvmEND+="@formato_"+writeI+"_"+idTerm+ " = private unnamed_addr constant [4 x i8] c\"%s\\0a\\00\"\n";
+                    if(ii==ctx.write_contain().size()-1){
+                        llvmEND+="@formato_"+writeI+"_"+idTerm+ " = private unnamed_addr constant [4 x i8] c\"%s\\0a\\00\"\n";
+                    }else{
+                        llvmEND+="@formato_"+writeI+"_"+idTerm+ " = private unnamed_addr constant [4 x i8] c\"%s\\00\\00\"\n";
+                    }
                 }
                 if(tipo.equalsIgnoreCase("char")){
 
@@ -299,7 +307,11 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                     llvmBody+="%formato_caracter_"+writeI+"_"+idTerm+ " = getelementptr [4 x i8], [4 x i8]* @formato_caracter_" +writeI+"_"+idTerm+ ", i32 0, i32 0\n";
                     llvmBody+="call i32 (i8*, ...) @printf(i8* %formato_caracter_" +writeI+"_"+idTerm+ ", i8 %valorImp_" +writeI+"_"+idTerm+ ")\n";
 
-                    llvmEND+="@formato_caracter_"+writeI+"_"+idTerm+ " = constant [4 x i8] c\"%c\\0a\\00\"\n";
+                    if(ii==ctx.write_contain().size()-1){
+                        llvmEND+="@formato_caracter_"+writeI+"_"+idTerm+ " = constant [4 x i8] c\"%c\\0a\\00\"\n";
+                    }else{
+                        llvmEND+="@formato_caracter_"+writeI+"_"+idTerm+ " = constant [4 x i8] c\"%c\\00\\00\"\n";
+                    }
 
                 }
                 if(tipo.equalsIgnoreCase("boolean")){
@@ -307,7 +319,11 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                     llvmBody+="%formato_booleano_"+writeI+"_"+idTerm+ " = getelementptr [4 x i8], [4 x i8]* @formato_booleano_" +writeI+"_"+idTerm+ ", i32 0, i32 0\n";
                     llvmBody+="call i32 (i8*, ...) @printf(i8* %formato_booleano_" +writeI+"_"+idTerm+ ", i1 %valorImp_" +writeI+"_"+idTerm+ ")\n";
 
-                    llvmEND+="@formato_booleano_"+writeI+"_"+idTerm+ " = constant [4 x i8] c\"%d\\0a\\00\"\n";
+                    if(ii==ctx.write_contain().size()-1){
+                        llvmEND+="@formato_booleano_"+writeI+"_"+idTerm+ " = constant [4 x i8] c\"%d\\0a\\00\"\n";
+                    }else{
+                        llvmEND+="@formato_booleano_"+writeI+"_"+idTerm+ " = constant [4 x i8] c\"%d\\00\\00\"\n";
+                    }
 
                 }
             }
@@ -336,7 +352,42 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                 llvmBody+="%valorImp1_write" + writeI + " = getelementptr [100 x i8], [100 x i8]* %write" + writeI + ", i32 0, i32 0\n";
                 llvmBody+="%valorImp2_write" + writeI + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @formato_write" + writeI + ", i32 0, i32 0), i8* %valorImp1_write" + writeI + ") \n";
 
-                llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\0a\\00\"\n";
+                if(ii==ctx.write_contain().size()-1){
+                    llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\0a\\00\"\n";
+                }else{
+                    llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\00\\00\"\n";
+                }
+            }
+
+            if(ctx.write_contain(ii).CHAR()!=null){
+
+                llvmBody+="%write" + writeI + " = alloca [100 x i8], align 1\n";
+                llvmBody+="%valor_write" + writeI + " = getelementptr [100 x i8], [100 x i8]* %write"+writeI + ", i32 0, i32 0\n";
+                llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_write" + writeI + ", i8 0, i32 20, i1 false)\n";
+                llvmBody+="call void @strcpy(i8* %valor_write" + writeI + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_write" + writeI + ", i32 0, i32 0))\n";
+
+                if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
+                    llvmDeclarations+="declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0\n\n";
+                }
+
+                if(!llvmDeclarations.contains("declare i8* @strcpy(i8*, i8*) #1")){
+                    llvmDeclarations+="declare i8* @strcpy(i8*, i8*) #1\n\n";
+                }
+
+                //@mensaje = private unnamed_addr constant [ 20 x i8] c"Hola,Mama que tal!\0A\00"
+                String mensaje = ctx.write_contain(ii).CHAR().getText().replace("\'","");
+
+                int mensajeSize = mensaje.length()+2;
+                llvmEND+="@mensaje_write" + writeI +" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\00\\00\"\n\n";
+
+                llvmBody+="%valorImp1_write" + writeI + " = getelementptr [100 x i8], [100 x i8]* %write" + writeI + ", i32 0, i32 0\n";
+                llvmBody+="%valorImp2_write" + writeI + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @formato_write" + writeI + ", i32 0, i32 0), i8* %valorImp1_write" + writeI + ") \n";
+
+                if(ii==ctx.write_contain().size()-1){
+                    llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\0a\\00\"\n";
+                }else{
+                    llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\00\\00\"\n";
+                }
             }
         }
         return null;
@@ -398,7 +449,6 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
             }
 
             if(ctx.write_contain(ii).TEXTWRITE()!=null){
-                if(ctx.write_contain(ii).TEXTWRITE()!=null){
                     llvmBody+="%write" + writeI + " = alloca [100 x i8], align 1\n";
                     llvmBody+="%valor_write" + writeI + " = getelementptr [100 x i8], [100 x i8]* %write"+writeI + ", i32 0, i32 0\n";
                     llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_write" + writeI + ", i8 0, i32 20, i1 false)\n";
@@ -421,8 +471,34 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                     llvmBody+="%valorImp1_write" + writeI + " = getelementptr [100 x i8], [100 x i8]* %write" + writeI + ", i32 0, i32 0\n";
                     llvmBody+="%valorImp2_write" + writeI + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @formato_write" + writeI + ", i32 0, i32 0), i8* %valorImp1_write" + writeI + ") \n";
 
-                    llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\0a\\00\"\n";
+                    llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\00\\00\"\n";
+            }
+
+            if(ctx.write_contain(ii).CHAR()!=null){
+
+                llvmBody+="%write" + writeI + " = alloca [100 x i8], align 1\n";
+                llvmBody+="%valor_write" + writeI + " = getelementptr [100 x i8], [100 x i8]* %write"+writeI + ", i32 0, i32 0\n";
+                llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_write" + writeI + ", i8 0, i32 20, i1 false)\n";
+                llvmBody+="call void @strcpy(i8* %valor_write" + writeI + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_write" + writeI + ", i32 0, i32 0))\n";
+
+                if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
+                    llvmDeclarations+="declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0\n\n";
                 }
+
+                if(!llvmDeclarations.contains("declare i8* @strcpy(i8*, i8*) #1")){
+                    llvmDeclarations+="declare i8* @strcpy(i8*, i8*) #1\n\n";
+                }
+
+                //@mensaje = private unnamed_addr constant [ 20 x i8] c"Hola,Mama que tal!\0A\00"
+                String mensaje = ctx.write_contain(ii).CHAR().getText().replace("\'","");
+
+                int mensajeSize = mensaje.length()+2;
+                llvmEND+="@mensaje_write" + writeI +" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\00\\00\"\n\n";
+
+                llvmBody+="%valorImp1_write" + writeI + " = getelementptr [100 x i8], [100 x i8]* %write" + writeI + ", i32 0, i32 0\n";
+                llvmBody+="%valorImp2_write" + writeI + " = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([8 x i8], [8 x i8]* @formato_write" + writeI + ", i32 0, i32 0), i8* %valorImp1_write" + writeI + ") \n";
+
+                llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\00\\00\"\n";
             }
         }
         return null;
