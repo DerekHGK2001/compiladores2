@@ -137,6 +137,12 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWriteln_stmt(InterpreterParser.Writeln_stmtContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#write_contain}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWrite_contain(InterpreterParser.Write_containContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#write}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

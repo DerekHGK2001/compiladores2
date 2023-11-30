@@ -218,6 +218,16 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitWriteln_stmt(InterpreterParser.Writeln_stmtContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#write_contain}.
+	 * @param ctx the parse tree
+	 */
+	void enterWrite_contain(InterpreterParser.Write_containContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#write_contain}.
+	 * @param ctx the parse tree
+	 */
+	void exitWrite_contain(InterpreterParser.Write_containContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#write}.
 	 * @param ctx the parse tree
 	 */

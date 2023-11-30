@@ -269,6 +269,18 @@ public class InterpreterBaseListener implements InterpreterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterWrite_contain(InterpreterParser.Write_containContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWrite_contain(InterpreterParser.Write_containContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterWrite(InterpreterParser.WriteContext ctx) { }
 	/**
 	 * {@inheritDoc}

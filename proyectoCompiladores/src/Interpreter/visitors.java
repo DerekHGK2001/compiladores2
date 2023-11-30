@@ -1165,32 +1165,28 @@ public class visitors extends InterpreterBaseVisitor {
     @Override
     public Object visitWriteln_stmt(InterpreterParser.Writeln_stmtContext ctx) {
 
-        if(ctx.ID()!=null){
-            for(int i =0; i<ctx.ID().size();i++){
-                String idTerm = ctx.ID(i).getText();
+        for(int ii = 0; ii<ctx.write_contain().size();ii++){
+            if(ctx.write_contain(ii).ID()!=null){
+                String idTerm = ctx.write_contain(ii).ID().getText();
                 if(!exist(idTerm)){
                     listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
                 }
             }
-        }
 
-        if(ctx.array_access()!=null){
-            for(int i =0; i<ctx.array_access().size();i++){
-                String idTerm = ctx.array_access(i).ID().getText();
+            if(ctx.write_contain(ii).array_access()!=null){
+                String idTerm = ctx.write_contain(ii).array_access().ID().getText();
                 if(!symbolArrayTable.containsKey(idTerm)){
                     listaErrores.add("Error: El arreglo '" + idTerm + "' no existe.");
                 }else
-                    visit(ctx.array_access(i));
+                    visit(ctx.write_contain(ii).array_access());
             }
-        }
 
-        if(ctx.arrayBi_access()!=null){
-            for(int i =0; i<ctx.arrayBi_access().size();i++){
-                String idTerm = ctx.arrayBi_access(i).ID().getText();
+            if(ctx.write_contain(ii).arrayBi_access()!=null){
+                String idTerm = ctx.write_contain(ii).arrayBi_access().ID().getText();
                 if(!symbolArraybiTable.containsKey(idTerm)){
                     listaErrores.add("Error: El arreglo bidimensional '" + idTerm + "' no existe.");
                 }else
-                    visit(ctx.arrayBi_access(i));
+                    visit(ctx.write_contain(ii).arrayBi_access());
             }
         }
         return null;
@@ -1199,32 +1195,28 @@ public class visitors extends InterpreterBaseVisitor {
     @Override
     public Object visitWrite(InterpreterParser.WriteContext ctx) {
 
-        if(ctx.ID()!=null){
-            for(int i =0; i<ctx.ID().size();i++){
-                String idTerm = ctx.ID(i).getText();
+        for(int ii = 0; ii<ctx.write_contain().size();ii++){
+            if(ctx.write_contain(ii).ID()!=null){
+                String idTerm = ctx.write_contain(ii).ID().getText();
                 if(!exist(idTerm)){
                     listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
                 }
             }
-        }
 
-        if(ctx.array_access()!=null){
-            for(int i =0; i<ctx.array_access().size();i++){
-                String idTerm = ctx.array_access(i).ID().getText();
+            if(ctx.write_contain(ii).array_access()!=null){
+                String idTerm = ctx.write_contain(ii).array_access().ID().getText();
                 if(!symbolArrayTable.containsKey(idTerm)){
                     listaErrores.add("Error: El arreglo '" + idTerm + "' no existe.");
                 }else
-                    visit(ctx.array_access(i));
+                    visit(ctx.write_contain(ii).array_access());
             }
-        }
 
-        if(ctx.arrayBi_access()!=null){
-            for(int i =0; i<ctx.arrayBi_access().size();i++){
-                String idTerm = ctx.arrayBi_access(i).ID().getText();
+            if(ctx.write_contain(ii).arrayBi_access()!=null){
+                String idTerm = ctx.write_contain(ii).arrayBi_access().ID().getText();
                 if(!symbolArraybiTable.containsKey(idTerm)){
                     listaErrores.add("Error: El arreglo bidimensional '" + idTerm + "' no existe.");
                 }else
-                    visit(ctx.arrayBi_access(i));
+                    visit(ctx.write_contain(ii).arrayBi_access());
             }
         }
         return null;

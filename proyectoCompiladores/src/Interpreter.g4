@@ -67,10 +67,12 @@ arrayBi_access: ID OPEN_BRACKET index COMMA index CLOSE_BRACKET;
 for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (statement_bucle | BEGIN statement_bucle* END);
 
 // Write Line Statement
-writeln_stmt: WRITELN OPEN_PARENTHESIS (ID | TEXTWRITE | CHAR | array_access | arrayBi_access) (COMMA (ID | TEXTWRITE | CHAR | array_access | arrayBi_access ))* CLOSE_PARENTHESIS SEMICOLON;
+writeln_stmt: WRITELN OPEN_PARENTHESIS write_contain (COMMA write_contain)* CLOSE_PARENTHESIS SEMICOLON;
+
+write_contain: ID | TEXTWRITE | array_access | arrayBi_access;
 
 // Write Statement
-write: WRITE OPEN_PARENTHESIS (ID | TEXTWRITE | CHAR | array_access | arrayBi_access) (COMMA (ID | TEXTWRITE | CHAR | array_access | arrayBi_access))* CLOSE_PARENTHESIS SEMICOLON;
+write: WRITE OPEN_PARENTHESIS write_contain (COMMA write_contain)* CLOSE_PARENTHESIS SEMICOLON;
 
 // While Loop
 while_loop: WHILE (OPEN_PARENTHESIS (expression|comparison) CLOSE_PARENTHESIS | (expression|comparison) ) DO BEGIN statement_bucle* END;

@@ -165,6 +165,13 @@ public class InterpreterBaseVisitor<T> extends AbstractParseTreeVisitor<T> imple
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitWrite_contain(InterpreterParser.Write_containContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitWrite(InterpreterParser.WriteContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
