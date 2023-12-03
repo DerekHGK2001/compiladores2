@@ -271,18 +271,18 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
         if(ctx.factor(0).ID()!=null){
 
             if(!llvmBody.contains("%valorID_" + expI + ctx.factor(0).ID().getText()))
-                llvmBody+="%valorID_" + expI + ctx.factor(0).ID().getText() + " = load i32, i32* %resultado_sumar\n";
+                llvmBody+="%valorID_" + expI + ctx.factor(0).ID().getText() + " = load i32, i32* %" + ctx.factor(0).ID().getText() + "\n";
         }
         if(ctx.factor(1).ID()!=null){
             if(!llvmBody.contains("%valorID_" + expI + ctx.factor(1).ID().getText()))
-                llvmBody+="%valorID_" + expI + ctx.factor(1).ID().getText() + " = load i32, i32* %resultado_sumar\n";
+                llvmBody+="%valorID_" + expI + ctx.factor(1).ID().getText() + " = load i32, i32* %" + ctx.factor(1).ID().getText() + "\n";
         }
 
         if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("+")){
             if(ctx.factor(0).NUMBER()!=null){
                 llvmBody+="%suma_"+expI+" = add i32 "+Integer.parseInt(ctx.factor(0).NUMBER().getText());
             }else if(ctx.factor(0).ID()!=null){
-                llvmBody+="%valorID_" + expI + ctx.factor(0).ID().getText();
+                llvmBody+="%suma_"+expI+" = add i32 %valorID_" + expI + ctx.factor(0).ID().getText();
             }
             if(ctx.factor(1).NUMBER()!=null){
                 llvmBody+=", "+Integer.parseInt(ctx.factor(1).NUMBER().getText())+"\n";
@@ -296,7 +296,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
             if(ctx.factor(0).NUMBER()!=null){
                 llvmBody+="%resta_"+expI+" = sub i32 "+Integer.parseInt(ctx.factor(0).NUMBER().getText());
             }else if(ctx.factor(0).ID()!=null){
-                llvmBody+="%valorID_" + expI + ctx.factor(0).ID().getText();
+                llvmBody+="%resta_"+expI+" = sub i32 %valorID_" + expI + ctx.factor(0).ID().getText();
             }
             if(ctx.factor(1).NUMBER()!=null){
                 llvmBody+=", "+Integer.parseInt(ctx.factor(1).NUMBER().getText())+"\n";
@@ -342,7 +342,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
                 if(ctx.factor(i).ID()!=null){
                     if(!llvmBody.contains("%valorID_" + expI + ctx.factor(i).ID().getText()))
-                        llvmBody+="%valorID_" + expI + ctx.factor(i).ID().getText() + " = load i32, i32* %resultado_sumar\n";
+                        llvmBody+="%valorID_" + expI + ctx.factor(i).ID().getText() + " = load i32, i32* %" + ctx.factor(i).ID().getText() + "\n";
                 }
 
                 if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("+")){
