@@ -14,11 +14,9 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
     private static String llvmHeader = "";
     private static String llvmBody = "";
     private static String llvmEND = "";
-    int writeI = 0;
-    int divisionI = 0;
-    int sumaI = 0;
-    int restaI = 0;
-    int multiplicacionI = 0;
+    private static int writeI = 0;
+    private static int expI = 0;
+    private static String variable = "";
 
     @Override
     public Object visitProgram(InterpreterParser.ProgramContext ctx) {
@@ -118,6 +116,8 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
         String firstId = idNodes.get(0).getText();
         EntryVariable entry1 = (EntryVariable) symbolVariableTable.get(firstId);
         String firstTypeId = entry1.getType();
+
+        variable = firstId;
 
         if (idNodes.size() == 2) {
             String secondId = idNodes.get(1).getText();
@@ -253,7 +253,143 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
         }
 
         if(ctx.simple_expression()!=null){
+            variable = firstId;
+            visit(ctx.simple_expression());
+        }
 
+        return null;
+    }
+
+    @Override
+    public Object visitSimple_expression(InterpreterParser.Simple_expressionContext ctx) {
+
+        expI++;
+
+        int indexO = 0;
+        String nameOperatorV = "";
+
+        if(ctx.factor(0).ID()!=null){
+
+            if(!llvmBody.contains("%valorID_" + expI + ctx.factor(0).ID().getText()))
+                llvmBody+="%valorID_" + expI + ctx.factor(0).ID().getText() + " = load i32, i32* %resultado_sumar\n";
+        }
+        if(ctx.factor(1).ID()!=null){
+            if(!llvmBody.contains("%valorID_" + expI + ctx.factor(1).ID().getText()))
+                llvmBody+="%valorID_" + expI + ctx.factor(1).ID().getText() + " = load i32, i32* %resultado_sumar\n";
+        }
+
+        if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("+")){
+            if(ctx.factor(0).NUMBER()!=null){
+                llvmBody+="%suma_"+expI+" = add i32 "+Integer.parseInt(ctx.factor(0).NUMBER().getText());
+            }else if(ctx.factor(0).ID()!=null){
+                llvmBody+="%valorID_" + expI + ctx.factor(0).ID().getText();
+            }
+            if(ctx.factor(1).NUMBER()!=null){
+                llvmBody+=", "+Integer.parseInt(ctx.factor(1).NUMBER().getText())+"\n";
+            }else if(ctx.factor(1).ID()!=null){
+                llvmBody+=", %valorID_" + expI + ctx.factor(1).ID().getText()+"\n";
+            }
+            llvmBody+="store i32 %suma_"+expI+ ", i32* %"+variable + "\n";
+            nameOperatorV="suma_"+expI;
+        }
+        if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("-")){
+            if(ctx.factor(0).NUMBER()!=null){
+                llvmBody+="%resta_"+expI+" = sub i32 "+Integer.parseInt(ctx.factor(0).NUMBER().getText());
+            }else if(ctx.factor(0).ID()!=null){
+                llvmBody+="%valorID_" + expI + ctx.factor(0).ID().getText();
+            }
+            if(ctx.factor(1).NUMBER()!=null){
+                llvmBody+=", "+Integer.parseInt(ctx.factor(1).NUMBER().getText())+"\n";
+            }else if(ctx.factor(1).ID()!=null){
+                llvmBody+=", %valorID_" + expI + ctx.factor(1).ID().getText()+"\n";
+            }
+            llvmBody+="store i32 %resta_"+expI+ ", i32* %"+variable + "\n";
+            nameOperatorV="resta_"+expI;
+        }
+        if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("*")){
+
+            if(ctx.factor(0).NUMBER()!=null){
+                llvmBody+="%multiplicacion_"+expI+" = mul i32 "+Integer.parseInt(ctx.factor(0).NUMBER().getText());
+            }else if(ctx.factor(0).ID()!=null){
+                llvmBody+="%multiplicacion_"+expI+" = mul i32 %valorID_" + expI + ctx.factor(0).ID().getText();
+            }
+            if(ctx.factor(1).NUMBER()!=null){
+                llvmBody+=", "+Integer.parseInt(ctx.factor(1).NUMBER().getText())+"\n";
+            }else if(ctx.factor(0).ID()!=null){
+                llvmBody+=", %valorID_" + expI + ctx.factor(1).ID().getText()+"\n";
+            }
+            llvmBody+="store i32 %multiplicacion_"+expI+ ", i32* %"+variable + "\n";
+            nameOperatorV="multiplicacion_"+expI;
+        }
+        if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("/")){
+            if(ctx.factor(0).NUMBER()!=null){
+                llvmBody+="%division_"+expI+" = sdiv i32 "+Integer.parseInt(ctx.factor(0).NUMBER().getText());
+            }else if(ctx.factor(0).ID()!=null){
+                llvmBody+="%division_"+expI+" = sdiv i32 %valorID_" + expI + ctx.factor(0).ID().getText();
+            }
+            if(ctx.factor(1).NUMBER()!=null){
+                llvmBody+=", "+Integer.parseInt(ctx.factor(1).NUMBER().getText())+"\n";
+            }else if(ctx.factor(1).ID()!=null){
+                llvmBody+=", %valorID_" + expI + ctx.factor(1).ID().getText()+"\n";
+            }
+            llvmBody+="store i32 %division_"+expI+ ", i32* %"+variable + "\n";
+            nameOperatorV="division_"+expI;
+        }
+
+        if(ctx.factor().size()>1){
+            for(int i=2;i<ctx.factor().size();i++){
+                indexO++;
+
+                if(ctx.factor(i).ID()!=null){
+                    if(!llvmBody.contains("%valorID_" + expI + ctx.factor(i).ID().getText()))
+                        llvmBody+="%valorID_" + expI + ctx.factor(i).ID().getText() + " = load i32, i32* %resultado_sumar\n";
+                }
+
+                if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("+")){
+
+                    llvmBody+="%suma_"+expI+ "_"+ i +" = add i32 %"+nameOperatorV;
+
+                    if(ctx.factor(i).NUMBER()!=null){
+                        llvmBody+=", "+Integer.parseInt(ctx.factor(i).NUMBER().getText())+"\n";
+                    }else if(ctx.factor(i).ID()!=null){
+                        llvmBody+=", %valorID_" + expI + ctx.factor(i).ID().getText()+"\n";
+                    }
+                    llvmBody+="store i32 %suma_"+expI+ "_"+ i +", i32* %"+variable + "\n";
+                    nameOperatorV="suma_"+expI+ "_"+i;
+                }
+                if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("-")){
+
+                    llvmBody+="%resta_"+expI+ "_"+ i +" = sub i32 %"+nameOperatorV;
+
+                    if(ctx.factor(i).NUMBER()!=null){
+                        llvmBody+=", "+Integer.parseInt(ctx.factor(i).NUMBER().getText())+"\n";
+                    }else if(ctx.factor(i).ID()!=null){
+                        llvmBody+=", %valorID_" + expI + ctx.factor(i).ID().getText()+"\n";
+                    }
+                    llvmBody+="store i32 %resta_"+expI+ "_"+ i +", i32* %"+variable + "\n";
+                    nameOperatorV="resta_"+expI+ "_"+i;
+                }
+                if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("*")){
+                    llvmBody+="%multiplicacion_"+expI+ "_"+ i +" = mul i32 %"+nameOperatorV;
+                    if(ctx.factor(i).NUMBER()!=null){
+                        llvmBody+=", "+Integer.parseInt(ctx.factor(i).NUMBER().getText())+"\n";
+                    }else if(ctx.factor(i).ID()!=null){
+                        llvmBody+=", %valorID_" + expI + ctx.factor(i).ID().getText()+"\n";
+                    }
+                    llvmBody+="store i32 %multiplicacion_"+expI+ "_"+ i +", i32* %"+variable + "\n";
+                    nameOperatorV="multiplicacion_"+expI+ "_"+i;
+                }
+                if(ctx.operaciones_simples(indexO).getText().equalsIgnoreCase("/")){
+                    llvmBody+="%division_"+expI+ "_"+ i +" = sdiv i32 %"+nameOperatorV;
+                    if(ctx.factor(i).NUMBER()!=null){
+                        llvmBody+=", "+Integer.parseInt(ctx.factor(i).NUMBER().getText())+"\n";
+                    }else if(ctx.factor(i).ID()!=null){
+                        llvmBody+=", %valorID_" + expI + ctx.factor(i).ID().getText()+"\n";
+                    }
+                    llvmBody+="store i32 %division_"+expI+ "_"+ i +", i32* %"+variable + "\n";
+                    nameOperatorV="division_"+expI+ "_"+i;
+                }
+            }
         }
 
         return null;
@@ -504,17 +640,6 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                 llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\00\\00\"\n";
             }
         }
-        return null;
-    }
-
-    @Override
-    public Object visitSimple_expression(InterpreterParser.Simple_expressionContext ctx) {
-
-        int seguidor = 0;
-        for(int i=0; i<ctx.factor().size(); i++){
-
-        }
-
         return null;
     }
 

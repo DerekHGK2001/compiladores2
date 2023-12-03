@@ -61,7 +61,7 @@ public class InterpreterParser extends Parser {
 			null, "'readln'", "'read'", "'to'", "'of'", "'downto'", "'program'", 
 			"'procedure'", "'begin'", "'end;'", "'end'", "'var'", "'const'", "'println'", 
 			"','", "'for'", "'while'", null, "'do'", "'array'", "'writeln'", "'write'", 
-			"'+'", "'-'", null, "'/'", "'else'", "'if'", "'then'", "'and'", "'or'", 
+			"'+'", "'-'", null, null, "'else'", "'if'", "'then'", "'and'", "'or'", 
 			"'not'", "'function'", "'>'", "'<'", "'>='", "'<='", "'='", "'<>'", null, 
 			"':='", "':'", "'..'", "'.'", "'('", "')'", "'['", "']'", "';'"
 		};
