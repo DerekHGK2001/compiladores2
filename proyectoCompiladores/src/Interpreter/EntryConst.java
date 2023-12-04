@@ -3,6 +3,7 @@ package Interpreter;
 public class EntryConst extends SymbolEntry {
     private String name;
     private String type;
+    private int value;
 
     public EntryConst(String name, String type, int ambit) {
         super(ambit);
@@ -16,5 +17,13 @@ public class EntryConst extends SymbolEntry {
 
     public String getType() {
         return type;
+    }
+
+    public void setValue(int value){
+        this.value=value;
+    }
+
+    public int getValue() {
+        return value;
     }
 }

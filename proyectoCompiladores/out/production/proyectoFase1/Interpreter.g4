@@ -47,7 +47,7 @@ const_variables: const_variable_declaration;
 statements: statement*;
 
 // Variable Initialization
-variable_init: ID ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+variable_init: ID ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | array_access | arrayBi_access | simple_expression | function_Call) SEMICOLON;
 
 // Array Initialization
 array_init: array_access ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
