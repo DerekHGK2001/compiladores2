@@ -1526,16 +1526,16 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                }
            }
         }
+        int inElse = ifStatement;
+        llvmBody+="br i1 %condicion_" + ifStatement + ", label %bloque_then_" + ifStatement + ", label %bloque_else_" + ifStatement + "\n";
 
-        llvmBody+="br i1 %condicion_" + ifStatement + ", label %bloque_then, label %bloque_else \n";
-
-        llvmBody+="bloque_then: \n";
+        llvmBody+="bloque_then_" + ifStatement + ":\n";
         for(int ii = 0; ii<ctx.if_statement2().size(); ii++){
             visit(ctx.if_statement2(ii));
         }
         llvmBody+="br label %fin_if \n";
 
-        llvmBody+="bloque_else: \n";
+        llvmBody+="bloque_else_" + inElse + ":\n";
         for(int ii = 0; ii<ctx.else_statement().size(); ii++){
             visit(ctx.else_statement(ii));
         }
