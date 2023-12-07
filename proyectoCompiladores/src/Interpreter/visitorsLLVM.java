@@ -17,6 +17,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
     private static String llvmEND = "";
     private static int writeI = 0;
     private static int expI = 0;
+    private static int ifStatement = 0;
     private static String variable = "";
 
     @Override
@@ -1309,6 +1310,238 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                 llvmEND+="@formato_write" + writeI + " = private unnamed_addr constant [4 x i8] c\"%s\\00\\00\"\n";
             }
         }
+        return null;
+    }
+
+    @Override
+    public Object visitIf_statement(InterpreterParser.If_statementContext ctx) {
+        ifStatement++;
+        String tipo = "";
+        String llvm2 = "";
+        if(ctx.comparison()!=null){
+
+           for(int i=0; i<ctx.comparison().terms().size(); i++){
+               if(ctx.comparison().terms(i).TEXT()!=null){
+                   String firstId = "compTexto_"+ifStatement + "_" + i;
+
+                   llvmBody+="%" + firstId + " = alloca [100 x i8], align 1\n";
+
+                   llvmBody+="%valor_" + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                   llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + firstId + ", i8 0, i32 20, i1 false)\n";
+                   llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + firstId + ", i32 0, i32 0))\n";
+
+                   if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
+                       llvmDeclarations+="declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0\n\n";
+                   }
+                   if(!llvmDeclarations.contains("declare i8* @strcpy(i8*, i8*) #1")){
+                       llvmDeclarations+="declare i8* @strcpy(i8*, i8*) #1\n\n";
+                   }
+
+                   String mensaje = ctx.comparison().terms(i).TEXT().getText().replace("\"","");
+
+                   int mensajeSize = mensaje.length()+2;
+                   llvmEND+="@mensaje_"+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\00\\00\"\n\n";
+
+                   if(i==0){
+                       llvm2+="%camp_result"+ ifStatement + " = call i32 @strcmp(i8* %valor_" + firstId;
+                   }else{
+                       llvm2+=", i8* %valor_" + firstId + ")"  + "\n";
+                   }
+
+                   if(!llvmDeclarations.contains("declare i32 @strcmp(i8*, i8*)")){
+                       llvmDeclarations+="declare i32 @strcmp(i8*, i8*)\n\n";
+                   }
+                   //%condicion_1 = icmp eq i32 %comp_result, 0
+                   if(i==1){
+                       llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %camp_result" + ifStatement + ", 0\n";
+                   }
+
+               }
+               if(ctx.comparison().terms(i).NUMBER()!=null){
+
+                   if(i==0){
+                       llvm2+="%condicion_" + ifStatement + " = icmp eq i32 " + Integer.parseInt(ctx.comparison().terms(i).NUMBER().getText());
+                   }else{
+                       llvm2+= ", " + Integer.parseInt(ctx.comparison().terms(i).NUMBER().getText()) + "\n";
+                   }
+
+               }
+               if(ctx.comparison().terms(i).ID()!=null){
+                   String idname = ctx.comparison().terms(i).getText();
+                   if(symbolVariableTable.containsKey(idname)){
+                       EntryVariable entry1 = (EntryVariable) symbolVariableTable.get(idname);
+                       tipo = entry1.getType();
+                   }else{
+                       EntryConst entry1 = (EntryConst) symbolConstTable.get(idname);
+                       tipo = entry1.getType();
+                   }
+
+                   if(tipo.equalsIgnoreCase("integer")){
+                       llvmBody+="%if_comp_"+ ifStatement + "_" + idname + " = load i32, i32* %" + idname + "\n";
+                   }
+                   if(tipo.equalsIgnoreCase("string")){
+                       if(i==0){
+                           llvm2+="%camp_result"+ ifStatement + " = call i32 @strcmp(i8* %valor_" + idname;
+                       }else{
+                           llvm2+=", i8* %valor_" + idname + ")"  + "\n";
+                       }
+                   }
+                   if(tipo.equalsIgnoreCase("char")){
+                       llvmBody+="%if_comp_"+ ifStatement + "_" + idname + " = load i8, i8* %" + idname + "\n";
+                   }
+                   if(tipo.equalsIgnoreCase("boolean")){
+                       llvmBody+="%if_comp_"+ ifStatement + "_" + idname + " = load i1, i1* %" + idname + "\n";
+                   }
+
+                   if(tipo.equalsIgnoreCase("integer")){
+                       if (i == 0) {
+                           llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %" + "if_comp_"+ ifStatement + "_" + idname;
+                       }else{
+                           llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
+                       }
+                   }
+                   if(tipo.equalsIgnoreCase("string")){
+                       if(!llvmDeclarations.contains("declare i32 @strcmp(i8*, i8*)")){
+                           llvmDeclarations+="declare i32 @strcmp(i8*, i8*)\n\n";
+                       }
+                       //%condicion_1 = icmp eq i32 %comp_result, 0
+                       if(i==1){
+                           llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %camp_result" + ifStatement + ", 0\n";
+                       }
+                   }
+                   if(tipo.equalsIgnoreCase("boolean")){
+                       if (i == 0) {
+                           llvm2+="%condicion_" + ifStatement + " = icmp eq i1 %" + "if_comp_"+ ifStatement + "_" + idname;
+                       }else{
+                           llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
+                       }
+                   }
+                   if(tipo.equalsIgnoreCase("char")){
+                       if (i == 0) {
+                           llvm2+="%condicion_" + ifStatement + " = icmp eq i8 %" + "if_comp_"+ ifStatement + "_" + idname;
+                       }else{
+                           llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
+                       }
+                   }
+               }
+               if(ctx.comparison().terms(i).CHAR()!=null){
+                   char caracter = ctx.comparison().terms(i).CHAR().getText().charAt(1);
+                   int ascii = (int) caracter;
+
+                   if(i==0){
+                       llvm2+="%condicion_" + ifStatement + " = icmp eq i32 " + ascii;
+                   }else{
+                       llvm2+= ", " + ascii + "\n";
+                   }
+
+               }
+               if(ctx.comparison().terms(i).BOOLEANVALUE()!=null){
+
+                   boolean valorB;
+
+                   if(ctx.comparison().terms(i).BOOLEANVALUE().getText().equalsIgnoreCase("true"))
+                       valorB = true;
+                   else
+                       valorB = false;
+
+                   if(i==0){
+                       llvm2+="%condicion_" + ifStatement + " = icmp eq i1 " + valorB;
+                   }else{
+                       llvm2+= ", " + valorB + "\n";
+                   }
+
+               }
+               if(ctx.comparison().terms(i).array_access()!=null){
+
+                   String idname = "";
+
+                   if(ctx.comparison().terms(i).array_access().index().NUMBER()!=null){
+                       idname = "array_" + ctx.comparison().terms(i).array_access().ID().getText() + "_" + Integer.parseInt(ctx.comparison().terms(i).array_access().index().NUMBER().getText());
+                   }else{
+
+                       if(symbolVariableTable.containsKey(ctx.comparison().terms(i).array_access().index().ID().getText())){
+                           EntryVariable entry1 = (EntryVariable) symbolVariableTable.get(ctx.comparison().terms(i).array_access().index().ID().getText());
+                           idname = "array_" + ctx.comparison().terms(i).array_access().ID().getText() + "_" + entry1.getValue();
+                       }else{
+                           EntryConst entry1 = (EntryConst) symbolConstTable.get(ctx.comparison().terms(i).array_access().index().ID().getText());
+                           idname = "array_" + ctx.comparison().terms(i).array_access().ID().getText() + "_" + entry1.getValue();
+                       }
+                   }
+
+                   EntryArray entry1 = (EntryArray) symbolArrayTable.get(ctx.comparison().terms(i).array_access().ID().getText());
+                   tipo = entry1.getType();
+
+                   if(tipo.equalsIgnoreCase("integer")){
+                       llvmBody+="%if_comp_"+ ifStatement + "_" + idname + " = load i32, i32* %" + idname + "\n";
+                   }
+                   if(tipo.equalsIgnoreCase("string")){
+                       if(i==0){
+                           llvm2+="%camp_result"+ ifStatement + " = call i32 @strcmp(i8* %valor_" + idname;
+                       }else{
+                           llvm2+=", i8* %valor_" + idname + ")"  + "\n";
+                       }
+                   }
+                   if(tipo.equalsIgnoreCase("char")){
+                       llvmBody+="%if_comp_"+ ifStatement + "_" + idname + " = load i8, i8* %" + idname + "\n";
+                   }
+                   if(tipo.equalsIgnoreCase("boolean")){
+                       llvmBody+="%if_comp_"+ ifStatement + "_" + idname + " = load i1, i1* %" + idname + "\n";
+                   }
+
+                   if(tipo.equalsIgnoreCase("integer")){
+                       if (i == 0) {
+                           llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %" + "if_comp_"+ ifStatement + "_" + idname;
+                       }else{
+                           llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
+                       }
+                   }
+                   if(tipo.equalsIgnoreCase("string")){
+                       if(!llvmDeclarations.contains("declare i32 @strcmp(i8*, i8*)")){
+                           llvmDeclarations+="declare i32 @strcmp(i8*, i8*)\n\n";
+                       }
+                       //%condicion_1 = icmp eq i32 %comp_result, 0
+                       if(i==1){
+                           llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %camp_result" + ifStatement + ", 0\n";
+                       }
+                   }
+                   if(tipo.equalsIgnoreCase("boolean")){
+                       if (i == 0) {
+                           llvm2+="%condicion_" + ifStatement + " = icmp eq i1 %" + "if_comp_"+ ifStatement + "_" + idname;
+                       }else{
+                           llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
+                       }
+                   }
+                   if(tipo.equalsIgnoreCase("char")){
+                       if (i == 0) {
+                           llvm2+="%condicion_" + ifStatement + " = icmp eq i8 %" + "if_comp_"+ ifStatement + "_" + idname;
+                       }else{
+                           llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
+                       }
+                   }
+
+               }
+
+               if(i==1){
+                   llvmBody+=llvm2;
+               }
+           }
+        }
+
+        llvmBody+="br i1 %condicion_" + ifStatement + ", label %bloque_then, label %bloque_else \n";
+
+        llvmBody+="bloque_then: \n";
+        for(int ii = 0; ii<ctx.if_statement2().size(); ii++){
+            visit(ctx.if_statement2(ii));
+        }
+        llvmBody+="br label %fin_if \n";
+
+        llvmBody+="bloque_else: \n";
+        for(int ii = 0; ii<ctx.else_statement().size(); ii++){
+            visit(ctx.else_statement(ii));
+        }
+        llvmBody+="br label %fin_if \n";
+        llvmBody+="fin_if: \n";
+
         return null;
     }
 

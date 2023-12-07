@@ -78,7 +78,7 @@ write: WRITE OPEN_PARENTHESIS write_contain (COMMA write_contain)* CLOSE_PARENTH
 while_loop: WHILE (OPEN_PARENTHESIS (expression|comparison) CLOSE_PARENTHESIS | (expression|comparison) ) DO BEGIN statement_bucle* END;
 
 // If Statement
-if_statement: IF (expression|comparison) THEN (if_statement2 | BEGIN if_statement2* END) (ELSE (else_statement | BEGIN else_statement* END))?;
+if_statement: IF comparison THEN (if_statement2 | BEGIN if_statement2* END) (ELSE (else_statement | BEGIN else_statement* END))?;
 
 else_statement: variable_init | array_init | arrayBi_init | for_loop | writeln_stmt | write | while_loop | if_statement | read_call | readln_call;
 
@@ -94,7 +94,7 @@ statement_bucle: declarations | variable_init | array_init | arrayBi_init | for_
 expression: simple_expression (operaciones simple_expression)?;
 
 //Comparacion de strings
-comparison: terms (EQUALS | NOT_EQUALS) terms;
+comparison: terms operaciones terms;
 
 terms: (ID | TEXT | CHAR | NUMBER | BOOLEANVALUE | array_access | arrayBi_access | simple_expression);
 
@@ -109,7 +109,7 @@ operacones_parentesis:OPEN_PARENTHESIS simple_expression CLOSE_PARENTHESIS;
 operaciones_simples: PLUS | MINUS | MULT | DIV;
 
 // Operaciones de Comparación
-operaciones: LESS_THAN | LESS_THAN_OR_EQUALS | GREATER_THAN | GREATER_THAN_OR_EQUALS;
+operaciones: LESS_THAN | LESS_THAN_OR_EQUALS | GREATER_THAN | GREATER_THAN_OR_EQUALS | EQUALS | NOT_EQUALS;
 
 // Function Declaration
 function_declaration: FUNCTION ID OPEN_PARENTHESIS parameters_declaration? CLOSE_PARENTHESIS COLON TYPE SEMICOLON declarations* BEGIN statement_function* END;
