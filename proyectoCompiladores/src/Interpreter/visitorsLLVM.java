@@ -1318,7 +1318,20 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
         ifStatement++;
         String tipo = "";
         String llvm2 = "";
+        String operacion = "";
         if(ctx.comparison()!=null){
+            if(ctx.comparison().operaciones().EQUALS()!=null)
+                operacion = "eq";
+            if(ctx.comparison().operaciones().LESS_THAN()!=null)
+                operacion = "slt";
+            if(ctx.comparison().operaciones().GREATER_THAN()!=null)
+                operacion = "sgt";
+            if(ctx.comparison().operaciones().NOT_EQUALS()!=null)
+                operacion = "ne";
+            if(ctx.comparison().operaciones().LESS_THAN_OR_EQUALS()!=null)
+                operacion = "sle";
+            if(ctx.comparison().operaciones().LESS_THAN()!=null)
+                operacion = "sge";
 
            for(int i=0; i<ctx.comparison().terms().size(); i++){
                if(ctx.comparison().terms(i).TEXT()!=null){
@@ -1353,14 +1366,14 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                    }
                    //%condicion_1 = icmp eq i32 %comp_result, 0
                    if(i==1){
-                       llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %camp_result" + ifStatement + ", 0\n";
+                       llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i32 %camp_result" + ifStatement + ", 0\n";
                    }
 
                }
                if(ctx.comparison().terms(i).NUMBER()!=null){
 
                    if(i==0){
-                       llvm2+="%condicion_" + ifStatement + " = icmp eq i32 " + Integer.parseInt(ctx.comparison().terms(i).NUMBER().getText());
+                       llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i32 " + Integer.parseInt(ctx.comparison().terms(i).NUMBER().getText());
                    }else{
                        llvm2+= ", " + Integer.parseInt(ctx.comparison().terms(i).NUMBER().getText()) + "\n";
                    }
@@ -1395,7 +1408,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
                    if(tipo.equalsIgnoreCase("integer")){
                        if (i == 0) {
-                           llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %" + "if_comp_"+ ifStatement + "_" + idname;
+                           llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i32 %" + "if_comp_"+ ifStatement + "_" + idname;
                        }else{
                            llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
                        }
@@ -1406,19 +1419,19 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                        }
                        //%condicion_1 = icmp eq i32 %comp_result, 0
                        if(i==1){
-                           llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %camp_result" + ifStatement + ", 0\n";
+                           llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i32 %camp_result" + ifStatement + ", 0\n";
                        }
                    }
                    if(tipo.equalsIgnoreCase("boolean")){
                        if (i == 0) {
-                           llvm2+="%condicion_" + ifStatement + " = icmp eq i1 %" + "if_comp_"+ ifStatement + "_" + idname;
+                           llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i1 %" + "if_comp_"+ ifStatement + "_" + idname;
                        }else{
                            llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
                        }
                    }
                    if(tipo.equalsIgnoreCase("char")){
                        if (i == 0) {
-                           llvm2+="%condicion_" + ifStatement + " = icmp eq i8 %" + "if_comp_"+ ifStatement + "_" + idname;
+                           llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i8 %" + "if_comp_"+ ifStatement + "_" + idname;
                        }else{
                            llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
                        }
@@ -1429,7 +1442,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                    int ascii = (int) caracter;
 
                    if(i==0){
-                       llvm2+="%condicion_" + ifStatement + " = icmp eq i32 " + ascii;
+                       llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i32 " + ascii;
                    }else{
                        llvm2+= ", " + ascii + "\n";
                    }
@@ -1445,7 +1458,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                        valorB = false;
 
                    if(i==0){
-                       llvm2+="%condicion_" + ifStatement + " = icmp eq i1 " + valorB;
+                       llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i1 " + valorB;
                    }else{
                        llvm2+= ", " + valorB + "\n";
                    }
@@ -1490,7 +1503,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
                    if(tipo.equalsIgnoreCase("integer")){
                        if (i == 0) {
-                           llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %" + "if_comp_"+ ifStatement + "_" + idname;
+                           llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i32 %" + "if_comp_"+ ifStatement + "_" + idname;
                        }else{
                            llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
                        }
@@ -1501,19 +1514,19 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                        }
                        //%condicion_1 = icmp eq i32 %comp_result, 0
                        if(i==1){
-                           llvm2+="%condicion_" + ifStatement + " = icmp eq i32 %camp_result" + ifStatement + ", 0\n";
+                           llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i32 %camp_result" + ifStatement + ", 0\n";
                        }
                    }
                    if(tipo.equalsIgnoreCase("boolean")){
                        if (i == 0) {
-                           llvm2+="%condicion_" + ifStatement + " = icmp eq i1 %" + "if_comp_"+ ifStatement + "_" + idname;
+                           llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i1 %" + "if_comp_"+ ifStatement + "_" + idname;
                        }else{
                            llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
                        }
                    }
                    if(tipo.equalsIgnoreCase("char")){
                        if (i == 0) {
-                           llvm2+="%condicion_" + ifStatement + " = icmp eq i8 %" + "if_comp_"+ ifStatement + "_" + idname;
+                           llvm2+="%condicion_" + ifStatement + " = icmp " + operacion + " i8 %" + "if_comp_"+ ifStatement + "_" + idname;
                        }else{
                            llvm2+=", %" + "if_comp_"+ ifStatement + "_" + idname + "\n";
                        }
