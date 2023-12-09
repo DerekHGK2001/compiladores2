@@ -131,6 +131,18 @@ public interface InterpreterVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFor_loop(InterpreterParser.For_loopContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#forIndexValue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForIndexValue(InterpreterParser.ForIndexValueContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link InterpreterParser#forIndexLimit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForIndexLimit(InterpreterParser.ForIndexLimitContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link InterpreterParser#writeln_stmt}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

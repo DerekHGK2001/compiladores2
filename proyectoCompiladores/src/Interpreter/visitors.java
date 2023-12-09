@@ -1290,11 +1290,9 @@ public class visitors extends InterpreterBaseVisitor {
     public Object visitFor_loop(InterpreterParser.For_loopContext ctx) {
         sumarAmbito();
         if(ctx.ID()!=null){
-            for(int i =0; i<ctx.ID().size();i++){
-                String idTerm = ctx.ID(i).getText();
-                if(!exist(idTerm)){
-                    listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
-                }
+            String idTerm = ctx.ID().getText();
+            if(!exist(idTerm)){
+                listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
             }
         }
 

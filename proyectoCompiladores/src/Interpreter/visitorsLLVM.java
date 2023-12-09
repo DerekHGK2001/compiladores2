@@ -19,6 +19,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
     private static int expI = 0;
     private static int ifStatement = 0;
     private static String variable = "";
+    private static int forI = 0;
 
     @Override
     public Object visitProgram(InterpreterParser.ProgramContext ctx) {
@@ -1330,7 +1331,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                 operacion = "ne";
             if(ctx.comparison().operaciones().LESS_THAN_OR_EQUALS()!=null)
                 operacion = "sle";
-            if(ctx.comparison().operaciones().LESS_THAN()!=null)
+            if(ctx.comparison().operaciones().GREATER_THAN_OR_EQUALS()!=null)
                 operacion = "sge";
 
            for(int i=0; i<ctx.comparison().terms().size(); i++){
@@ -1554,6 +1555,62 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
         }
         llvmBody+="br label %fin_if \n";
         llvmBody+="fin_if: \n";
+
+        return null;
+    }
+
+    @Override
+    public Object visitFor_loop(InterpreterParser.For_loopContext ctx) {
+
+        String operacion = "";
+        forI++;
+
+        if(ctx.TO()!=null)
+            operacion = "sle";
+        else
+            operacion = "sge";
+
+        String indexName = ctx.ID().getText();
+
+        if(ctx.forIndexValue().NUMBER()!=null){
+            llvmBody+="store i32 "+ Integer.parseInt(ctx.forIndexValue().NUMBER().getText()) + ", i32* %" + indexName + "\n";
+        }else{
+            String assignName = "for_valor_" + indexName + "_" + forI;
+            llvmBody+="%"+assignName+ " = load i32, i32* %" + ctx.forIndexValue().ID().getText() + "\n" +
+                    "store i32 %" + assignName + ", i32* %" + indexName + "\n";
+        }
+
+        llvmBody+="br label %loop"+forI+".cond\n";
+
+        llvmBody+="loop"+forI+".cond:\n";
+        llvmBody+="%current_count"+forI+ " = load i32, i32* %"+indexName+"\n";
+
+        int num = 0;
+
+        if(ctx.forIndexLimit().NUMBER()!=null){
+            num = Integer.parseInt(ctx.forIndexLimit().NUMBER().getText());
+            llvmBody+="%compare"+ forI+ " = icmp " + operacion + " i32 %current_count" + forI + ", " + num + "\n";
+        }else{
+            String assignName = "for_valor_lim" + indexName + "_" + forI;
+            llvmBody+="%"+assignName+ " = load i32, i32* %" + ctx.forIndexLimit().ID().getText() + "\n";
+            llvmBody+="%compare"+ forI+ "icmp " + operacion + " i32 %current_count" + forI + ", %" + assignName + "\n";
+        }
+
+        llvmBody+="br i1 %compare"+ forI+", label %loop"+forI+".body, label %loop"+forI+".end\n";
+
+        llvmBody+="loop"+ forI +".body:\n";
+        int inforS = forI;
+
+        for(int i=0; i<ctx.statement_bucle().size();i++){
+            visit(ctx.statement_bucle(i));
+        }
+
+        llvmBody+="%current_count_next"+inforS+ " = load i32, i32* %"+indexName+"\n";
+        llvmBody+="%current_count_incr"+inforS+ " = add i32 %current_count_next"+inforS+", 1\n";
+        llvmBody+="store i32 %current_count_incr"+inforS+ ", i32* %"+indexName+"\n";
+        llvmBody+="br label %loop"+inforS+".cond\n";
+        llvmBody+="loop"+inforS+".end:\n";
+
 
         return null;
     }

@@ -208,6 +208,26 @@ public interface InterpreterListener extends ParseTreeListener {
 	 */
 	void exitFor_loop(InterpreterParser.For_loopContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#forIndexValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterForIndexValue(InterpreterParser.ForIndexValueContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#forIndexValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitForIndexValue(InterpreterParser.ForIndexValueContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link InterpreterParser#forIndexLimit}.
+	 * @param ctx the parse tree
+	 */
+	void enterForIndexLimit(InterpreterParser.ForIndexLimitContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link InterpreterParser#forIndexLimit}.
+	 * @param ctx the parse tree
+	 */
+	void exitForIndexLimit(InterpreterParser.ForIndexLimitContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link InterpreterParser#writeln_stmt}.
 	 * @param ctx the parse tree
 	 */

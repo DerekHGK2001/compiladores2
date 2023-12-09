@@ -64,7 +64,10 @@ index: NUMBER|ID;
 arrayBi_access: ID OPEN_BRACKET index COMMA index CLOSE_BRACKET;
 
 // For Loop
-for_loop: FOR ID ASSIGN (NUMBER | ID) (TO | DOWNTO) (NUMBER | ID) DO (statement_bucle | BEGIN statement_bucle* END);
+for_loop: FOR ID ASSIGN forIndexValue (TO | DOWNTO) forIndexLimit DO (statement_bucle | BEGIN statement_bucle* END);
+
+forIndexValue: NUMBER | ID;
+forIndexLimit: NUMBER | ID;
 
 // Write Line Statement
 writeln_stmt: WRITELN OPEN_PARENTHESIS write_contain (COMMA write_contain)* CLOSE_PARENTHESIS SEMICOLON;

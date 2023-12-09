@@ -257,6 +257,30 @@ public class InterpreterBaseListener implements InterpreterListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterForIndexValue(InterpreterParser.ForIndexValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitForIndexValue(InterpreterParser.ForIndexValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterForIndexLimit(InterpreterParser.ForIndexLimitContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitForIndexLimit(InterpreterParser.ForIndexLimitContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterWriteln_stmt(InterpreterParser.Writeln_stmtContext ctx) { }
 	/**
 	 * {@inheritDoc}
