@@ -78,7 +78,7 @@ write_contain: ID | TEXTWRITE | CHAR | array_access | arrayBi_access;
 write: WRITE OPEN_PARENTHESIS write_contain (COMMA write_contain)* CLOSE_PARENTHESIS SEMICOLON;
 
 // While Loop
-while_loop: WHILE (OPEN_PARENTHESIS (expression|comparison) CLOSE_PARENTHESIS | (expression|comparison) ) DO BEGIN statement_bucle* END;
+while_loop: WHILE (OPEN_PARENTHESIS comparison CLOSE_PARENTHESIS | comparison ) DO BEGIN statement_bucle* END;
 
 // If Statement
 if_statement: IF comparison THEN (if_statement2 | BEGIN if_statement2* END) (ELSE (else_statement | BEGIN else_statement* END))?;

@@ -20,6 +20,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
     private static int ifStatement = 0;
     private static String variable = "";
     private static int forI = 0;
+    private static int whileI = 0;
 
     @Override
     public Object visitProgram(InterpreterParser.ProgramContext ctx) {
@@ -1612,6 +1613,247 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
         llvmBody+="loop"+inforS+".end:\n";
 
 
+        return null;
+    }
+
+    @Override
+    public Object visitWhile_loop(InterpreterParser.While_loopContext ctx) {
+        String operacion = "";
+        String llvm2 = "";
+        String tipo = "";
+        whileI++;
+
+        if(ctx.comparison().operaciones().EQUALS()!=null)
+            operacion = "eq";
+        if(ctx.comparison().operaciones().LESS_THAN()!=null)
+            operacion = "slt";
+        if(ctx.comparison().operaciones().GREATER_THAN()!=null)
+            operacion = "sgt";
+        if(ctx.comparison().operaciones().NOT_EQUALS()!=null)
+            operacion = "ne";
+        if(ctx.comparison().operaciones().LESS_THAN_OR_EQUALS()!=null)
+            operacion = "sle";
+        if(ctx.comparison().operaciones().GREATER_THAN_OR_EQUALS()!=null)
+            operacion = "sge";
+
+        llvmBody+="br label %whileLoop"+whileI+".cond\n" + "whileLoop"+whileI+".cond:\n";
+
+        for(int i=0; i<ctx.comparison().terms().size(); i++){
+            if(ctx.comparison().terms(i).TEXT()!=null){
+                String firstId = "compTextoWhile_"+whileI + "_" + i;
+
+                llvmBody+="%" + firstId + " = alloca [100 x i8], align 1\n";
+
+                llvmBody+="%valor_" + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + firstId + ", i8 0, i32 20, i1 false)\n";
+                llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + firstId + ", i32 0, i32 0))\n";
+
+                if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
+                    llvmDeclarations+="declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0\n\n";
+                }
+                if(!llvmDeclarations.contains("declare i8* @strcpy(i8*, i8*) #1")){
+                    llvmDeclarations+="declare i8* @strcpy(i8*, i8*) #1\n\n";
+                }
+
+                String mensaje = ctx.comparison().terms(i).TEXT().getText().replace("\"","");
+
+                int mensajeSize = mensaje.length()+2;
+                llvmEND+="@mensaje_"+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\00\\00\"\n\n";
+
+                if(i==0){
+                    llvm2+="%camp_resultWhile"+ whileI + " = call i32 @strcmp(i8* %valor_" + firstId;
+                }else{
+                    llvm2+=", i8* %valor_" + firstId + ")"  + "\n";
+                }
+
+                if(!llvmDeclarations.contains("declare i32 @strcmp(i8*, i8*)")){
+                    llvmDeclarations+="declare i32 @strcmp(i8*, i8*)\n\n";
+                }
+                //%condicion_1 = icmp eq i32 %comp_result, 0
+                if(i==1){
+                    llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i32 %camp_resultWhile"+ whileI + ", 0\n";
+                }
+
+            }
+            if(ctx.comparison().terms(i).NUMBER()!=null){
+
+                if(i==0){
+                    llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i32 " + Integer.parseInt(ctx.comparison().terms(i).NUMBER().getText());
+                }else{
+                    llvm2+= ", " + Integer.parseInt(ctx.comparison().terms(i).NUMBER().getText()) + "\n";
+                }
+
+            }
+            if(ctx.comparison().terms(i).ID()!=null){
+                String idname = ctx.comparison().terms(i).getText();
+                if(symbolVariableTable.containsKey(idname)){
+                    EntryVariable entry1 = (EntryVariable) symbolVariableTable.get(idname);
+                    tipo = entry1.getType();
+                }else{
+                    EntryConst entry1 = (EntryConst) symbolConstTable.get(idname);
+                    tipo = entry1.getType();
+                }
+
+                if(tipo.equalsIgnoreCase("integer")){
+                    llvmBody+="%if_comp_while"+ whileI + "_" + idname + " = load i32, i32* %" + idname + "\n";
+                }
+                if(tipo.equalsIgnoreCase("string")){
+                    if(i==0){
+                        llvm2+="%camp_resultWhile"+ whileI + " = call i32 @strcmp(i8* %valor_" + idname;
+                    }else{
+                        llvm2+=", i8* %valor_" + idname + ")"  + "\n";
+                    }
+                }
+                if(tipo.equalsIgnoreCase("char")){
+                    llvmBody+="%if_comp_while"+ whileI + "_" + idname + " = load i8, i8* %" + idname + "\n";
+                }
+                if(tipo.equalsIgnoreCase("boolean")){
+                    llvmBody+="%if_comp_while"+ whileI+ "_" + idname + " = load i1, i1* %" + idname + "\n";
+                }
+
+                if(tipo.equalsIgnoreCase("integer")){
+                    if (i == 0) {
+                        llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i32 %" + "if_comp_while"+ whileI + "_" + idname;
+                    }else{
+                        llvm2+=", %" + "if_comp_while"+ whileI + "_" + idname + "\n";
+                    }
+                }
+                if(tipo.equalsIgnoreCase("string")){
+                    if(!llvmDeclarations.contains("declare i32 @strcmp(i8*, i8*)")){
+                        llvmDeclarations+="declare i32 @strcmp(i8*, i8*)\n\n";
+                    }
+
+                    if(i==1){
+                        llvm2+="%condicionWhile_" + whileI+ " = icmp " + operacion + " i32 %camp_resultWhile"+ whileI + ", 0\n";
+                    }
+                }
+                if(tipo.equalsIgnoreCase("boolean")){
+                    if (i == 0) {
+                        llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i1 %" + "if_comp_while"+ whileI + "_" + idname;
+                    }else{
+                        llvm2+=", %" + "if_comp_while"+ whileI + "_" + idname + "\n";
+                    }
+                }
+                if(tipo.equalsIgnoreCase("char")){
+                    if (i == 0) {
+                        llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i8 %" + "if_comp_while"+ whileI + "_" + idname;
+                    }else{
+                        llvm2+=", %" + "if_comp_while"+ whileI + "_" + idname + "\n";
+                    }
+                }
+            }
+            if(ctx.comparison().terms(i).CHAR()!=null){
+                char caracter = ctx.comparison().terms(i).CHAR().getText().charAt(1);
+                int ascii = (int) caracter;
+
+                if(i==0){
+                    llvm2+="%condicionWhile_" + whileI+ " = icmp " + operacion + " i32 " + ascii;
+                }else{
+                    llvm2+= ", " + ascii + "\n";
+                }
+
+            }
+            if(ctx.comparison().terms(i).BOOLEANVALUE()!=null){
+
+                boolean valorB;
+
+                if(ctx.comparison().terms(i).BOOLEANVALUE().getText().equalsIgnoreCase("true"))
+                    valorB = true;
+                else
+                    valorB = false;
+
+                if(i==0){
+                    llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i1 " + valorB;
+                }else{
+                    llvm2+= ", " + valorB + "\n";
+                }
+
+            }
+            if(ctx.comparison().terms(i).array_access()!=null){
+
+                String idname = "";
+
+                if(ctx.comparison().terms(i).array_access().index().NUMBER()!=null){
+                    idname = "array_" + ctx.comparison().terms(i).array_access().ID().getText() + "_" + Integer.parseInt(ctx.comparison().terms(i).array_access().index().NUMBER().getText());
+                }else{
+
+                    if(symbolVariableTable.containsKey(ctx.comparison().terms(i).array_access().index().ID().getText())){
+                        EntryVariable entry1 = (EntryVariable) symbolVariableTable.get(ctx.comparison().terms(i).array_access().index().ID().getText());
+                        idname = "array_" + ctx.comparison().terms(i).array_access().ID().getText() + "_" + entry1.getValue();
+                    }else{
+                        EntryConst entry1 = (EntryConst) symbolConstTable.get(ctx.comparison().terms(i).array_access().index().ID().getText());
+                        idname = "array_" + ctx.comparison().terms(i).array_access().ID().getText() + "_" + entry1.getValue();
+                    }
+                }
+
+                EntryArray entry1 = (EntryArray) symbolArrayTable.get(ctx.comparison().terms(i).array_access().ID().getText());
+                tipo = entry1.getType();
+
+                if(tipo.equalsIgnoreCase("integer")){
+                    llvmBody+="%if_comp_while"+ whileI + "_" + idname + " = load i32, i32* %" + idname + "\n";
+                }
+                if(tipo.equalsIgnoreCase("string")){
+                    if(i==0){
+                        llvm2+="%camp_resultWhile"+ whileI + " = call i32 @strcmp(i8* %valor_" + idname;
+                    }else{
+                        llvm2+=", i8* %valor_" + idname + ")"  + "\n";
+                    }
+                }
+                if(tipo.equalsIgnoreCase("char")){
+                    llvmBody+="%if_comp_while"+ whileI + "_" + idname + " = load i8, i8* %" + idname + "\n";
+                }
+                if(tipo.equalsIgnoreCase("boolean")){
+                    llvmBody+="%if_comp_while"+ whileI + "_" + idname + " = load i1, i1* %" + idname + "\n";
+                }
+
+                if(tipo.equalsIgnoreCase("integer")){
+                    if (i == 0) {
+                        llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i32 %" + "if_comp_while"+ whileI + "_" + idname;
+                    }else{
+                        llvm2+=", %" + "if_comp_while"+ whileI + "_" + idname + "\n";
+                    }
+                }
+                if(tipo.equalsIgnoreCase("string")){
+                    if(!llvmDeclarations.contains("declare i32 @strcmp(i8*, i8*)")){
+                        llvmDeclarations+="declare i32 @strcmp(i8*, i8*)\n\n";
+                    }
+
+                    if(i==1){
+                        llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i32 %camp_resultWhile"+ whileI + ", 0\n";
+                    }
+                }
+                if(tipo.equalsIgnoreCase("boolean")){
+                    if (i == 0) {
+                        llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i1 %" + "if_comp_while"+ whileI + "_" + idname;
+                    }else{
+                        llvm2+=", %" + "if_comp_while"+ whileI+ "_" + idname + "\n";
+                    }
+                }
+                if(tipo.equalsIgnoreCase("char")){
+                    if (i == 0) {
+                        llvm2+="%condicionWhile_" + whileI + " = icmp " + operacion + " i8 %" + "if_comp_while"+ whileI + "_" + idname;
+                    }else{
+                        llvm2+=", %" + "if_comp_while"+ whileI + "_" + idname + "\n";
+                    }
+                }
+
+            }
+
+            if(i==1){
+                llvmBody+=llvm2;
+            }
+        }
+
+        llvmBody+="br i1 %condicionWhile_" + whileI + ", label %whileLoop"+whileI+".body, label %whileLoop"+whileI+".end\n";
+        llvmBody+="whileLoop"+whileI+".body:";
+
+        int actualI = whileI;
+
+        for(int i=0;i<ctx.statement_bucle().size();i++){
+            visit(ctx.statement_bucle(i));
+        }
+
+        llvmBody+="br label %whileLoop"+actualI+".cond\nwhileLoop"+whileI+".end:\n";
         return null;
     }
 

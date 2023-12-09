@@ -1318,10 +1318,6 @@ public class visitors extends InterpreterBaseVisitor {
             visit(ctx.comparison());
         }
 
-        if(ctx.expression()!=null){
-            visit(ctx.expression());
-        }
-
         if(ctx.statement_bucle()!=null){
             for(int i =0; i<ctx.statement_bucle().size();i++){
                 visit(ctx.statement_bucle(i));
