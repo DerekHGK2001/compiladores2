@@ -1157,7 +1157,14 @@ public class visitors extends InterpreterBaseVisitor {
 
         if(!tipoTerm1.equalsIgnoreCase(tipoTerm2)){
             listaErrores.add("Error: no se puede comparar un '" + tipoTerm1 + "' con un '" + tipoTerm2 + "'");
+        }else{
+            if(tipoTerm1.equalsIgnoreCase("string")){
+                if(ctx.operaciones().EQUALS()==null && ctx.operaciones().NOT_EQUALS()==null ){
+                    listaErrores.add("Error: no se puede hacer esa accion con un String");
+                }
+            }
         }
+
 
         return null;
     }

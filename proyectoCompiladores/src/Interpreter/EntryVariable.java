@@ -16,6 +16,7 @@ public class EntryVariable extends SymbolEntry {
     private String name;
     private String type;
     private int value;
+    private String stringName;
 
     public EntryVariable(String name, String type, int ambit) {
         super(ambit);
@@ -37,6 +38,14 @@ public class EntryVariable extends SymbolEntry {
 
     public int getValue() {
         return value;
+    }
+
+    public void setStringName(String stringName){
+        this.stringName=stringName;
+    }
+
+    public String getStringName() {
+        return stringName;
     }
 }
 
