@@ -1946,4 +1946,23 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
     public String getllvm(){
         return llvmDeclarations + llvmHeader + llvmBody + llvmEND;
     }
+
+    public void clearllvm(){
+        llvmDeclarations="";
+        llvmHeader="";
+        llvmBody="";
+        llvmEND="";
+
+        symbolConstTable.clear();
+        symbolVariableTable.clear();
+        symbolArrayTable.clear();
+
+        writeI = 0;
+        expI = 0;
+        ifStatement = 0;
+        variable = "";
+        forI = 0;
+        whileI = 0;
+        initString = 0;
+    }
 }

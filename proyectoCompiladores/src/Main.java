@@ -85,6 +85,8 @@ public class Main extends JFrame {
 
                 try (FileWriter writer = new FileWriter("main.ll")) {
                     writer.write(visitorllvm.getllvm());
+
+                    visitorllvm.clearllvm();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
