@@ -50,7 +50,7 @@ statements: statement*;
 variable_init: ID ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | array_access | arrayBi_access | simple_expression | function_Call) SEMICOLON;
 
 // Array Initialization
-array_init: array_access ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;
+array_init: array_access ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | array_access | simple_expression | arrayBi_access | function_Call) SEMICOLON;
 
 // 2D Array Initialization
 arrayBi_init: arrayBi_access ASSIGN (ID | NUMBER | TEXT | CHAR | BOOLEANVALUE | simple_expression | array_access | arrayBi_access | function_Call) SEMICOLON;

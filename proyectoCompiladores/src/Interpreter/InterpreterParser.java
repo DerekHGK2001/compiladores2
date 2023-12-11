@@ -1296,13 +1296,13 @@ public class InterpreterParser extends Parser {
 			case 6:
 				{
 				setState(219);
-				simple_expression();
+				array_access();
 				}
 				break;
 			case 7:
 				{
 				setState(220);
-				array_access();
+				simple_expression();
 				}
 				break;
 			case 8:
@@ -4153,7 +4153,7 @@ public class InterpreterParser extends Parser {
 		"\u00d4\u00d5\u0003 \u0010\u0000\u00d5\u00df\u0005(\u0000\u0000\u00d6\u00e0"+
 		"\u00052\u0000\u0000\u00d7\u00e0\u00053\u0000\u0000\u00d8\u00e0\u00054"+
 		"\u0000\u0000\u00d9\u00e0\u00055\u0000\u0000\u00da\u00e0\u00051\u0000\u0000"+
-		"\u00db\u00e0\u0003D\"\u0000\u00dc\u00e0\u0003 \u0010\u0000\u00dd\u00e0"+
+		"\u00db\u00e0\u0003 \u0010\u0000\u00dc\u00e0\u0003D\"\u0000\u00dd\u00e0"+
 		"\u0003$\u0012\u0000\u00de\u00e0\u0003R)\u0000\u00df\u00d6\u0001\u0000"+
 		"\u0000\u0000\u00df\u00d7\u0001\u0000\u0000\u0000\u00df\u00d8\u0001\u0000"+
 		"\u0000\u0000\u00df\u00d9\u0001\u0000\u0000\u0000\u00df\u00da\u0001\u0000"+

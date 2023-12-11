@@ -21,6 +21,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
     private static String variable = "";
     private static int forI = 0;
     private static int whileI = 0;
+    private static int initString = 0;
 
     @Override
     public Object visitProgram(InterpreterParser.ProgramContext ctx) {
@@ -147,19 +148,20 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
                 }
                 if(secondTypeId.equalsIgnoreCase("string")){
+                    initString++;
 
-                    llvmBody+="%valor_" + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
-                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + firstId + ", i8 0, i32 20, i1 false)\n";
-                    if(llvmBody.contains("valor_" + secondId + " = getelementptr")){
-
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* %valor_" + secondId + ")\n";
+                    llvmBody+="%valor_"+ initString + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_"+ initString + firstId + ", i8 0, i32 20, i1 false)\n";
+                    if(llvmBody.contains("valor_"+ 1 + secondId + " = getelementptr")){
+                        llvmBody+="%valor_" + initString + secondId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                        llvmBody+="call void @strcpy(i8* %valor_" + initString + firstId + ", i8* %valor_" + initString+ secondId + ")\n";
                     }else{
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + firstId + ", i32 0, i32 0))\n";
+                        llvmBody+="call void @strcpy(i8* %valor_"+ initString + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_"+ initString + firstId + ", i32 0, i32 0))\n";
 
                         String mensaje = " ";
 
                         int mensajeSize = mensaje.length()+2;
-                        llvmEND+="@mensaje_"+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
+                        llvmEND+="@mensaje_"+initString+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
                     }
 
                     if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
@@ -195,18 +197,19 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
                 }
                 if(secondTypeId.equalsIgnoreCase("string")){
-                    llvmBody+="%valor_" + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
-                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + firstId + ", i8 0, i32 20, i1 false)\n";
-                    if(llvmBody.contains("valor_" + secondId + " = getelementptr")){
-
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* %valor_" + secondId + ")\n";
+                    initString++;
+                    llvmBody+="%valor_"+initString + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_"+initString + firstId + ", i8 0, i32 20, i1 false)\n";
+                    if(llvmBody.contains("valor_"+ 1 + secondId + " = getelementptr")){
+                        llvmBody+="%valor_" + initString + secondId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                        llvmBody+="call void @strcpy(i8* %valor_"+ initString + firstId + ", i8* %valor_"+initString + secondId + ")\n";
                     }else{
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + firstId + ", i32 0, i32 0))\n";
+                        llvmBody+="call void @strcpy(i8* %valor_"+ initString + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_"+ initString + firstId + ", i32 0, i32 0))\n";
 
                         String mensaje = " ";
 
                         int mensajeSize = mensaje.length()+2;
-                        llvmEND+="@mensaje_"+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
+                        llvmEND+="@mensaje_"+initString+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
                     }
 
                     if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
@@ -228,6 +231,74 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
             }
         }
+        if(ctx.array_access().size()==2){
+
+            String idTerm = "";
+            String type = "";
+
+            if(ctx.array_access(1).index().NUMBER()!=null){
+
+                idTerm = "array_" + ctx.array_access(1).ID().getText() + "_" + Integer.parseInt(ctx.array_access(1).index().NUMBER().getText());
+            }else{
+
+                if(symbolVariableTable.containsKey(ctx.array_access(1).index().ID().getText())){
+                    EntryVariable entry2 = (EntryVariable) symbolVariableTable.get(ctx.array_access(1).index().ID().getText());
+                    idTerm = "array_" + ctx.array_access(1).ID().getText() + "_" + entry2.getValue();
+                }else{
+                    EntryConst entry2 = (EntryConst) symbolConstTable.get(ctx.array_access(1).index().ID().getText());
+                    idTerm = "array_" + ctx.array_access(1).ID().getText() + "_" + entry2.getValue();
+                }
+            }
+
+            if(symbolVariableTable.containsKey(idTerm)){
+                EntryVariable entry = (EntryVariable) symbolVariableTable.get(idTerm);
+                type = entry.getType();
+                EntryVariable entry1 = (EntryVariable) symbolVariableTable.get(firstId);
+
+                if(type.equalsIgnoreCase("integer")){
+                    entry1.setValue(entry.getValue());
+
+                    llvmBody+="%valor_" + firstId + " = load i32, i32* %"+idTerm + "\n";
+                    llvmBody+="store i32 %valor_" + firstId + ", i32* %"+firstId + "\n";
+
+                }
+                if(type.equalsIgnoreCase("string")){
+                    initString++;
+                    llvmBody+="%valor_" + initString+ firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + initString + firstId + ", i8 0, i32 20, i1 false)\n";
+                    if(llvmBody.contains("valor_" + 1 + idTerm + " = getelementptr")){
+                        llvmBody+="%valor_" + initString + idTerm + " = getelementptr [100 x i8], [100 x i8]* %" + idTerm + ", i32 0, i32 0\n";
+
+                        llvmBody+="call void @strcpy(i8* %valor_"+initString + firstId + ", i8* %valor_" + initString + idTerm + ")\n";
+                    }else{
+                        llvmBody+="call void @strcpy(i8* %valor_" + initString+ firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_"+initString + firstId + ", i32 0, i32 0))\n";
+
+                        String mensaje = " ";
+
+                        int mensajeSize = mensaje.length()+2;
+                        llvmEND+="@mensaje_"+ initString +firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
+                    }
+
+                    if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
+                        llvmDeclarations+="declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0\n\n";
+                    }
+
+                    if(!llvmDeclarations.contains("declare i8* @strcpy(i8*, i8*) #1")){
+                        llvmDeclarations+="declare i8* @strcpy(i8*, i8*) #1\n\n";
+                    }
+
+                }
+                if(type.equalsIgnoreCase("char")){
+                    llvmBody+="%valor_" + firstId + " = load i8, i8* %"+idTerm + "\n";
+                    llvmBody+="store i8 %valor_" + firstId + ", i8* %"+firstId + "\n";
+                }
+                if(type.equalsIgnoreCase("boolean")){
+                    llvmBody+="%valor_" + firstId + " = load i1, i1* %"+idTerm + "\n";
+                    llvmBody+="store i1 %valor_" + firstId + ", i1* %"+firstId + "\n";
+                }
+
+            }
+        }
 
         if(ctx.NUMBER()!=null){
             llvmBody+="store i32 " + Integer.parseInt(ctx.NUMBER().getText()) + ", i32* %"+firstId + "\n";
@@ -242,9 +313,10 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
         }
 
         if(ctx.TEXT()!=null){
-            llvmBody+="%valor_" + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
-            llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + firstId + ", i8 0, i32 20, i1 false)\n";
-            llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + firstId + ", i32 0, i32 0))\n";
+            initString++;
+            llvmBody+="%valor_"+initString + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+            llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_"+initString + firstId + ", i8 0, i32 20, i1 false)\n";
+            llvmBody+="call void @strcpy(i8* %valor_" + initString+ firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_"+initString + firstId + ", i32 0, i32 0))\n";
 
             if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
                 llvmDeclarations+="declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0\n\n";
@@ -258,7 +330,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
             String mensaje = ctx.TEXT().getText().replace("\"","");
 
             int mensajeSize = mensaje.length()+2;
-            llvmEND+="@mensaje_"+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\00\\00\"\n\n";
+            llvmEND+="@mensaje_"+initString+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\00\\00\"\n\n";
         }
 
         if(ctx.BOOLEANVALUE()!=null){
@@ -346,19 +418,22 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
                 }
                 if(secondTypeId.equalsIgnoreCase("string")){
+                    initString++;
 
-                    llvmBody+="%valor_" + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
-                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + firstId + ", i8 0, i32 20, i1 false)\n";
-                    if(llvmBody.contains("valor_" + secondId + " = getelementptr")){
+                    llvmBody+="%valor_" + initString + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + initString + firstId + ", i8 0, i32 20, i1 false)\n";
+                    if(llvmBody.contains("valor_" + 1 + secondId + " = getelementptr")){
 
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* %valor_" + secondId + ")\n";
+                        llvmBody+="%valor_" + initString + secondId + " = getelementptr [100 x i8], [100 x i8]* %" + secondId + ", i32 0, i32 0\n";
+
+                        llvmBody+="call void @strcpy(i8* %valor_" + initString + firstId + ", i8* %valor_" + initString + secondId + ")\n";
                     }else{
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + firstId + ", i32 0, i32 0))\n";
+                        llvmBody+="call void @strcpy(i8* %valor_" + initString + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + initString + firstId + ", i32 0, i32 0))\n";
 
                         String mensaje = " ";
 
                         int mensajeSize = mensaje.length()+2;
-                        llvmEND+="@mensaje_"+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
+                        llvmEND+="@mensaje_"+initString+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
                     }
 
                     if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
@@ -390,18 +465,20 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
                 }
                 if(secondTypeId.equalsIgnoreCase("string")){
-                    llvmBody+="%valor_" + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
-                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + firstId + ", i8 0, i32 20, i1 false)\n";
-                    if(llvmBody.contains("valor_" + secondId + " = getelementptr")){
+                    initString++;
+                    llvmBody+="%valor_" + initString+ firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_"+initString + firstId + ", i8 0, i32 20, i1 false)\n";
+                    if(llvmBody.contains("valor_" + 1 + secondId + " = getelementptr")){
+                        llvmBody+="%valor_" + initString + secondId + " = getelementptr [100 x i8], [100 x i8]* %" + secondId + ", i32 0, i32 0\n";
 
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* %valor_" + secondId + ")\n";
+                        llvmBody+="call void @strcpy(i8* %valor_"+initString + firstId + ", i8* %valor_" + initString + secondId + ")\n";
                     }else{
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + firstId + ", i32 0, i32 0))\n";
+                        llvmBody+="call void @strcpy(i8* %valor_"+initString + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + initString + firstId + ", i32 0, i32 0))\n";
 
                         String mensaje = " ";
 
                         int mensajeSize = mensaje.length()+2;
-                        llvmEND+="@mensaje_"+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
+                        llvmEND+="@mensaje_"+initString+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
                     }
 
                     if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
@@ -439,7 +516,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                     idTerm = "array_" + ctx.array_access().ID().getText() + "_" + entry2.getValue();
                 }
             }
-            System.out.println(idTerm);
+
             if(symbolVariableTable.containsKey(idTerm)){
                 EntryVariable entry = (EntryVariable) symbolVariableTable.get(idTerm);
                 type = entry.getType();
@@ -452,19 +529,20 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
                 }
                 if(type.equalsIgnoreCase("string")){
+                    initString++;
+                    llvmBody+="%valor_" + initString+ firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + initString + firstId + ", i8 0, i32 20, i1 false)\n";
+                    if(llvmBody.contains("valor_" + 1 + idTerm + " = getelementptr")){
+                        llvmBody+="%valor_" + initString + idTerm + " = getelementptr [100 x i8], [100 x i8]* %" + idTerm + ", i32 0, i32 0\n";
 
-                    llvmBody+="%valor_" + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
-                    llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + firstId + ", i8 0, i32 20, i1 false)\n";
-                    if(llvmBody.contains("valor_" + idTerm + " = getelementptr")){
-
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* %valor_" + idTerm + ")\n";
+                        llvmBody+="call void @strcpy(i8* %valor_"+initString + firstId + ", i8* %valor_" + initString + idTerm + ")\n";
                     }else{
-                        llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + firstId + ", i32 0, i32 0))\n";
+                        llvmBody+="call void @strcpy(i8* %valor_" + initString+ firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_"+initString + firstId + ", i32 0, i32 0))\n";
 
                         String mensaje = " ";
 
                         int mensajeSize = mensaje.length()+2;
-                        llvmEND+="@mensaje_"+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
+                        llvmEND+="@mensaje_"+ initString +firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\0A\\00\"\n\n";
                     }
 
                     if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
@@ -500,9 +578,10 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
         }
 
         if(ctx.TEXT()!=null){
-            llvmBody+="%valor_" + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
-            llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_" + firstId + ", i8 0, i32 20, i1 false)\n";
-            llvmBody+="call void @strcpy(i8* %valor_" + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" + firstId + ", i32 0, i32 0))\n";
+            initString++;
+            llvmBody+="%valor_"+ initString + firstId + " = getelementptr [100 x i8], [100 x i8]* %"+firstId + ", i32 0, i32 0\n";
+            llvmBody+="call void @llvm.memset.p0i8.i32([100 x i8]* %valor_"+initString + firstId + ", i8 0, i32 20, i1 false)\n";
+            llvmBody+="call void @strcpy(i8* %valor_"+initString + firstId + ", i8* getelementptr inbounds ([12 x i8], [12 x i8]* @mensaje_" +initString+ firstId + ", i32 0, i32 0))\n";
 
             if(!llvmDeclarations.contains("declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0")){
                 llvmDeclarations+="declare void @llvm.memset.p0i8.i32(i8* nocapture, i8, i32, i1) #0\n\n";
@@ -516,7 +595,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
             String mensaje = ctx.TEXT().getText().replace("\"","");
 
             int mensajeSize = mensaje.length()+2;
-            llvmEND+="@mensaje_"+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\00\\00\"\n\n";
+            llvmEND+="@mensaje_"+initString+firstId+" = private unnamed_addr constant [" +mensajeSize + " x i8] c\""+ mensaje +"\\00\\00\"\n\n";
         }
 
         if(ctx.BOOLEANVALUE()!=null){
@@ -1395,10 +1474,11 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                        llvmBody+="%if_comp_"+ ifStatement + "_" + idname + " = load i32, i32* %" + idname + "\n";
                    }
                    if(tipo.equalsIgnoreCase("string")){
+                       llvmBody+="%stringcomp_" + ifStatement + idname + " = getelementptr [100 x i8], [100 x i8]* %" + idname + ", i32 0, i32 0\n";
                        if(i==0){
-                           llvm2+="%camp_result"+ ifStatement + " = call i32 @strcmp(i8* %valor_" + idname;
+                           llvm2+="%camp_result"+ ifStatement + " = call i32 @strcmp(i8* %stringcomp_" + ifStatement + idname;
                        }else{
-                           llvm2+=", i8* %valor_" + idname + ")"  + "\n";
+                           llvm2+=", i8* %stringcomp_" + ifStatement + idname+ ")"  + "\n";
                        }
                    }
                    if(tipo.equalsIgnoreCase("char")){
@@ -1698,10 +1778,11 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
                     llvmBody+="%if_comp_while"+ whileI + "_" + idname + " = load i32, i32* %" + idname + "\n";
                 }
                 if(tipo.equalsIgnoreCase("string")){
+                    llvmBody+="%stringcomp_" + ifStatement + idname + " = getelementptr [100 x i8], [100 x i8]* %" + idname + ", i32 0, i32 0\n";
                     if(i==0){
-                        llvm2+="%camp_resultWhile"+ whileI + " = call i32 @strcmp(i8* %valor_" + idname;
+                        llvm2+="%camp_resultWhile"+ whileI + " = call i32 @strcmp(i8* %stringcomp_" + ifStatement + idname;
                     }else{
-                        llvm2+=", i8* %valor_" + idname + ")"  + "\n";
+                        llvm2+=", i8* %stringcomp_" + ifStatement + idname + ")"  + "\n";
                     }
                 }
                 if(tipo.equalsIgnoreCase("char")){
