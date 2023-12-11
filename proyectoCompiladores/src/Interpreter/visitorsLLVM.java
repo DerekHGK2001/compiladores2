@@ -1940,10 +1940,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
 
     @Override
     public Object visitEndprogram(InterpreterParser.EndprogramContext ctx) {
-
         llvmBody += "\nret i32 0\n}\n\n";
-
-        System.out.println(llvmDeclarations + llvmHeader + llvmBody + llvmEND);
         return null;
     }
     public String getllvm(){
