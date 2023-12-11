@@ -11,6 +11,7 @@ import java.util.List;
 public class Main extends JFrame {
     private JTextArea inputTextArea;
     private JTextArea outputTextArea;
+    visitors visitor = new visitors();
 
     public Main() {
         // Configuración de la ventana principal
@@ -45,6 +46,7 @@ public class Main extends JFrame {
     }
 
     private void executeProgram() {
+        visitor.reiniciar();
         String contenido = inputTextArea.getText();
 
         CharStream charStream = CharStreams.fromString(contenido);
@@ -57,7 +59,7 @@ public class Main extends JFrame {
         InterpreterParser.ProgramContext programContext = parser.program();
 
         if (!errorListener.getErrores().isEmpty()) {
-            outputTextArea.setText("Se encontraron errores sintácticos:\n");
+            outputTextArea.setText("Se encontraron errores lexicos y sintácticos:\n");
             for (String error : errorListener.getErrores()) {
                 outputTextArea.append(error + "\n");
             }
@@ -65,7 +67,6 @@ public class Main extends JFrame {
             outputTextArea.setText("Análisis Léxico y Sintáctico finalizado con éxito\n");
 
             // Llamamos a visitProgram para activar el análisis semántico.
-            visitors visitor = new visitors();
             visitor.visitProgram(programContext);
 
             // Verificar si hay errores semánticos
@@ -75,6 +76,7 @@ public class Main extends JFrame {
                 for (String error : listaErrores) {
                     outputTextArea.append(error + "\n");
                 }
+                visitor.reiniciar();
             } else {
                 outputTextArea.append("Análisis Semántico finalizado con éxito\n");
 
@@ -93,7 +95,7 @@ public class Main extends JFrame {
             }
         }
     }
-
+    int error = 0;
     private void compileWithClang(String llvmFileName, String outputFileName) {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("clang", llvmFileName, "-o", outputFileName + ".exe");
@@ -101,10 +103,11 @@ public class Main extends JFrame {
             Process process = processBuilder.start();
 
             int exitCode = process.waitFor();
-
+            error=exitCode;
             if (exitCode != 0) {
-                outputTextArea.append("Error durante la compilación. Código de salida: " + exitCode + "\n");
+                outputTextArea.append("Error durante la compilación.\n");
             }
+            
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -119,7 +122,7 @@ public class Main extends JFrame {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             int exitCode = process.waitFor();
-            if (exitCode == 0) {
+            if (exitCode == 0 && error==0) {
                 outputTextArea.append("\nSalida del programa:\n");
                 String line;
                 while ((line = reader.readLine()) != null) {

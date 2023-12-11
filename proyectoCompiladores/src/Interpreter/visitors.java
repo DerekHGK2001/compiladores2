@@ -33,6 +33,16 @@ public class visitors extends InterpreterBaseVisitor {
         return symbolConstTable;
     }
 
+    public void reiniciar(){
+        listaErrores.clear();;
+        symbolVariableTable.clear();
+        symbolConstTable.clear();
+        symbolFunctionTable.clear();
+        symbolArrayTable.clear();
+        symbolArraybiTable.clear();
+        ambito=0;
+    }
+
     @Override
     public Object visitVariable_declaration(InterpreterParser.Variable_declarationContext ctx) {
         String type = ctx.TYPE().getText();
