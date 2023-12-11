@@ -11,22 +11,19 @@ import java.util.List;
 public class Main extends JFrame {
     private JTextArea inputTextArea;
     private JTextArea outputTextArea;
-    visitors visitor = new visitors();
+    private visitors visitor = new visitors();
 
     public Main() {
         // Configuración de la ventana principal
         setTitle("Mini Pascal Interpreter");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(800, 600);
+        setPreferredSize(new Dimension(800, 600));
 
-        // Configuración del diseño
-        setLayout(new BorderLayout());
-
-        // Área de texto para el código de entrada
-        inputTextArea = new JTextArea();
-        JScrollPane inputScrollPane = new JScrollPane(inputTextArea);
-        inputScrollPane.setPreferredSize(new Dimension(getWidth(), getHeight() / 2));
-        add(inputScrollPane, BorderLayout.CENTER);
+        // Crear un panel principal con GridBagLayout
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.insets = new Insets(5, 5, 5, 5);
 
         // Botón de ejecución
         JButton runButton = new JButton("RUN");
@@ -36,13 +33,35 @@ public class Main extends JFrame {
                 executeProgram();
             }
         });
-        add(runButton, BorderLayout.NORTH);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        mainPanel.add(runButton, gbc);
+
+        // Área de texto para el código de entrada
+        inputTextArea = new JTextArea();
+        JScrollPane inputScrollPane = new JScrollPane(inputTextArea);
+        inputScrollPane.setPreferredSize(new Dimension(700, 200));
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 2;
+        mainPanel.add(inputScrollPane, gbc);
 
         // Área de texto para la salida
         outputTextArea = new JTextArea();
         JScrollPane outputScrollPane = new JScrollPane(outputTextArea);
-        outputScrollPane.setPreferredSize(new Dimension(getWidth(), getHeight() / 3));
-        add(outputScrollPane, BorderLayout.SOUTH);
+        outputScrollPane.setPreferredSize(new Dimension(700, 200));
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 2;
+        mainPanel.add(outputScrollPane, gbc);
+
+        // Añadir el panel principal a la ventana
+        add(mainPanel);
+
+        // Configurar la ventana
+        pack();
+        setLocationRelativeTo(null); // Centrar la ventana en la pantalla
     }
 
     private void executeProgram() {
@@ -64,8 +83,6 @@ public class Main extends JFrame {
                 outputTextArea.append(error + "\n");
             }
         } else {
-            outputTextArea.setText("Análisis Léxico y Sintáctico finalizado con éxito\n");
-
             // Llamamos a visitProgram para activar el análisis semántico.
             visitor.visitProgram(programContext);
 
@@ -78,7 +95,6 @@ public class Main extends JFrame {
                 }
                 visitor.reiniciar();
             } else {
-                outputTextArea.append("Análisis Semántico finalizado con éxito\n");
 
                 visitorsLLVM visitorllvm = new visitorsLLVM();
                 visitorllvm.visitProgram(programContext);
@@ -107,9 +123,9 @@ public class Main extends JFrame {
             int exitCode = process.waitFor();
             error=exitCode;
             if (exitCode != 0) {
-                outputTextArea.append("Error durante la compilación.\n");
+                outputTextArea.setText("Error durante la compilación.\n");
             }
-            
+
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -125,13 +141,13 @@ public class Main extends JFrame {
 
             int exitCode = process.waitFor();
             if (exitCode == 0 && error==0) {
-                outputTextArea.append("\nSalida del programa:\n");
+                outputTextArea.setText("\nSalida del programa:\n\n");
                 String line;
                 while ((line = reader.readLine()) != null) {
                     outputTextArea.append(line + "\n");
                 }
             } else {
-                outputTextArea.append("\nError durante la ejecución. Código de salida: " + exitCode + "\n");
+                outputTextArea.setText("\nError durante la ejecución. Código de salida: " + exitCode + "\n");
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
