@@ -1674,7 +1674,7 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
         }else{
             String assignName = "for_valor_lim" + indexName + "_" + forI;
             llvmBody+="%"+assignName+ " = load i32, i32* %" + ctx.forIndexLimit().ID().getText() + "\n";
-            llvmBody+="%compare"+ forI+ "icmp " + operacion + " i32 %current_count" + forI + ", %" + assignName + "\n";
+            llvmBody+="%compare"+ forI+ " = icmp " + operacion + " i32 %current_count" + forI + ", %" + assignName + "\n";
         }
 
         llvmBody+="br i1 %compare"+ forI+", label %loop"+forI+".body, label %loop"+forI+".end\n";
@@ -1934,13 +1934,14 @@ public class visitorsLLVM extends InterpreterBaseVisitor {
             visit(ctx.statement_bucle(i));
         }
 
-        llvmBody+="br label %whileLoop"+actualI+".cond\nwhileLoop"+whileI+".end:\n";
+        llvmBody+="br label %whileLoop"+actualI+".cond\nwhileLoop"+actualI+".end:\n";
         return null;
     }
 
     @Override
     public Object visitEndprogram(InterpreterParser.EndprogramContext ctx) {
         llvmBody += "\nret i32 0\n}\n\n";
+        System.out.println(llvmDeclarations + llvmHeader + llvmBody + llvmEND);
         return null;
     }
     public String getllvm(){

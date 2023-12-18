@@ -1313,6 +1313,20 @@ public class visitors extends InterpreterBaseVisitor {
             }
         }
 
+        if(ctx.forIndexValue().ID()!=null){
+            String idTerm = ctx.forIndexValue().ID().getText();
+            if(!exist(idTerm)){
+                listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
+            }
+        }
+
+        if(ctx.forIndexLimit().ID()!=null){
+            String idTerm = ctx.forIndexLimit().ID().getText();
+            if(!exist(idTerm)){
+                listaErrores.add("Error: La variable o constante '" + idTerm + "' no existe.");
+            }
+        }
+
         if(ctx.statement_bucle()!=null){
             for(int i =0; i<ctx.statement_bucle().size();i++){
 
